@@ -15,3 +15,7 @@ hs_err_pid*
 *.exe
 *.tar.gz
 *.zip
+
+# IntelliJ IDEA
+.idea/
+*.iml

@@ -28,8 +28,8 @@
     <artifactId>${wso2.product.name}-dockerfile</artifactId>
     <packaging>pom</packaging>
     <version>${dockerfiles.version}</version>
-    <name>${wso2.product.fullname} Docker Artifacts</name>
-    <description>${wso2.product.fullname} Docker Artifacts</description>
+    <name>${wso2.product.fullname} Dockerfile</name>
+    <description>${wso2.product.fullname} Dockerfile</description>
 
     <licenses>
         <license>
