@@ -19,16 +19,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.wso2.kubernetes</groupId>
-        <artifactId>wso2-kubernetes-artifacts</artifactId>
-        <version>${kubernetes.artifacts.version}</version>
+        <groupId>org.wso2.dockerfiles</groupId>
+        <artifactId>wso2-dockerfiles</artifactId>
+        <version>${dockerfiles.version}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.wso2.kubernetes-artifacts</groupId>
     <artifactId>${wso2.product.name}-dockerfile</artifactId>
     <packaging>pom</packaging>
-    <version>${kubernetes.artifacts.version}</version>
+    <version>${dockerfiles.version}</version>
     <name>${wso2.product.fullname} Docker Artifacts</name>
     <description>${wso2.product.fullname} Docker Artifacts</description>
 
@@ -46,7 +45,7 @@
                 <inherited>true</inherited>
                 <version>2.5.3</version>
                 <configuration>
-                    <descriptor>package.xml</descriptor>
+                    <descriptor>../../package.xml</descriptor>
                     <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
                 <executions>
