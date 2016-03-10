@@ -33,18 +33,18 @@
     </licenses>
 
     <modules>
-        <module>wso2am/docker</module>
-        <module>wso2as/docker</module>
-        <module>wso2bps/docker</module>
-        <module>wso2brs/docker</module>
-        <module>wso2cep/docker</module>
-        <module>wso2das/docker</module>
-        <module>wso2dss/docker</module>
-        <module>wso2es/docker</module>
-        <module>wso2esb/docker</module>
-        <module>wso2greg/docker</module>
-        <module>wso2is/docker</module>
-        <module>wso2mb/docker</module>
+        <module>wso2am</module>
+        <module>wso2as</module>
+        <module>wso2bps</module>
+        <module>wso2brs</module>
+        <module>wso2cep</module>
+        <module>wso2das</module>
+        <module>wso2dss</module>
+        <module>wso2es</module>
+        <module>wso2esb</module>
+        <module>wso2greg</module>
+        <module>wso2is</module>
+        <module>wso2mb</module>
     </modules>
 
     <build>
