@@ -111,20 +111,3 @@ ${CARBON_HOME}/bin/wso2server.sh
 #    fi
 #}
 
-# replace localMemberHost with local ip
-function replace_local_member_host_with_ip {
-    sed -i "s/\(<parameter\ name=\"localMemberHost\">\).*\(<\/parameter*\)/\1$local_ip\2/" $axis2_xml_file_path
-    if [[ $? == 0 ]];
-    then
-        echo "successfully updated localMemberHost with local ip address $local_ip"
-    else
-        echo "error occurred in updating localMemberHost with local ip address $local_ip"
-    fi
-}
-
-replace_local_member_host_with_ip
-
-#add_host_mapping "$(get_hostname_from_carbon_config)" "$local_ip"
-
-# echo "JAVA_HOME=${JAVA_HOME}" >> /etc/environment
-# echo "CARBON_HOME=${CARBON_HOME}" >> /etc/environment
