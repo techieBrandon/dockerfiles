@@ -20,8 +20,8 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source $DIR/../base.sh
 
 function showUsageAndExit () {
-    echoBold "Usage: ./run.sh [product-version] [docker-image-version] [product_profile_list]"
-    echo "eg: ./run.sh 1.9.1 1.0.0 'default|worker|manager'"
+    echoBold "Usage: ./run.sh [product-version] [docker-image-version] [product_profile_list] [key-store-password]"
+    echo "eg: ./run.sh 1.9.1 1.0.0 'default|worker|manager' 'wso2carbon'"
     exit 1
 }
 
@@ -29,6 +29,7 @@ product_name=$1
 product_version=$2
 image_version=$3
 product_profiles=$4
+key_store_password=$5
 
 # Validate mandatory args
 if [ -z "$product_version" ]
@@ -44,6 +45,12 @@ fi
 if [ -z "$product_profiles" ]
   then
     product_profiles='default'
+fi
+
+if [ -z "$key_store_password" ]; then
+    env_key_store_password=""
+else
+    env_key_store_password="-e KEY_STORE_PASSWORD=${key_store_password}"
 fi
 
 IFS='|' read -r -a array <<< "${product_profiles}"
@@ -64,9 +71,9 @@ do
     fi
 
     if [[ $profile = "default" ]]; then
-        container_id=$(docker run -d -P --name "${name}" "wso2/${product_name}-${product_version}:${image_version}")
+        container_id=$(docker run -d -P ${env_key_store_password} --name "${name}" "wso2/${product_name}-${product_version}:${image_version}")
     else
-        container_id=$(docker run -d -P --name "${name}" "wso2/${product_name}-${profile}-${product_version}:${image_version}")
+        container_id=$(docker run -d -P ${env_key_store_password} --name "${name}" "wso2/${product_name}-${profile}-${product_version}:${image_version}")
     fi
 
     member_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${container_id}")
