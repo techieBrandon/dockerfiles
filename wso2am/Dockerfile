@@ -31,7 +31,7 @@ ENV WSO2_SERVER=${WSO2_SERVER:-wso2am} \
     WSO2_SERVER_PROFILE=${WSO2_SERVER_PROFILE:-default} \
     WSO2_ENVIRONMENT=${WSO2_ENVIRONMENT:-dev}
 
-COPY scripts/init.sh /usr/local/bin/init.sh
+COPY scripts/* /usr/local/bin/
 COPY puppet/ /etc/puppet/
 
 # Export facter variables
@@ -47,7 +47,7 @@ RUN puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.ya
     && apt-get purge -y --auto-remove puppet \
     && rm -rf /etc/puppet/* \
     && rm -rf /var/lib/apt/lists/* \
-    && chown wso2user:wso2 /usr/local/bin/init.sh \
+    && chown wso2user:wso2 /usr/local/bin/* \
     && chown -R wso2user:wso2 /mnt
 
 USER wso2user

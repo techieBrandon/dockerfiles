@@ -144,6 +144,15 @@ do
         image_id="wso2/${product_name}-${profile}-${product_version}:${image_version}"
     fi
 
+    # if there is a custom init.sh script supplied specific for the profile of this product, pack
+    # it to ${dockerfile_path}/scripts/
+    product_init_script_name="wso2${product_name}-${profile}-init.sh"
+    if [[ -f "${dockerfile_path}/${product_init_script_name}" ]]; then
+        pushd "${dockerfile_path}" > /dev/null
+        cp "${product_init_script_name}" scripts/
+        popd > /dev/null
+    fi
+
     echoBold "Building docker image ${image_id}..."
 
     {
