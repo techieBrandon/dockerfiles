@@ -31,14 +31,14 @@ echo "Moving carbon server from /mnt/${server_name} to ${server_path}..."
 mv "/mnt/${server_name}" "${server_path}/"
 
 axis2_xml_file_path=${server_path}/${server_name}/repository/conf/axis2/axis2.xml
-secret_conf_properties_file_path=${server_path}/${server_name}/repository/conf/security/secret-conf.properties
-password_tmp_file_path=${server_path}/${server_name}/password-tmp
+secret_conf_properties_file=${server_path}/${server_name}/repository/conf/security/secret-conf.properties
+password_tmp_file=${server_path}/${server_name}/password-tmp
 
 # replace localMemberHost with local ip
 function replace_local_member_host_with_ip {
     sed -i "s/\(<parameter\ name=\"localMemberHost\">\).*\(<\/parameter*\)/\1$local_ip\2/" "${axis2_xml_file_path}"
     if [[ $? == 0 ]];
-    then
+        then
         echo "successfully updated localMemberHost with local ip address $local_ip"
     else
         echo "error occurred in updating localMemberHost with local ip address $local_ip"
@@ -47,23 +47,28 @@ function replace_local_member_host_with_ip {
 
 # updating conf file path with server_path
 function update_path {
-    sed -i "s|mnt|mnt/${local_ip}|g" "${secret_conf_properties_file_path}"
-    if [[ "$?" == 0 ]];
-    then
-        echo "Successfully updated keyStore identity location"
-    else
-        echo "Error occurred in updating keyStore identity location"
+    if [ -f "$secret_conf_properties_file" ]
+        then
+        sed -i "s|mnt|mnt/${local_ip}|g" "$secret_conf_properties_file"
+        if [[ "$?" == 0 ]];
+            then
+            echo "Successfully updated keyStore identity location"
+        else
+            echo "Error occurred in updating keyStore identity location"
+        fi
     fi
-
 }
 
 replace_local_member_host_with_ip
 
-# update_path
+update_path
 
-# adding key-store-password to password-tmp file
-# touch "${server_path}/${server_name}/password-tmp"
-# echo "${KEY_STORE_PASSWORD}" >> "${password_tmp_file_path}"
+if [ ! -z "$KEY_STORE_PASSWORD" ]
+    then
+    # adding key-store-password to password-tmp file
+    touch $password_tmp_file
+    echo "$KEY_STORE_PASSWORD" >> $password_tmp_file
+fi
 
 # if there is an existing docker-<product_name>-<profile_name>-init.sh script, run that first
 product_init_script_name="${WSO2_SERVER}-${WSO2_SERVER_PROFILE}-init.sh"
