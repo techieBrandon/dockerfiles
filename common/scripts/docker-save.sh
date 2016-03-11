@@ -22,15 +22,31 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${DIR}/base.sh"
 
 function showUsageAndExit () {
-    echoBold "Usage: ./save.sh [product-version] [docker-image-version] [product_profile_list]"
-    echo "eg: ./save.sh 1.9.1 1.0.0 'default|worker|manager'"
+    echoError "Insufficient or invalid options provided!"
+    echoBold "Usage: ./save.sh -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product_profile_list]"
+    echo "eg: ./save.sh -v 1.9.1 -i 1.0.0 -l 'default|worker|manager'"
     exit 1
 }
 
-product_name=$1
-product_version=$2
-image_version=$3
-product_profiles=$4
+while getopts :n:v:i:l: FLAG; do
+    case $FLAG in
+        n)
+            product_name=$OPTARG
+            ;;
+        v)
+            product_version=$OPTARG
+            ;;
+        i)
+            image_version=$OPTARG
+            ;;
+        l)
+            product_profiles=$OPTARG
+            ;;
+        \?)
+            showUsageAndExit
+            ;;
+    esac
+done
 
 # Validate mandatory args
 if [ -z "$product_version" ]
