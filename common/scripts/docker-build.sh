@@ -19,7 +19,7 @@
 set -e
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-source $DIR/../base.sh
+source "${DIR}/base.sh"
 
 # Show usage and exit
 function showUsageAndExit() {
@@ -124,7 +124,7 @@ validateProfile "${product_name}" "${product_version}" "${product_profiles}"
 echoBold "Creating Dockerfile context..."
 mkdir -p "${dockerfile_path}/scripts"
 mkdir -p "${dockerfile_path}/puppet/modules"
-cp "${self_path}/docker-init.sh" "${dockerfile_path}/scripts/init.sh"
+cp "${self_path}/entrypoint.sh" "${dockerfile_path}/scripts/init.sh"
 
 echoBold "Copying Puppet modules to Dockerfile context..."
 cp -r "${puppet_path}/modules/wso2base" "${dockerfile_path}/puppet/modules/"

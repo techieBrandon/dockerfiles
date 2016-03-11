@@ -17,7 +17,7 @@
 
 # ------------------------------------------------------------------------
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-source $DIR/../base.sh
+source "${DIR}/base.sh"
 
 function showUsageAndExit () {
     echoBold "Usage: ./run.sh [product-version] [docker-image-version] [product_profile_list] [key-store-password]"

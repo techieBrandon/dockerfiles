@@ -27,6 +27,6 @@ product_env=$4
 
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
-common_folder=$(cd "${script_path}/../common/scripts/docker/"; pwd)
+common_folder=$(cd "${script_path}/../common/scripts/"; pwd)
 
-bash ${common_folder}/image-build.sh ${script_path} ${image_version} ${product_name} ${product_version} ${product_profiles} ${product_env}
+bash ${common_folder}/docker-build.sh ${script_path} ${image_version} ${product_name} ${product_version} ${product_profiles} ${product_env}
