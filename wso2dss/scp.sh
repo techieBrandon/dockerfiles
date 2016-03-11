@@ -19,17 +19,13 @@
 set -e
 
 product_name=dss
-nodes=$1
-product_version=$2
-image_version=$3
-product_profiles=$4
 
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
 common_folder=$(cd "${script_path}/../common/scripts/"; pwd)
 
-bash ${common_folder}/docker-scp.sh ${product_name}  ${nodes} ${product_version} ${image_version} ${product_profiles}
+bash ${common_folder}/docker-scp.sh -n ${product_name} $*
 pid1=$!
 
 wait $pid1
-echo "Docker images imported successfully!"lly!"
+echo "Docker images imported successfullylly!"

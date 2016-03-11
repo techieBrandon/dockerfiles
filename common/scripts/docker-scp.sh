@@ -22,16 +22,34 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${DIR}/base.sh"
 
 function showUsageAndExit () {
-    echoBold "Usage: ./scp.sh [host-list] [product-version] [docker-image-version] [product_profile_list]"
-    echo "Usage: ./scp.sh 'core@172.17.8.102|core@172.17.8.103' 1.9.1 1.0.0 'worker|manager'"
+    echoError "Insufficient or invalid options provided!"
+    echoBold "Usage: ./scp.sh -h [host-list] -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product_profile_list]"
+    echo "Usage: ./scp.sh -h 'core@172.17.8.102|core@172.17.8.103' -v 1.9.1 -i 1.0.0 -l 'worker|manager'"
     exit 1
 }
 
-product_name=$1
-nodes=$2
-product_version=$3
-image_version=$4
-product_profiles=$5
+while getopts :n:v:i:l:h: FLAG; do
+    case $FLAG in
+        n)
+            product_name=$OPTARG
+            ;;
+        v)
+            product_version=$OPTARG
+            ;;
+        i)
+            image_version=$OPTARG
+            ;;
+        l)
+            product_profiles=$OPTARG
+            ;;
+        h)
+            nodes=$OPTARG
+            ;;
+        \?)
+            showUsageAndExit
+            ;;
+    esac
+done
 
 # Validate mandatory args
 if [ -z "$product_version" ]
