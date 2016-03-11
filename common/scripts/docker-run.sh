@@ -20,16 +20,36 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${DIR}/base.sh"
 
 function showUsageAndExit () {
-    echoBold "Usage: ./run.sh [product-version] [docker-image-version] [product_profile_list] [key-store-password]"
-    echo "eg: ./run.sh 1.9.1 1.0.0 'default|worker|manager' 'wso2carbon'"
+    echoError "Insufficient or invalid options provided!"
+    echoBold "Usage: ./run.sh -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product_profile_list] [OPTIONAL] -p [port-mappings] [OPTIONAL] -k [key-store-password]"
+    echo "eg: ./run.sh -v 1.9.1 -i 1.0.0 -l 'default|worker|manager' -k 'wso2carbon'"
     exit 1
 }
 
-product_name=$1
-product_version=$2
-image_version=$3
-product_profiles=$4
-key_store_password=$5
+while getopts :n:v:i:p:r:k FLAG; do
+    case $FLAG in
+        n)
+            product_name=$OPTARG
+            ;;
+        v)
+            product_version=$OPTARG
+            ;;
+        i)
+            image_version=$OPTARG
+            ;;
+        l)
+            product_profiles=$OPTARG
+            ;;
+        p)
+            port_mappings=$OPTARG
+            ;;
+        k)
+            key_store_password=$OPTARG
+            ;;
+        \?)
+            showUsageAndExit
+    esac
+done
 
 # Validate mandatory args
 if [ -z "$product_version" ]
@@ -48,20 +68,20 @@ if [ -z "$product_profiles" ]
 fi
 
 if [ -z "$key_store_password" ]; then
-    env_key_store_password=""
+    env_key_store_password=
 else
-    env_key_store_password="-e KEY_STORE_PASSWORD=${key_store_password}"
+    env_key_store_password="-e KEY_STORE_PASSWORD=${key_store_password} "
 fi
 
-IFS='|' read -r -a array <<< "${product_profiles}"
-for profile in "${array[@]}"
+IFS='|' read -r -a profiles_array <<< "${product_profiles}"
+for profile in "${profiles_array[@]}"
 do
     name="wso2${product_name}-${profile}"
 
     existing_container=$(docker ps -a | awk '{print $NF}' | grep "${name}")
     if [[ $existing_container = "$name" ]]; then
         echoError "A Docker container with the name ${name} already exists."
-        echo -n "Terminate existing ${name} container (y/n):"
+        askBold "Terminate existing ${name} container (y/n): "
         read -r terminate
         if [[ $terminate = "y" ]]; then
             docker rm -f "${name}" > /dev/null 2>&1 || { echoError "Couldn't terminate container ${name}."; exit 1; }
@@ -71,9 +91,9 @@ do
     fi
 
     if [[ $profile = "default" ]]; then
-        container_id=$(docker run -d -P "${env_key_store_password}" --name "${name}" "wso2/${product_name}-${product_version}:${image_version}")
+        container_id=$(docker run -d -P "${env_key_store_password}"--name "${name}" "wso2/${product_name}-${product_version}:${image_version}")
     else
-        container_id=$(docker run -d -P "${env_key_store_password}" --name "${name}" "wso2/${product_name}-${profile}-${product_version}:${image_version}")
+        container_id=$(docker run -d -P "${env_key_store_password}"--name "${name}" "wso2/${product_name}-${profile}-${product_version}:${image_version}")
     fi
 
     member_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${container_id}")
@@ -87,7 +107,7 @@ do
 
 done
 
-if [ "${#array[@]}" -eq 1 ]; then
+if [ "${#profiles_array[@]}" -eq 1 ]; then
     echo
     askBold "Open a Bash terminal on the spawned container? (y/n): "
     read -r exec_v

@@ -28,4 +28,4 @@ prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
 common_folder=$(cd "${script_path}/../common/scripts/"; pwd)
 
-bash ${common_folder}/docker-run.sh ${product_name} ${product_version} ${image_version} ${product_profiles} ${key_store_password}
+bash ${common_folder}/docker-run.sh -n ${product_name} $*
