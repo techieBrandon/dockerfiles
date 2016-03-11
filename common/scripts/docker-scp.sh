@@ -19,7 +19,7 @@
 set -e
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-source $DIR/../base.sh
+source "${DIR}/base.sh"
 
 function showUsageAndExit () {
     echoBold "Usage: ./scp.sh [host-list] [product-version] [docker-image-version] [product_profile_list]"
@@ -71,7 +71,7 @@ do
                 exit_code=$? # exit code of the last command
                 if [ "$exit_code" == "255" ]; then
                     echoError "Specified node's host identification fails: ${node}"
-                    echoBold "Clear ~/.ssh/known_hosts ? (y/n): "
+                    askBold "Clear ~/.ssh/known_hosts ? (y/n): "
                     read -r remove_knownhosts
 
                     if [ "$remove_knownhosts" = "y" ]; then
