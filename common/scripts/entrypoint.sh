@@ -73,7 +73,7 @@ fi
 # if there is an existing docker-<product_name>-<profile_name>-init.sh script, run that first
 product_init_script_name="${WSO2_SERVER}-${WSO2_SERVER_PROFILE}-init.sh"
 if [[ -f "${script_path}/${product_init_script_name}" ]]; then
-    echo "found a init script specific to ${WSO2_SERVER_PROFILE} of ${WSO2_SERVER}"
+    echo "found a init script specific to ${WSO2_SERVER_PROFILE} profile of ${WSO2_SERVER}"
     bash "${script_path}/${product_init_script_name}" || exit $?
 fi
 
