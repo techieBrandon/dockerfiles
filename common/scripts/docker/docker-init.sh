@@ -44,8 +44,8 @@ function replace_local_member_host_with_ip {
 
 # updating conf file path with server_path
 function update_path {
-    sed -i "s|mnt|mnt/$local_ip|g" $secret_conf_properties_file_path
-    if [[ $? == 0 ]];
+    sed -i "s|mnt|mnt/${local_ip}|g" "${secret_conf_properties_file_path}"
+    if [[ "$?" == 0 ]];
     then
         echo "Successfully updated keyStore identity location"
     else
@@ -56,11 +56,11 @@ function update_path {
 
 replace_local_member_host_with_ip
 
-update_path
+# update_path
 
 # adding key-store-password to password-tmp file
-touch ${server_path}/${server_name}/password-tmp
-echo "${KEY_STORE_PASSWORD}" >> $password_tmp_file_path
+# touch "${server_path}/${server_name}/password-tmp"
+# echo "${KEY_STORE_PASSWORD}" >> "${password_tmp_file_path}"
 
 export CARBON_HOME="${server_path}/${server_name}"
 echo "Starting ${WSO2_SERVER}..."
