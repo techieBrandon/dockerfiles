@@ -71,9 +71,9 @@ do
     fi
 
     if [[ $profile = "default" ]]; then
-        container_id=$(docker run -d -P ${env_key_store_password} --name "${name}" "wso2/${product_name}-${product_version}:${image_version}")
+        container_id=$(docker run -d -P "${env_key_store_password}" --name "${name}" "wso2/${product_name}-${product_version}:${image_version}")
     else
-        container_id=$(docker run -d -P ${env_key_store_password} --name "${name}" "wso2/${product_name}-${profile}-${product_version}:${image_version}")
+        container_id=$(docker run -d -P "${env_key_store_password}" --name "${name}" "wso2/${product_name}-${profile}-${product_version}:${image_version}")
     fi
 
     member_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${container_id}")
@@ -87,5 +87,14 @@ do
 
 done
 
-echo "To get bash into a running container use following command..."
-echo "docker exec -it <containerId or name> bash"
+if [ "${#array[@]}" -eq 1 ]; then
+    echo
+    askBold "Open a Bash terminal on the spawned container? (y/n): "
+    read -r exec_v
+    if [ "$exec_v" == "y" ]; then
+        docker exec -it "${container_id}" /bin/bash
+    fi
+else
+    echo "To get bash into a running container use following command..."
+    echo "docker exec -it <containerId or name> bash"
+fi
