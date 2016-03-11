@@ -120,6 +120,10 @@ validateProductVersion "${product_name}" "${product_version}"
 # check if provided profile exists in PUPPET_HOME
 validateProfile "${product_name}" "${product_version}" "${product_profiles}"
 
+docker_version=$(docker version --format '{{.Server.Version}}')
+echoBold "Docker version should be equal to or later than 1.9.0 to build WSO2 Docker images. Found ${docker_version}"
+echo
+
 # Copy common files to Dockerfile context
 echoBold "Creating Dockerfile context..."
 mkdir -p "${dockerfile_path}/scripts"
@@ -140,25 +144,39 @@ do
     # set image name according to the profile list
     if [[ "${profile}" = "default" ]]; then
         image_id="wso2/${product_name}-${product_version}:${image_version}"
+        docker images | grep -F "wso2/${product_name}-${product_version}" | awk '{print $2}' | grep -Fx "${image_version}" > /dev/null 2>&1
+        image_exists=$?
     else
         image_id="wso2/${product_name}-${profile}-${product_version}:${image_version}"
+        docker images | grep -F "wso2/${product_name}-${profile}-${product_version}" | awk '{print $2}' | grep -Fx "${image_version}" > /dev/null 2>&1
+        image_exists=$?
     fi
 
-    echoBold "Building docker image ${image_id}..."
+    if [ "$image_exists" -eq 0 ]; then
+        askBold "Docker image \"${image_id}\" already exists? Overwrite? (y/n): "
+        read -r overwrite_v
+    fi
 
-    {
-        # show only errors from the docker build output
-        ! docker build --no-cache=true \
-        --build-arg WSO2_SERVER="wso2${product_name}" \
-        --build-arg WSO2_SERVER_VERSION="${product_version}" \
-        --build-arg WSO2_SERVER_PROFILE="${profile}" \
-        --build-arg WSO2_ENVIRONMENT="${product_env}" \
-        -t "${image_id}" "${dockerfile_path}" | grep -i error && echo "Docker image ${image_id} created."
-    } || {
-        echoError "ERROR: Docker image ${image_id} creation failed"
-        cleanup
-        exit 1
-    }
+    if [ "$image_exists" -eq 1 ] || [ "$overwrite_v" == "y" ]; then
+
+        echoBold "Building docker image ${image_id}..."
+
+        {
+            # show only errors from the docker build output
+            ! docker build --no-cache=true \
+            --build-arg WSO2_SERVER="wso2${product_name}" \
+            --build-arg WSO2_SERVER_VERSION="${product_version}" \
+            --build-arg WSO2_SERVER_PROFILE="${profile}" \
+            --build-arg WSO2_ENVIRONMENT="${product_env}" \
+            -t "${image_id}" "${dockerfile_path}" | grep -i error && echo "Docker image ${image_id} created."
+        } || {
+            echoError "ERROR: Docker image ${image_id} creation failed"
+            cleanup
+            exit 1
+        }
+    else
+        echoBold "Not overwriting \"${image_id}\"..."
+    fi
 done
 
 cleanup
