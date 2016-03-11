@@ -173,7 +173,7 @@ do
     fi
 
     image_exists=$(docker images $image_id | wc -l)
-    if [ "${image_exists}" == "2" ]; then
+    if [ ${image_exists} == "2" ]; then
         askBold "Docker image \"${image_id}\" already exists? Overwrite? (y/n): "
         read -r overwrite_v
     fi
