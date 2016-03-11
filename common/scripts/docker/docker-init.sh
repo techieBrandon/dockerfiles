@@ -28,6 +28,8 @@ echo "Moving carbon server from /mnt/${server_name} to ${server_path}..."
 mv "/mnt/${server_name}" "${server_path}/"
 
 axis2_xml_file_path=${server_path}/${server_name}/repository/conf/axis2/axis2.xml
+secret_conf_properties_file_path=${server_path}/${server_name}/repository/conf/security/secret-conf.properties
+password_tmp_file_path=${server_path}/${server_name}/password-tmp
 
 # replace localMemberHost with local ip
 function replace_local_member_host_with_ip {
@@ -40,7 +42,25 @@ function replace_local_member_host_with_ip {
     fi
 }
 
+# updating conf file path with server_path
+function update_path {
+    sed -i "s|mnt|mnt/$local_ip|g" $secret_conf_properties_file_path
+    if [[ $? == 0 ]];
+    then
+        echo "Successfully updated keyStore identity location"
+    else
+        echo "Error occurred in updating keyStore identity location"
+    fi
+
+}
+
 replace_local_member_host_with_ip
+
+update_path
+
+# adding key-store-password to password-tmp file
+touch ${server_path}/${server_name}/password-tmp
+echo "${KEY_STORE_PASSWORD}" >> $password_tmp_file_path
 
 export CARBON_HOME="${server_path}/${server_name}"
 echo "Starting ${WSO2_SERVER}..."
@@ -110,21 +130,3 @@ ${CARBON_HOME}/bin/wso2server.sh
 #        return 1
 #    fi
 #}
-
-# replace localMemberHost with local ip
-function replace_local_member_host_with_ip {
-    sed -i "s/\(<parameter\ name=\"localMemberHost\">\).*\(<\/parameter*\)/\1$local_ip\2/" $axis2_xml_file_path
-    if [[ $? == 0 ]];
-    then
-        echo "successfully updated localMemberHost with local ip address $local_ip"
-    else
-        echo "error occurred in updating localMemberHost with local ip address $local_ip"
-    fi
-}
-
-replace_local_member_host_with_ip
-
-#add_host_mapping "$(get_hostname_from_carbon_config)" "$local_ip"
-
-# echo "JAVA_HOME=${JAVA_HOME}" >> /etc/environment
-# echo "CARBON_HOME=${CARBON_HOME}" >> /etc/environment
