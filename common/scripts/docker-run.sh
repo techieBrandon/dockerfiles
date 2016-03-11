@@ -71,7 +71,7 @@ fi
 if [ -z "$key_store_password" ]; then
     env_key_store_password=
 else
-    env_key_store_password="-e KEY_STORE_PASSWORD=${key_store_password} "
+    env_key_store_password="-e KEY_STORE_PASSWORD=${key_store_password}"
 fi
 
 IFS='|' read -r -a profiles_array <<< "${product_profiles}"
@@ -92,9 +92,9 @@ do
     fi
 
     if [[ $profile = "default" ]]; then
-        container_id=$(docker run -d -P "${env_key_store_password}"--name "${name}" "wso2/${product_name}-${product_version}:${image_version}")
+        container_id=$(docker run -d -P ${env_key_store_password} --name "${name}" "wso2/${product_name}-${product_version}:${image_version}")
     else
-        container_id=$(docker run -d -P "${env_key_store_password}"--name "${name}" "wso2/${product_name}-${profile}-${product_version}:${image_version}")
+        container_id=$(docker run -d -P ${env_key_store_password} --name "${name}" "wso2/${product_name}-${profile}-${product_version}:${image_version}")
     fi
 
     member_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${container_id}")
