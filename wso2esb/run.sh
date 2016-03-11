@@ -19,10 +19,6 @@
 set -e
 
 product_name=esb
-product_version=$1
-image_version=$2
-product_profiles=$3
-key_store_password=$4
 
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)

@@ -23,8 +23,9 @@ source "${DIR}/base.sh"
 
 # Show usage and exit
 function showUsageAndExit() {
-    echoBold "Usage: ./build.sh [product-version] [docker-image-version] [product_profile_list]"
-    echo "Ex: ./build.sh 1.9.1 1.0.0 'default|worker|manager'"
+    echoError "Insufficient or invalid options provided!"
+    echoBold "Usage: ./build.sh -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product-profile-list] [OPTIONAL] -e [product-env] "
+    echo "Ex: ./build.sh -v 1.9.1 -i 1.0.0 -l 'default|worker|manager'"
     exit 1
 }
 
@@ -75,12 +76,36 @@ function validateProfile() {
     fi
 }
 
-dockerfile_path=$1
-image_version=$2
-product_name=$3
-product_version=$4
-product_profiles=$5
-product_env=$6
+verbose=false
+
+while getopts :n:v:i:e:l:d:x FLAG; do
+    case $FLAG in
+        n)
+            product_name=$OPTARG
+            ;;
+        v)
+            product_version=$OPTARG
+            ;;
+        i)
+            image_version=$OPTARG
+            ;;
+        l)
+            product_profiles=$OPTARG
+            ;;
+        e)
+            product_env=$OPTARG
+            ;;
+        d)
+            dockerfile_path=$OPTARG
+            ;;
+        x)
+            verbose=true
+            ;;
+        \?)
+            showUsageAndExit
+            ;;
+    esac
+done
 
 prgdir2=$(dirname "$0")
 self_path=$(cd "$prgdir2"; pwd)
@@ -110,8 +135,7 @@ if [ -z "$PUPPET_HOME" ]; then
    echoError "Puppet home folder could not be found! Set PUPPET_HOME environment variable pointing to local puppet folder."
    exit 1
 else
-   puppet_path=$PUPPET_HOME
-   echoBold "PUPPET_HOME is set to ${puppet_path}."
+   echoBold "PUPPET_HOME is set to ${PUPPET_HOME}."
 fi
 
 # check if provided product version exists in PUPPET_HOME
@@ -131,33 +155,30 @@ mkdir -p "${dockerfile_path}/puppet/modules"
 cp "${self_path}/entrypoint.sh" "${dockerfile_path}/scripts/init.sh"
 
 echoBold "Copying Puppet modules to Dockerfile context..."
-cp -r "${puppet_path}/modules/wso2base" "${dockerfile_path}/puppet/modules/"
-cp -r "${puppet_path}/modules/wso2${product_name}" "${dockerfile_path}/puppet/modules/"
-cp -r "${puppet_path}/hiera.yaml" "${dockerfile_path}/puppet/"
-cp -r "${puppet_path}/hieradata" "${dockerfile_path}/puppet/"
-cp -r "${puppet_path}/manifests" "${dockerfile_path}/puppet/"
+cp -r "${PUPPET_HOME}/modules/wso2base" "${dockerfile_path}/puppet/modules/"
+cp -r "${PUPPET_HOME}/modules/wso2${product_name}" "${dockerfile_path}/puppet/modules/"
+cp -r "${PUPPET_HOME}/hiera.yaml" "${dockerfile_path}/puppet/"
+cp -r "${PUPPET_HOME}/hieradata" "${dockerfile_path}/puppet/"
+cp -r "${PUPPET_HOME}/manifests" "${dockerfile_path}/puppet/"
 
 # Build image for each profile provided
-IFS='|' read -r -a array <<< "${product_profiles}"
-for profile in "${array[@]}"
+IFS='|' read -r -a profiles_array <<< "${product_profiles}"
+for profile in "${profiles_array[@]}"
 do
     # set image name according to the profile list
     if [[ "${profile}" = "default" ]]; then
         image_id="wso2/${product_name}-${product_version}:${image_version}"
-        docker images | grep -F "wso2/${product_name}-${product_version}" | awk '{print $2}' | grep -Fx "${image_version}" > /dev/null 2>&1
-        image_exists=$?
     else
         image_id="wso2/${product_name}-${profile}-${product_version}:${image_version}"
-        docker images | grep -F "wso2/${product_name}-${profile}-${product_version}" | awk '{print $2}' | grep -Fx "${image_version}" > /dev/null 2>&1
-        image_exists=$?
     fi
 
-    if [ "$image_exists" -eq 0 ]; then
+    image_exists=$(docker images $image_id | wc -l)
+    if [ "${image_exists}" == "2" ]; then
         askBold "Docker image \"${image_id}\" already exists? Overwrite? (y/n): "
         read -r overwrite_v
     fi
 
-    if [ "$image_exists" -eq 1 ] || [ "$overwrite_v" == "y" ]; then
+    if [ "${image_exists}" == "1" ] || [ "$overwrite_v" == "y" ]; then
 
         # if there is a custom init.sh script supplied specific for the profile of this product, pack
         # it to ${dockerfile_path}/scripts/
@@ -171,13 +192,13 @@ do
         echoBold "Building docker image ${image_id}..."
 
         {
-            # show only errors from the docker build output
             ! docker build --no-cache=true \
             --build-arg WSO2_SERVER="wso2${product_name}" \
             --build-arg WSO2_SERVER_VERSION="${product_version}" \
             --build-arg WSO2_SERVER_PROFILE="${profile}" \
             --build-arg WSO2_ENVIRONMENT="${product_env}" \
             -t "${image_id}" "${dockerfile_path}" | grep -i error && echo "Docker image ${image_id} created."
+
         } || {
             echoError "ERROR: Docker image ${image_id} creation failed"
             cleanup
