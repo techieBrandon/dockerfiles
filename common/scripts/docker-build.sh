@@ -178,7 +178,7 @@ do
         read -r overwrite_v
     fi
 
-    if [ "${image_exists}" == "1" ] || [ "$overwrite_v" == "y" ]; then
+    if [ ${image_exists} == "1" ] || [ $overwrite_v == "y" ]; then
 
         # if there is a custom init.sh script supplied specific for the profile of this product, pack
         # it to ${dockerfile_path}/scripts/
