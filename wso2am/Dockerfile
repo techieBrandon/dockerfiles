@@ -53,6 +53,6 @@ RUN puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.ya
 USER wso2user
 
 # Expose transport ports
-EXPOSE 10397 8280 8243 9763 9443 10397
+EXPOSE 10397 8280 8243 9763 9443
 
 ENTRYPOINT /usr/local/bin/init.sh
