@@ -146,7 +146,8 @@ validateProductVersion "${product_name}" "${product_version}"
 validateProfile "${product_name}" "${product_version}" "${product_profiles}"
 
 docker_version=$(docker version --format '{{.Server.Version}}')
-echoBold "Docker version should be equal to or later than 1.9.0 to build WSO2 Docker images. Found ${docker_version}"
+# TODO: compare the versions and prompt only if there is an error
+# echoBold "Docker version should be equal to or later than 1.9.0 to build WSO2 Docker images. Found ${docker_version}"
 echo
 
 # Copy common files to Dockerfile context
