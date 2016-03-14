@@ -77,6 +77,19 @@ function validateProfile() {
     fi
 }
 
+function validateDockerVersion(){
+    IFS='.' read -r -a version_1 <<< "$1"
+    IFS='.' read -r -a version_2 <<< "$2"
+    for ((i=0; i<${#version_1[@]}; i++))
+    do
+        if (( "${version_1[i]}" < "${version_2[i]}" ))
+            then
+            echoError "Docker version should be equal to or greater than ${min_required_docker_version} to build WSO2 Docker images. Found ${docker_version}"
+            exit 1
+        fi
+    done
+}
+
 verbose=false
 
 while getopts :n:v:i:e:l:d:x FLAG; do
@@ -145,10 +158,10 @@ validateProductVersion "${product_name}" "${product_version}"
 # check if provided profile exists in PUPPET_HOME
 validateProfile "${product_name}" "${product_version}" "${product_profiles}"
 
+# validate docker version against minimum required docker version
 docker_version=$(docker version --format '{{.Server.Version}}')
-# TODO: compare the versions and prompt only if there is an error
-# echoBold "Docker version should be equal to or later than 1.9.0 to build WSO2 Docker images. Found ${docker_version}"
-echo
+min_required_docker_version=1.9.0
+validateDockerVersion "${docker_version}" "${min_required_docker_version}"
 
 # Copy common files to Dockerfile context
 echoBold "Creating Dockerfile context..."
