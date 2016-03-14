@@ -25,7 +25,8 @@ source "${DIR}/base.sh"
 function showUsageAndExit() {
     echoError "Insufficient or invalid options provided!"
     echoBold "Usage: ./build.sh -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product-profile-list] [OPTIONAL] -e [product-env] "
-    echo "Ex: ./build.sh -v 1.9.1 -i 1.0.0 -l 'default|worker|manager'"
+    #TODO: echo product specific examples
+    #echo "Ex: ./build.sh -v 1.9.1 -i 1.0.0 -l 'default|worker|manager'"
     exit 1
 }
 
