@@ -40,13 +40,18 @@ function showUsageAndExit() {
     echo "Available product profiles: ${op_profiles_str}"
     echo
 
-    echoBold "Build Docker images for WSO2${product_name^^}"
+    echoBold "Build Docker images for WSO2$(echo $product_name | awk '{print toupper($0)}')"
     echo
-    echo -e "  -v\t[REQUIRED] Product version of WSO2${product_name^^}"
-    echo -e "  -i\t[REQUIRED] Docker image version"
-    echo -e "  -l\t[OPTIONAL] WSO2${product_name^^} profiles to build. 'default' is selected if no value is specified."
-    echo -e "  -e\t[OPTIONAL] Environment. 'dev' is selected if no value is specified."
-    echo -e "  -q\t[OPTIONAL] Quiet flag. If used, the docker build run output will be suppressed"
+    echo -en "  -v\t"
+    echo "[REQUIRED] Product version of WSO2$(echo $product_name | awk '{print toupper($0)}')"
+    echo -en "  -i\t"
+    echo "[REQUIRED] Docker image version"
+    echo -en "  -l\t"
+    echo "[OPTIONAL] WSO2$(echo $product_name | awk '{print toupper($0)}') profiles to build. 'default' is selected if no value is specified."
+    echo -en "  -e\t"
+    echo "[OPTIONAL] Environment. 'dev' is selected if no value is specified."
+    echo -en "  -q\t"
+    echo "[OPTIONAL] Quiet flag. If used, the docker build run output will be suppressed"
     echo
 
     ex_version=$(echo ${op_versions_str} | head -n1 | awk '{print $1}')
@@ -63,7 +68,7 @@ function cleanup() {
 }
 
 function listFiles () {
-    find "${1}" | rev | cut -d '/' -f1 | rev | awk '{if (NR!=1) {print}}'
+    find "${1}" -maxdepth 1 -mindepth 1 | rev | cut -d '/' -f1 | rev | awk NF
 }
 
 # $1 product name = esb
