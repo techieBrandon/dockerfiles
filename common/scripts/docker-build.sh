@@ -24,9 +24,35 @@ source "${DIR}/base.sh"
 # Show usage and exit
 function showUsageAndExit() {
     echoError "Insufficient or invalid options provided!"
-    echoBold "Usage: ./build.sh -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product-profile-list] [OPTIONAL] -e [product-env] [OPTIONAL] -q [quiet-mode]"
-    #TODO: echo product specific examples
-    #echo "Ex: ./build.sh -v 1.9.1 -i 1.0.0 -l 'default|worker|manager'"
+    echo
+    echoBold "Usage: ./build.sh -v [product-version] -i [docker-image-version] [OPTIONS]"
+    echo
+
+    op_versions=$(listFiles "${PUPPET_HOME}/hieradata/dev/wso2/wso2${product_name}/")
+    op_versions_str=$(echo $op_versions | tr ' ' ',')
+    op_versions_str="${op_versions_str//,/, }"
+
+    op_profiles=$(listFiles "${PUPPET_HOME}/hieradata/dev/wso2/wso2${product_name}/$(echo $op_versions | head -n1 | awk '{print $1}')/")
+    op_profiles_str=$(echo $op_profiles | tr ' ' ',')
+    op_profiles_str="${op_profiles_str//.yaml/}"
+    op_profiles_str="${op_profiles_str//,/, }"
+    echo "Available product versions: ${op_versions_str}"
+    echo "Available product profiles: ${op_profiles_str}"
+    echo
+
+    echoBold "Build Docker images for WSO2${product_name^^}"
+    echo
+    echo -e "  -v\t[REQUIRED] Product version of WSO2${product_name^^}"
+    echo -e "  -i\t[REQUIRED] Docker image version"
+    echo -e "  -l\t[OPTIONAL] WSO2${product_name^^} profiles to build. 'default' is selected if no value is specified."
+    echo -e "  -e\t[OPTIONAL] Environment. 'dev' is selected if no value is specified."
+    echo -e "  -q\t[OPTIONAL] Quiet flag. If used, the docker build run output will be suppressed"
+    echo
+
+    ex_version=$(echo ${op_versions_str} | head -n1 | awk '{print $1}')
+    ex_profile=$(echo ${op_profiles_str} | head -n1 | awk '{print $1}')
+    echoBold "Ex: ./build.sh -v ${ex_version//,/} -i 1.0.0 -l '${ex_profile//,/}'"
+    echo
     exit 1
 }
 
@@ -124,6 +150,14 @@ done
 prgdir2=$(dirname "$0")
 self_path=$(cd "$prgdir2"; pwd)
 
+# Check if a Puppet folder is set
+if [ -z "$PUPPET_HOME" ]; then
+    echoError "Puppet home folder could not be found! Set PUPPET_HOME environment variable pointing to local puppet folder."
+    exit 1
+# else
+    # echoBold "PUPPET_HOME is set to ${PUPPET_HOME}."
+fi
+
 # Validate mandatory args
 if [ -z "$product_version" ]
   then
@@ -142,14 +176,6 @@ fi
 
 if [ -z "$product_env" ]; then
     product_env="dev"
-fi
-
-# Check if a Puppet folder is set
-if [ -z "$PUPPET_HOME" ]; then
-   echoError "Puppet home folder could not be found! Set PUPPET_HOME environment variable pointing to local puppet folder."
-   exit 1
-else
-   echoBold "PUPPET_HOME is set to ${PUPPET_HOME}."
 fi
 
 # check if provided product version exists in PUPPET_HOME
