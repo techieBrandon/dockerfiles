@@ -21,7 +21,7 @@ source "${DIR}/base.sh"
 
 function showUsageAndExit () {
     echoError "Insufficient or invalid options provided!"
-    echoBold "Usage: ./run.sh -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product-profile-list] [OPTIONAL] -p [port-mappings] [OPTIONAL] -k [key-store-password]"
+    echoBold "Usage: ./run.sh -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product-profile-list] [OPTIONAL] -k [key-store-password]"
     echo "eg: ./run.sh -v 1.9.1 -i 1.0.0 -l 'default|worker|manager' -k 'wso2carbon'"
     exit 1
 }
