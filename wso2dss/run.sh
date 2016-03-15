@@ -24,4 +24,4 @@ prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
 common_folder=$(cd "${script_path}/../common/scripts/"; pwd)
 
-bash ${common_folder}/docker-run.sh -n ${product_name} $*
+bash ${common_folder}/docker-run.sh -n ${product_name} -p 32001:9763 -p 32002:9443 $*
