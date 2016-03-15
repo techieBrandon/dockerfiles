@@ -16,11 +16,11 @@ Quick steps to build the WSO2 Business Rules Server docker image and run in your
     - First build the base image by executing `build.sh` script. (eg: `<REPOSITORY_HOME>/common/docker/base-image`)
     - Navigate to the `docker` folder inside the module wso2brs. (eg: `<REPOSITORY_HOME>/wso2brs/docker`).
     - Execute `build.sh` script and provide the product version, image version and the product profiles to be built.
-        + `./build.sh 2.2.0 1.0.0 'default'`
+        + `./build.sh -v 2.2.0 -i 1.0.0`
 
 * Docker run
     - Execute `run.sh` script and provide the product version, image version and the product profiles to be run.
-        + `./run.sh 2.2.0 1.0.0 'default'`
+        + `./run.sh -v 2.2.0 -i 1.0.0`
 
 * Access management console
     - Add an etc/hosts entry in your local machine for `<docker_host_ip> brs.wso2.com`. For example:
@@ -51,22 +51,37 @@ Quick steps to build the WSO2 Business Rules Server docker image and run in your
 * Build the docker images
     - First build the base image by executing `build.sh` script. (eg: `<REPOSITORY_HOME>/common/docker/base-image`)
     - Navigate to the `docker` folder inside the module wso2brs. (eg: `<REPOSITORY_HOME>/wso2brs/docker`).
+    - Usage: `./build.sh -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product-profile-list] [OPTIONAL] -e [product-env] [OPTIONAL] -q [quiet-mode]`
+        + `-v [product-version]` to specify the product version
+        + `-i [docker-image-version]` to specify the docker image version
+        + `-l [product-profile-list]` it is optional, to specify the product profile list. If nothing is specified, it will build the default profile. 
+        + `-e [product-env]` it is optional, to specify the product environment which could be found under heiradata in puppet modules. If nothing is specified, it will take 'dev' as the default value.
+        + `-q [quiet-mode]` it is optional, to build the docker image in quiet mode, without docker build logs.
     - Execute `build.sh` script and provide the product version, image version and the product profiles to be built.
-        + `./build.sh 2.2.0 1.0.0 'default|worker|manager'`
+        + `./build.sh -v 2.2.0 -i 1.0.0 -l 'default|worker|manager' -q`
     - This will result in Docker images being built for each product profile provided. For example, for WSO2 Business Rules Server, there will be three images named `wso2/brs-2.2.0:1.0.0`, `wso2/brs-manager-2.2.0:1.0.0`, and `wso2/brs-worker-2.2.0:1.0.0` for the command provided above.
 
 ## Running the Docker Images
 
 * Docker run
+    - Usage: ./run.sh -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product-profile-list] [OPTIONAL] -k [key-store-password]
+        + `-v [product-version]` to specify the product version
+        + `-i [docker-image-version]` to specify the docker image version
+        + `-l [product-profile-list]` it is optional, to specify the product profile list. If nothing is specified, it will run the default profile. 
+        + `-k [key-store-password]` it is optional, to specify the key store password
     - Execute `run.sh` script and provide the product version, image version and the product profiles to be run.
-        + `./run.sh 2.2.0 1.0.0 'default|worker|manager'`
+        + `./run.sh -v 2.2.0 -i 1.0.0 -l 'default|worker|manager' -k 'wso2carbon'`
     - This will result in running the docker images for each product profile provided.
     
 ## Saving the Docker Images
 
 * Saving the docker images
+    - `Usage: ./save.sh -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product_profile_list]`
+        + `-v [product-version]` to specify the product version
+        + `-i [docker-image-version]` to specify the docker image version
+        + `-l [product-profile-list]` it is optional, to specify the product profile list. If nothing is specified, it will save the default profile.
     - Execute `save.sh` script and provide the product version, image version and the product profiles to be built.
-        + `./save.sh 2.2.0 1.0.0 'default|worker|manager'`
+        + `./save.sh -v 2.2.0 -i 1.0.0 -l 'default|worker|manager'`
     - This will result in saving the tar files for the docker images built for each product profile provided. For example, for WSO2 Business Rules Server, there will be three tar files saved `wso2brs-2.2.0-1.0.0.tar `, `wso2brs-worker-2.2.0-1.0.0.tar `, and `wso2brs-manager-2.2.0-1.0.0.tar ` for the command provided above. 
     - The tar files of the docker images will be saved and found at `~/docker/images` by default.
 
@@ -75,6 +90,11 @@ Quick steps to build the WSO2 Business Rules Server docker image and run in your
 * Secure Copy (scp) and the docker images into the node
     - Ensure the node is up
     - Ensure the tar files of the docker images are available at `~/docker/images`
+    - `Usage: ./scp.sh -h [host-list] -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product_profile_list]`
+        + `-h [host-list]` to specify the host node.
+        + `-v [product-version]` to specify the product version
+        + `-i [docker-image-version]` to specify the docker image version
+        + `-l [product-profile-list]` it is optional, to specify the product profile list. If nothing is specified, it will secure copy the default profile.
     - Execute `scp.sh` script and provide the node, product version, image version and the product profiles to the secure copied into the node.
-        + `./scp.sh core@172.17.8.102 2.2.0 1.0.0 'default|worker|manager'`
+        + `./scp.sh -h 'core@172.17.8.102' -v 2.2.0 -i 1.0.0 -l 'default|worker|manager'`
     - This will result in sending the tar files into the node and loading the docker image(s) in the node.

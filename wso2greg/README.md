@@ -16,11 +16,11 @@ Quick steps to build the WSO2 Governance Registry docker image and run in your l
     - First build the base image by executing `build.sh` script. (eg: `<REPOSITORY_HOME>/common/docker/base-image`)
     - Navigate to the `docker` folder inside the module wso2greg. (eg: `<REPOSITORY_HOME>/wso2greg/docker`).
     - Execute `build.sh` script and provide the product version, image version and the product profiles to be built.
-        + `./build.sh 5.1.0 1.0.0 'default'`
+        + `./build.sh -v 5.1.0 -i 1.0.0`
 
 * Docker run
     - Execute `run.sh` script and provide the product version, image version and the product profiles to be run.
-        + `./run.sh 5.1.0 1.0.0 'default'`
+        + `./run.sh -v 5.1.0 -i 1.0.0`
 
 * Access management console
     - Add an etc/hosts entry in your local machine for `<docker_host_ip> greg.wso2.com`. For example:
@@ -51,22 +51,37 @@ Quick steps to build the WSO2 Governance Registry docker image and run in your l
 * Build the docker images
     - First build the base image by executing `build.sh` script. (eg: `<REPOSITORY_HOME>/common/docker/base-image`)
     - Navigate to the `docker` folder inside the module wso2greg. (eg: `<REPOSITORY_HOME>/wso2greg/docker`).
+    - Usage: `./build.sh -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product-profile-list] [OPTIONAL] -e [product-env] [OPTIONAL] -q [quiet-mode]`
+        + `-v [product-version]` to specify the product version
+        + `-i [docker-image-version]` to specify the docker image version
+        + `-l [product-profile-list]` it is optional, to specify the product profile list. If nothing is specified, it will build the default profile. 
+        + `-e [product-env]` it is optional, to specify the product environment which could be found under heiradata in puppet modules. If nothing is specified, it will take 'dev' as the default value.
+        + `-q [quiet-mode]` it is optional, to build the docker image in quiet mode, without docker build logs.    
     - Execute `build.sh` script and provide the product version, image version and the product profiles to be built.
-        + `./build.sh 5.1.0 1.0.0 'default|store|publisher'`
+        + `./build.sh -v 5.1.0 -i 1.0.0 -l 'default|store|publisher' -q`
     - This will result in Docker images being built for each product profile provided. For example, for WSO2 Governance Registry, there will be three images named `wso2/greg-5.1.0:1.0.0`, `wso2/greg-publisher-5.1.0:1.0.0`, and `wso2/greg-store-5.1.0:1.0.0` for the command provided above.
 
 ## Running the Docker Images
 
 * Docker run
+    - Usage: ./run.sh -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product-profile-list] [OPTIONAL] -k [key-store-password]
+        + `-v [product-version]` to specify the product version
+        + `-i [docker-image-version]` to specify the docker image version
+        + `-l [product-profile-list]` it is optional, to specify the product profile list. If nothing is specified, it will run the default profile. 
+        + `-k [key-store-password]` it is optional, to specify the key store password
     - Execute `run.sh` script and provide the product version, image version and the product profiles to be run.
-        + `./run.sh 5.1.0 1.0.0 'default|store|publisher'`
+        + `./run.sh -v 5.1.0 -i 1.0.0 -l 'default|store|publisher' -k 'wso2carbon'`
     - This will result in running the docker images for each product profile provided.
     
 ## Saving the Docker Images
 
 * Saving the docker images
+    - `Usage: ./save.sh -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product_profile_list]`
+        + `-v [product-version]` to specify the product version
+        + `-i [docker-image-version]` to specify the docker image version
+        + `-l [product-profile-list]` it is optional, to specify the product profile list. If nothing is specified, it will save the default profile.
     - Execute `save.sh` script and provide the product version, image version and the product profiles to be built.
-        + `./save.sh 5.1.0 1.0.0 'default|store|publisher'`
+        + `./save.sh -v 5.1.0 -i 1.0.0 -l 'default|store|publisher'`
     - This will result in saving the tar files for the docker images built for each product profile provided. For example, for WSO2 Governance Registry, there will be three tar files saved `wso2greg-5.1.0-1.0.0.tar `, `wso2greg-store-5.1.0-1.0.0.tar `, and `wso2greg-publisher-5.1.0-1.0.0.tar ` for the command provided above. 
     - The tar files of the docker images will be saved and found at `~/docker/images` by default.
 
@@ -75,6 +90,11 @@ Quick steps to build the WSO2 Governance Registry docker image and run in your l
 * Secure Copy (scp) and the docker images into the node
     - Ensure the node is up
     - Ensure the tar files of the docker images are available at `~/docker/images`
+    - `Usage: ./scp.sh -h [host-list] -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product_profile_list]`
+        + `-h [host-list]` to specify the host node.
+        + `-v [product-version]` to specify the product version
+        + `-i [docker-image-version]` to specify the docker image version
+        + `-l [product-profile-list]` it is optional, to specify the product profile list. If nothing is specified, it will secure copy the default profile.
     - Execute `scp.sh` script and provide the node, product version, image version and the product profiles to the secure copied into the node.
-        + `./scp.sh core@172.17.8.102 5.1.0 1.0.0 'default|store|publisher'`
+        + `./scp.sh -h 'core@172.17.8.102' -v 5.1.0 -i 1.0.0 -l 'default|store|publisher'`
     - This will result in sending the tar files into the node and loading the docker image(s) in the node.
