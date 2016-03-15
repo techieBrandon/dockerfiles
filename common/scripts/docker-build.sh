@@ -24,7 +24,7 @@ source "${DIR}/base.sh"
 # Show usage and exit
 function showUsageAndExit() {
     echoError "Insufficient or invalid options provided!"
-    echoBold "Usage: ./build.sh -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product-profile-list] [OPTIONAL] -e [product-env] "
+    echoBold "Usage: ./build.sh -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product-profile-list] [OPTIONAL] -e [product-env] [OPTIONAL] -q [quiet-mode]"
     #TODO: echo product specific examples
     #echo "Ex: ./build.sh -v 1.9.1 -i 1.0.0 -l 'default|worker|manager'"
     exit 1
@@ -90,9 +90,9 @@ function validateDockerVersion(){
     done
 }
 
-verbose=false
+verbose=true
 
-while getopts :n:v:i:e:l:d:x FLAG; do
+while getopts :n:v:i:e:l:d:q FLAG; do
     case $FLAG in
         n)
             product_name=$OPTARG
@@ -112,8 +112,8 @@ while getopts :n:v:i:e:l:d:x FLAG; do
         d)
             dockerfile_path=$OPTARG
             ;;
-        x)
-            verbose=true
+        q)
+            verbose=false
             ;;
         \?)
             showUsageAndExit
@@ -206,15 +206,22 @@ do
 
         echoBold "Building docker image ${image_id}..."
 
+        build_cmd="docker build --no-cache=true \
+        --build-arg WSO2_SERVER=\"wso2${product_name}\" \
+        --build-arg WSO2_SERVER_VERSION=\"${product_version}\" \
+        --build-arg WSO2_SERVER_PROFILE=\"${profile}\" \
+        --build-arg WSO2_ENVIRONMENT=\"${product_env}\" \
+        -t \"${image_id}\" \"${dockerfile_path}\""
+
         {
-            ! docker build --no-cache=true \
-            --build-arg WSO2_SERVER="wso2${product_name}" \
-            --build-arg WSO2_SERVER_VERSION="${product_version}" \
-            --build-arg WSO2_SERVER_PROFILE="${profile}" \
-            --build-arg WSO2_ENVIRONMENT="${product_env}" \
-            -t "${image_id}" "${dockerfile_path}" | grep -i error && echo "Docker image ${image_id} created."
+            if [ $verbose == true ]; then
+                ! eval $build_cmd | tee /dev/tty | grep -iq error && echo "Docker image ${image_id} created."
+            else
+                ! eval $build_cmd | grep -i error && echo "Docker image ${image_id} created."
+            fi
 
         } || {
+            echo
             echoError "ERROR: Docker image ${image_id} creation failed"
             cleanup
             exit 1
