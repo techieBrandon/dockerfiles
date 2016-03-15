@@ -63,15 +63,7 @@ function cleanup() {
 }
 
 function listFiles () {
-    if [[ "$OSTYPE" == "linux-gnu" ]]; then
-        find "${1}" -maxdepth 1 -mindepth 1 -printf "%f\n"
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-        uf_list=$(find "${1}" -maxdepth 1 -mindepth 1 -exec stat -f "%N\n" {} \;)
-        uf_list=${uf_list//.\//}
-        uf_list=${uf_list//‘/}
-        uf_list=${uf_list//’/}
-        echo $uf_list | tr '\tr' ' '
-    fi
+    find "${1}" | rev | cut -d '/' -f1 | rev | awk '{if (NR!=1) {print}}'
 }
 
 # $1 product name = esb
