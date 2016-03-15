@@ -41,7 +41,7 @@ while getopts :n:v:i:p:l:k: FLAG; do
             product_profiles=$OPTARG
             ;;
         p)
-            port_mappings=$OPTARG
+            port_mappings="${port_mappings} -p $OPTARG"
             ;;
         k)
             key_store_password=$OPTARG
@@ -68,6 +68,11 @@ if [ -z "$product_profiles" ]
     product_profiles='default'
 fi
 
+if [ -z "$port_mappings" ]
+  then
+    port_mappings='-P'
+fi
+
 if [ -z "$key_store_password" ]; then
     env_key_store_password=
 else
@@ -92,9 +97,9 @@ do
     fi
 
     if [[ $profile = "default" ]]; then
-        container_id=$(docker run -d -P ${env_key_store_password} --name "${name}" "wso2/${product_name}-${product_version}:${image_version}")
+        container_id=$(docker run -d ${port_mappings} ${env_key_store_password} --name "${name}" "wso2/${product_name}-${product_version}:${image_version}")
     else
-        container_id=$(docker run -d -P ${env_key_store_password} --name "${name}" "wso2/${product_name}-${profile}-${product_version}:${image_version}")
+        container_id=$(docker run -d ${port_mappings} ${env_key_store_password} --name "${name}" "wso2/${product_name}-${profile}-${product_version}:${image_version}")
     fi
 
     member_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${container_id}")
