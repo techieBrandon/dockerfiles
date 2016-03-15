@@ -68,7 +68,7 @@ function cleanup() {
 }
 
 function listFiles () {
-    find "${1}" -maxdepth 1 -mindepth 1 | rev | cut -d '/' -f1 | rev | awk NF
+    find "${1}" \( ! -iname ".*" \) -maxdepth 1 -mindepth 1 | rev | cut -d '/' -f1 | rev | awk NF
 }
 
 # $1 product name = esb
