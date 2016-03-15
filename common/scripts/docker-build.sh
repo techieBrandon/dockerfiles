@@ -63,10 +63,15 @@ function cleanup() {
 }
 
 function listFiles () {
-    find "${1}" -maxdepth 1 -mindepth 1 -printf "%f\n"
-    echo
-    # for n in "${1}"; do echo "${n%%.*}"; done
-    # for n in "${1}"; do echo "${n}"; done
+    if [ $OSTYPE == "linux-gnu" ]; then
+        find "${1}" -maxdepth 1 -mindepth 1 -printf "%f\n"
+    elif [ $OSTYPE == "darwin"* ]; then
+        uf_list=$(find "${1}" -maxdepth 1 -mindepth 1 -exec stat -f "%N\n" {} \;)
+        uf_list=${uf_list//.\//}
+        uf_list=${uf_list//‘/}
+        uf_list=${uf_list//’/}
+        echo uf_list
+    fi
 }
 
 # $1 product name = esb
@@ -76,6 +81,7 @@ function validateProductVersion() {
     if [ ! -d "$ver_dir" ]; then
         echoError "Provided product version wso2${1}:${2} doesn't exist in PUPPET_HOME: ${PUPPET_HOME}. Available versions are,"
         listFiles "${PUPPET_HOME}/hieradata/dev/wso2/wso2${1}/"
+        echo
         showUsageAndExit
     fi
 }
@@ -99,6 +105,7 @@ function validateProfile() {
     then
         echoError "One or more provided product profiles wso2${1}:${2}-[${3}] do not exist in PUPPET_HOME: ${PUPPET_HOME}. Available profiles are,"
         listFiles "${PUPPET_HOME}/hieradata/dev/wso2/wso2${1}/${2}/"
+        echo
         showUsageAndExit
     fi
 }
