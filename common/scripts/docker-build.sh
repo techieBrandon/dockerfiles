@@ -154,8 +154,6 @@ self_path=$(cd "$prgdir2"; pwd)
 if [ -z "$PUPPET_HOME" ]; then
     echoError "Puppet home folder could not be found! Set PUPPET_HOME environment variable pointing to local puppet folder."
     exit 1
-# else
-    # echoBold "PUPPET_HOME is set to ${PUPPET_HOME}."
 fi
 
 # Validate mandatory args

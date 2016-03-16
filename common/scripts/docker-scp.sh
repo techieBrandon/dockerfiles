@@ -29,8 +29,6 @@ function showUsageAndExit () {
 
     op_images=$(listFiles "${HOME}/docker/images" | grep wso2$product_name)
     if [ -n "$op_images" ]; then
-        # op_images=$(echo $op_images | tr ' ' ',')
-        # op_images=${op_images//,/, }
         echo "Available tarballs:"
         echo "$op_images"
         echo
