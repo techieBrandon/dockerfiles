@@ -39,6 +39,8 @@
                 <exclude>**/*.tar.gz</exclude>
                 <exclude>**/.git*</exclude>
                 <exclude>**/*.iml</exclude>
+                <exclude>**/*.ipr</exclude>
+                <exclude>**/*.iws</exclude>
             </excludes>
         </fileSet>
     </fileSets>
