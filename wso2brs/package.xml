@@ -25,13 +25,13 @@
     <fileSets>
         <!-- docker -->
         <fileSet>
-            <directory>${project.basedir}/</directory>
+            <directory>${project.basedir}/../</directory>
             <outputDirectory>./</outputDirectory>
             <includes>
-                <include>**/*</include>
+                <include>${wso2.product.name}/*</include>
             </includes>
             <excludes>
-                <exclude>**/target/**</exclude>
+                <exclude>${wso2.product.name}/target</exclude>
                 <exclude>**/package.xml</exclude>
                 <exclude>**/pom.xml</exclude>
                 <exclude>**/*.zip</exclude>
@@ -41,17 +41,27 @@
                 <exclude>**/*.iml</exclude>
             </excludes>
         </fileSet>
-    </fileSets>
 
+        <!-- common -->
+        <fileSet>
+            <directory>${project.basedir}/../common/</directory>
+            <outputDirectory>./common/</outputDirectory>
+            <includes>
+                <include>**</include>
+                <include>scripts/docker/**</include>
+                <include>scripts/base.sh</include>
+            </includes>
+        </fileSet>
+    </fileSets>
     <files>
         <file>
-            <source>${project.basedir}/LICENSE</source>
+            <source>${project.basedir}/../LICENSE</source>
             <outputDirectory>/</outputDirectory>
             <filtered>true</filtered>
             <fileMode>644</fileMode>
         </file>
         <file>
-            <source>${project.basedir}/README.md</source>
+            <source>${project.basedir}/../README.md</source>
             <outputDirectory>/</outputDirectory>
             <filtered>true</filtered>
             <fileMode>644</fileMode>
