@@ -13,8 +13,8 @@ Quick steps to build the WSO2 Application Server docker image and run in your lo
     - Download the necessary product packs and copy them to `<PUPPET_HOME>/modules/<MODULE>/files`. For example, for WSO2 Application Server 5.3.0 download the [product pack](http://wso2.com/products/application-server/) and copy the zip file to `<PUPPET_HOME>/modules/wso2as/files`.
 
 * Build the docker image
-    - First build the base image by executing `build.sh` script. (eg: `<REPOSITORY_HOME>/common/docker/base-image`)
-    - Navigate to the `docker` folder inside the module wso2as. (eg: `<REPOSITORY_HOME>/wso2as/docker`).
+    - First build the base image by executing `build.sh` script. (eg: `<REPOSITORY_HOME>/common/base-image`)
+    - Navigate to the `docker` folder inside the module wso2as. (eg: `<REPOSITORY_HOME>/wso2as`).
     - Execute `build.sh` script and provide the product version, image version and the product profiles to be built.
         + `./build.sh -v 5.3.0 -i 1.0.0`
 
@@ -49,8 +49,8 @@ Quick steps to build the WSO2 Application Server docker image and run in your lo
         + kubernetes-membership-scheme-1.0.0.jar
 
 * Build the docker images
-    - First build the base image by executing `build.sh` script. (eg: `<REPOSITORY_HOME>/common/docker/base-image`)
-    - Navigate to the `docker` folder inside the module wso2as. (eg: `<REPOSITORY_HOME>/wso2as/docker`).
+    - First build the base image by executing `build.sh` script. (eg: `<REPOSITORY_HOME>/common/base-image`)
+    - Navigate to the `docker` folder inside the module wso2as. (eg: `<REPOSITORY_HOME>/wso2as`).
     - Usage: `./build.sh -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product-profile-list] [OPTIONAL] -e [product-env] [OPTIONAL] -q [quiet-mode]`
         + `-v [product-version]` to specify the product version
         + `-i [docker-image-version]` to specify the docker image version
