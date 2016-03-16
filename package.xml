@@ -45,7 +45,7 @@
         <!-- common -->
         <fileSet>
             <directory>${project.basedir}/../common/</directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}//common/</outputDirectory>
+            <outputDirectory>${pom.artifactId}-${pom.version}/common/</outputDirectory>
             <includes>
                 <include>**</include>
                 <include>scripts/docker/**</include>
@@ -56,7 +56,7 @@
     <files>
         <file>
             <source>${project.basedir}/../LICENSE</source>
-            <outputDirectory>${pom.artifactId}-${pom.version}//</outputDirectory>
+            <outputDirectory>${pom.artifactId}-${pom.version}/</outputDirectory>
             <filtered>true</filtered>
             <fileMode>644</fileMode>
         </file>
