@@ -21,8 +21,38 @@ source "${DIR}/base.sh"
 
 function showUsageAndExit () {
     echoError "Insufficient or invalid options provided!"
-    echoBold "Usage: ./run.sh -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product-profile-list] [OPTIONAL] -k [key-store-password]"
-    echo "eg: ./run.sh -v 1.9.1 -i 1.0.0 -l 'default|worker|manager' -k 'wso2carbon'"
+    echo
+    echoBold "Usage: ./run.sh -v [product-version] -i [docker-image-version] [OPTIONS]"
+    echo
+
+    op_pversions=$(docker images | grep wso2/$product_name | awk '{print $1,"\t- ", $2}')
+    if [ -n "$op_pversions" ]; then
+        echo "Available product images:"
+        echo "$op_pversions"
+        echo
+    fi
+
+    exposed_ports=$(grep -s 'EXPOSE' Dockerfile | cut -d' ' -f2-)
+    if [ -n "$exposed_ports" ]; then
+        exposed_ports="for the exposed ports ${exposed_ports}"
+    fi
+
+    echoBold "Run WSO2$(echo $product_name | awk '{print toupper($0)}') Docker containers"
+    echo
+    echo -en "  -v\t"
+    echo "[REQUIRED] Product version of WSO2$(echo $product_name | awk '{print toupper($0)}')"
+    echo -en "  -i\t"
+    echo "[REQUIRED] Docker image version"
+    echo -en "  -l\t"
+    echo "[OPTIONAL] '|' separated WSO2$(echo $product_name | awk '{print toupper($0)}') profiles to run. 'default' is selected if no value is specified."
+    echo -en "  -p\t"
+    echo "[OPTIONAL] [MULTIPLE] Port mappings ${exposed_ports} of the container "
+    echo -en "  -k\t"
+    echo "[OPTIONAL] The keystore password if SecureVault was enabled in the product."
+    echo
+
+    echoBold "Ex: ./run.sh -v 1.9.1 -i 1.0.0 -l 'manager' -k 'wso2carbon'"
+    echo
     exit 1
 }
 

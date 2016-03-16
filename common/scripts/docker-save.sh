@@ -23,8 +23,29 @@ source "${DIR}/base.sh"
 
 function showUsageAndExit () {
     echoError "Insufficient or invalid options provided!"
-    echoBold "Usage: ./save.sh -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product_profile_list]"
-    echo "eg: ./save.sh -v 1.9.1 -i 1.0.0 -l 'default|worker|manager'"
+    echo
+    echoBold "Usage: ./save.sh -v [product-version] -i [docker-image-version] [OPTIONS]"
+    echo
+
+    op_pversions=$(docker images | grep wso2/$product_name | awk '{print $1,"\t- ", $2}')
+    if [ -n "$op_pversions" ]; then
+        echo "Available product images:"
+        echo "$op_pversions"
+        echo
+    fi
+
+    echoBold "Save WSO2$(echo $product_name | awk '{print toupper($0)}') Docker images to tarballs to ${HOME}/docker/images"
+    echo
+    echo -en "  -v\t"
+    echo "[REQUIRED] Product version of WSO2$(echo $product_name | awk '{print toupper($0)}')"
+    echo -en "  -i\t"
+    echo "[REQUIRED] Docker image version"
+    echo -en "  -l\t"
+    echo "[OPTIONAL] '|' separated WSO2$(echo $product_name | awk '{print toupper($0)}') profiles to save. 'default' is selected if no value is specified."
+    echo
+
+    echoBold "Ex: ./save.sh -v 1.9.1 -i 1.0.0 -l 'manager'"
+    echo
     exit 1
 }
 

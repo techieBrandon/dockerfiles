@@ -27,3 +27,7 @@ function echoBold () {
 function askBold () {
     echo -n $'\e[1m'"${1}"$'\e[0m'
 }
+
+function listFiles () {
+    find "${1}" -maxdepth 1 -mindepth 1 \( ! -iname ".*" \)| rev | cut -d '/' -f1 | rev | awk NF
+}

@@ -47,7 +47,7 @@ function showUsageAndExit() {
     echo -en "  -i\t"
     echo "[REQUIRED] Docker image version"
     echo -en "  -l\t"
-    echo "[OPTIONAL] WSO2$(echo $product_name | awk '{print toupper($0)}') profiles to build. 'default' is selected if no value is specified."
+    echo "[OPTIONAL] '|' separated WSO2$(echo $product_name | awk '{print toupper($0)}') profiles to build. 'default' is selected if no value is specified."
     echo -en "  -e\t"
     echo "[OPTIONAL] Environment. 'dev' is selected if no value is specified."
     echo -en "  -q\t"
@@ -65,10 +65,6 @@ function cleanup() {
     echoBold "Cleaning..."
     rm -rf "$dockerfile_path/scripts"
     rm -rf "$dockerfile_path/puppet"
-}
-
-function listFiles () {
-    find "${1}" \( ! -iname ".*" \) -maxdepth 1 -mindepth 1 | rev | cut -d '/' -f1 | rev | awk NF
 }
 
 # $1 product name = esb

@@ -23,8 +23,33 @@ source "${DIR}/base.sh"
 
 function showUsageAndExit () {
     echoError "Insufficient or invalid options provided!"
-    echoBold "Usage: ./scp.sh -h [host-list] -v [product-version] -i [docker-image-version] [OPTIONAL] -l [product_profile_list]"
-    echo "Usage: ./scp.sh -h 'core@172.17.8.102|core@172.17.8.103' -v 1.9.1 -i 1.0.0 -l 'worker|manager'"
+    echo
+    echoBold "Usage: ./scp.sh -h [host-list] -v [product-version] -i [docker-image-version] [OPTIONS]"
+    echo
+
+    op_images=$(listFiles "${HOME}/docker/images" | grep wso2$product_name)
+    if [ -n "$op_images" ]; then
+        # op_images=$(echo $op_images | tr ' ' ',')
+        # op_images=${op_images//,/, }
+        echo "Available tarballs:"
+        echo "$op_images"
+        echo
+    fi
+
+    echoBold "SCP saved Docker images for WSO2$(echo $product_name | awk '{print toupper($0)}') to specified hosts"
+    echo
+    echo -en "  -h\t"
+    echo "[REQUIRED] The '|' separated list of hosts to transfer the Docker images. This should be of format 'user@ip1|user@ip2|user@ip3'"
+    echo -en "  -v\t"
+    echo "[REQUIRED] Product version of WSO2$(echo $product_name | awk '{print toupper($0)}')"
+    echo -en "  -i\t"
+    echo "[REQUIRED] Docker image version"
+    echo -en "  -l\t"
+    echo "[OPTIONAL] '|' separated WSO2$(echo $product_name | awk '{print toupper($0)}') profiles to SCP. 'default' is selected if no value is specified."
+    echo
+
+    echoBold "Ex: ./scp.sh -h 'core@172.17.8.102|core@172.17.8.103' -v 1.9.1 -i 1.0.0 -l 'manager'"
+    echo
     exit 1
 }
 
