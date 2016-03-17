@@ -28,7 +28,7 @@ Quick steps to build the WSO2 API Manager docker image and run in your local mac
     -  To access the management console.
         + `https://am.wso2.com:32004/carbon`
 
-## Configuration
+## Detailed Configuration
 
 * [Introduction] (https://docs.wso2.com/display/DF100/Introduction+to+Docker+Images)
 
