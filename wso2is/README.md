@@ -23,12 +23,12 @@ Quick steps to build the WSO2 Identity Server docker image and run in your local
         + `./run.sh -v 5.1.0 -i 1.0.0`
 
 * Access management console
-    - Add an `etc/hosts` entry in your local machine for `<docker_host_ip> is.wso2.com`. For example:
+    - Add an `/etc/hosts` entry in your local machine for `<docker_host_ip> is.wso2.com`. For example:
         + `127.0.0.1       is.wso2.com`
     -  To access the management console.
         + `https://is.wso2.com:32002/carbon`
 
-## Detailed description
+## Detailed Configurations
 
 * [Introduction] (https://docs.wso2.com/display/DF100/Introduction+to+Docker+Images)
 
