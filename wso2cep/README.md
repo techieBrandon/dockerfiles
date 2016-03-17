@@ -32,6 +32,6 @@ Quick steps to build the WSO2 Complex Event Processor docker image and run in yo
 
 * [Introduction] (https://docs.wso2.com/display/DF100/Introduction+to+Docker+Images)
 
-* [Build docker images] (https://docs.wso2.com/display/DF100/Building+Product+Docker+Images)
+* [Building docker images] (https://docs.wso2.com/display/DF100/Building+Product+Docker+Images)
 
-* [Run docker images] (https://docs.wso2.com/display/DF100/Running+and+Migrating+Images)
+* [Running docker images] (https://docs.wso2.com/display/DF100/Running+and+Migrating+Images)
