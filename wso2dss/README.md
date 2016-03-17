@@ -23,12 +23,12 @@ Quick steps to build the WSO2 Data Services Server docker image and run in your 
         + `./run.sh -v 3.5.0 -i 1.0.0`
 
 * Access management console
-    - Add an `etc/hosts` entry in your local machine for `<docker_host_ip> dss.wso2.com`. For example:
+    - Add an `/etc/hosts` entry in your local machine for `<docker_host_ip> dss.wso2.com`. For example:
         + `127.0.0.1       dss.wso2.com`
     -  To access the management console.
         + `https://dss.wso2.com:32002/carbon`
 
-## Detailed description
+## Detailed Configurations
 
 * [Introduction] (https://docs.wso2.com/display/DF100/Introduction+to+Docker+Images)
 
