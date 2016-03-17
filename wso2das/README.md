@@ -30,8 +30,8 @@ Quick steps to build the WSO2 Data Analytics Server docker image and run in your
 
 ### Detailed Configurations
  
- * [Introduction] (https://docs.wso2.com/display/DF100/Introduction+to+Docker+Images)
- 
- * [Build docker images] (https://docs.wso2.com/display/DF100/Building+Product+Docker+Images)
- 
- * [Run docker images] (https://docs.wso2.com/display/DF100/Running+and+Migrating+Images)
+* [Introduction] (https://docs.wso2.com/display/DF100/Introduction+to+Docker+Images)
+
+* [Building docker images] (https://docs.wso2.com/display/DF100/Building+Product+Docker+Images)
+
+* [Running docker images] (https://docs.wso2.com/display/DF100/Running+and+Migrating+Images)
