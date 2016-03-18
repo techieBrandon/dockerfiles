@@ -202,17 +202,9 @@ validateDockerVersion "${docker_version}" "${min_required_docker_version}"
 # Copy common files to Dockerfile context
 echoBold "Creating Dockerfile context..."
 mkdir -p "${dockerfile_path}/scripts"
-#mkdir -p "${dockerfile_path}/puppet/modules"
 cp "${self_path}/entrypoint.sh" "${dockerfile_path}/scripts/init.sh"
 
-#echoBold "Copying Puppet modules to Dockerfile context..."
-#cp -r "${PUPPET_HOME}/modules/wso2base" "${dockerfile_path}/puppet/modules/"
-#cp -r "${PUPPET_HOME}/modules/wso2${product_name}" "${dockerfile_path}/puppet/modules/"
-#cp -r "${PUPPET_HOME}/hiera.yaml" "${dockerfile_path}/puppet/"
-#cp -r "${PUPPET_HOME}/hieradata" "${dockerfile_path}/puppet/"
-#cp -r "${PUPPET_HOME}/manifests" "${dockerfile_path}/puppet/"
-
-# starting http Server
+# starting http server
 echoBold "Starting HTTP server in ${PUPPET_HOME}..."
 
 # check if port 8000 is already in use

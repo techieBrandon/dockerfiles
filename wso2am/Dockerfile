@@ -42,26 +42,22 @@ ENV FACTER_product_name=${WSO2_SERVER} \
     FACTER_environment=${WSO2_ENVIRONMENT} \
     FACTER_vm_type=docker
 
-# Execute puppet apply and clean after
+# Execute puppet apply and clean
 WORKDIR /etc/puppet
-RUN pwd \
+RUN apt-get update && apt-get install -y wget puppet \
     && wget -nH -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/hiera.yaml \
     && wget -rnH -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/hieradata/ \
     && wget -rnH -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/manifests/ \
-    && mkdir -p modules/ \
-    && cd modules/ \
-    && wget -rnH -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/modules/${WSO2_SERVER}/ \
-    && cd ../ \
-    && pwd \
-    && tree \
-    && addgroup wso2 \
-    && adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user \
+    && wget -rnH --level=10 -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/modules/wso2base/ \
+    && wget -rnH --level=10 -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/modules/${WSO2_SERVER}/ \
     && puppet module install puppetlabs/stdlib \
     && puppet module install 7terminals-java \
     && puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.yaml \
     && apt-get purge -y --auto-remove puppet \
     && rm -rf /etc/puppet/* \
     && rm -rf /var/lib/apt/lists/* \
+    && addgroup wso2 \
+    && adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user \
     && chown wso2user:wso2 /usr/local/bin/* \
     && chown -R wso2user:wso2 /mnt
 
