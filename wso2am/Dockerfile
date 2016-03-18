@@ -44,7 +44,9 @@ ENV FACTER_product_name=${WSO2_SERVER} \
 
 # Execute puppet apply and clean
 WORKDIR /etc/puppet
-RUN apt-get update && apt-get install -y wget puppet \
+RUN addgroup wso2 \
+    && adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user \
+    && apt-get update && apt-get install -y wget puppet \
     && wget -nH -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/hiera.yaml \
     && wget -rnH -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/hieradata/ \
     && wget -rnH -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/manifests/ \
@@ -54,10 +56,8 @@ RUN apt-get update && apt-get install -y wget puppet \
     && puppet module install 7terminals-java \
     && puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.yaml \
     && apt-get purge -y --auto-remove puppet \
-    && rm -rf /etc/puppet/* \
-    && rm -rf /var/lib/apt/lists/* \
-    && addgroup wso2 \
-    && adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user \
+    && rm -rfv /etc/puppet/* \
+    && rm -rfv /var/lib/apt/lists/* \
     && chown wso2user:wso2 /usr/local/bin/* \
     && chown -R wso2user:wso2 /mnt
 
