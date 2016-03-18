@@ -138,7 +138,7 @@ do
         exit 1
     fi
 
-    echoSuccess "WSO2 ${product_name^^} ${profile} member started: [name] ${name} [ip] ${member_ip} [container-id] ${container_id}"
+    echoSuccess "WSO2 ${product_name} ${profile} member started: [name] ${name} [ip] ${member_ip} [container-id] ${container_id}"
     sleep 1
 
 done
