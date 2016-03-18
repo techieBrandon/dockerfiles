@@ -13,7 +13,6 @@ Quick steps to build the WSO2 Enterprise Store docker image and run in your loca
     - Download the necessary product packs and copy them to `<PUPPET_HOME>/modules/<MODULE>/files`. For example, for WSO2 Enterprise Store 2.0.0 download the [product pack](http://wso2.com/products/enterprise-store/) and copy the zip file to `<PUPPET_HOME>/modules/wso2es/files`.
 
 * Build the docker image
-    - First build the base image `wso2/base` by executing `build.sh` script inside `<REPOSITORY_HOME>/common/base-image`.
     - Navigate to `<REPOSITORY_HOME>/wso2es`.
     - Execute `build.sh` script and provide the product version, image version and the product profiles to be built.
         + `./build.sh -v 2.0.0 -i 1.0.0`

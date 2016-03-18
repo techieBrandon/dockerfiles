@@ -16,8 +16,10 @@
 #
 # ------------------------------------------------------------------------
 
-FROM wso2/base:1.0.0
+FROM ubuntu:latest
 MAINTAINER dev@wso2.org
+
+ENV DEBIAN_FRONTEND noninteractive
 
 # Build time arguments
 ARG WSO2_SERVER

@@ -13,7 +13,6 @@ Quick steps to build the WSO2 Identity Server docker image and run in your local
     - Download the necessary product packs and copy them to `<PUPPET_HOME>/modules/<MODULE>/files`. For example, for WSO2 Identity Server 5.1.0 download the [product pack](http://wso2.com/products/identity-server/) and copy the zip file to `<PUPPET_HOME>/modules/wso2is/files`.
 
 * Build the docker image
-    - First build the base image `wso2/base` by executing `build.sh` script inside `<REPOSITORY_HOME>/common/base-image`.
     - Navigate to `<REPOSITORY_HOME>/wso2is`.
     - Execute `build.sh` script and provide the product version, image version and the product profiles to be built.
         + `./build.sh -v 5.1.0 -i 1.0.0`

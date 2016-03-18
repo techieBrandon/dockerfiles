@@ -13,7 +13,6 @@ Quick steps to build the WSO2 Data Analytics Server docker image and run in your
     - Download the necessary product packs and copy them to `<PUPPET_HOME>/modules/<MODULE>/files`. For example, for WSO2 Data Analytics Server 3.0.1 download the [product pack](http://wso2.com/products/data-analytics-server/) and copy the zip file to `<PUPPET_HOME>/modules/wso2das/files`.
 
 * Build the docker image
-    - First build the base image `wso2/base` by executing `build.sh` script inside `<REPOSITORY_HOME>/common/base-image`.
     - Navigate to `<REPOSITORY_HOME>/wso2das`.
     - Execute `build.sh` script and provide the product version, image version and the product profiles to be built.
         + `./build.sh -v 3.0.1 -i 1.0.0`
