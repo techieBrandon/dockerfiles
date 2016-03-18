@@ -1,7 +1,7 @@
 #!/bin/bash
 # ------------------------------------------------------------------------
 #
-# Copyright 2005-2015 WSO2, Inc. (http://wso2.com)
+# Copyright 2016 WSO2, Inc. (http://wso2.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 # limitations under the License
 
 # ------------------------------------------------------------------------
-
 set -e
 
 product_name=esb
