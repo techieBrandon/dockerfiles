@@ -24,15 +24,16 @@ ARG WSO2_SERVER
 ARG WSO2_SERVER_VERSION
 ARG WSO2_SERVER_PROFILE
 ARG WSO2_ENVIRONMENT
+ARG HTTP_PUPPET_SERVER
 
 # Carbon server information
 ENV WSO2_SERVER=${WSO2_SERVER:-wso2das} \
     WSO2_SERVER_VERSION=${WSO2_SERVER_VERSION:-3.0.1} \
     WSO2_SERVER_PROFILE=${WSO2_SERVER_PROFILE:-default} \
-    WSO2_ENVIRONMENT=${WSO2_ENVIRONMENT:-dev}
+    WSO2_ENVIRONMENT=${WSO2_ENVIRONMENT:-dev} \
+    HTTP_PUPPET_SERVER=${HTTP_PUPPET_SERVER}
 
 COPY scripts/* /usr/local/bin/
-COPY puppet/ /etc/puppet/
 
 # Export facter variables
 ENV FACTER_product_name=${WSO2_SERVER} \
@@ -41,12 +42,22 @@ ENV FACTER_product_name=${WSO2_SERVER} \
     FACTER_environment=${WSO2_ENVIRONMENT} \
     FACTER_vm_type=docker
 
-# Execute puppet apply and clean after
+# Execute puppet apply and clean
 WORKDIR /etc/puppet
-RUN puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.yaml \
+RUN addgroup wso2 \
+    && adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user \
+    && apt-get update && apt-get install -y wget puppet \
+    && wget -nH -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/hiera.yaml \
+    && wget -rnH -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/hieradata/ \
+    && wget -rnH -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/manifests/ \
+    && wget -rnH --level=10 -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/modules/wso2base/ \
+    && wget -rnH --level=10 -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/modules/${WSO2_SERVER}/ \
+    && puppet module install puppetlabs/stdlib \
+    && puppet module install 7terminals-java \
+    && puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.yaml \
     && apt-get purge -y --auto-remove puppet \
-    && rm -rf /etc/puppet/* \
-    && rm -rf /var/lib/apt/lists/* \
+    && rm -rfv /etc/puppet/* \
+    && rm -rfv /var/lib/apt/lists/* \
     && chown wso2user:wso2 /usr/local/bin/* \
     && chown -R wso2user:wso2 /mnt
 
