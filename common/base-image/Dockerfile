@@ -16,14 +16,9 @@
 #
 # ------------------------------------------------------------------------
 
-FROM ubuntu:15.10
+FROM ubuntu:latest
 MAINTAINER dev@wso2.org
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN addgroup wso2 \
-    && adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user \
-    && apt-get -y update \
-    && apt-get -y install puppet \
-    && puppet module install puppetlabs/stdlib \
-    && puppet module install 7terminals-java
+RUN apt-get update && apt-get install -y wget puppet tree

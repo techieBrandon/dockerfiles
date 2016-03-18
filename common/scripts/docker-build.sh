@@ -18,6 +18,7 @@
 # ------------------------------------------------------------------------
 set -e
 
+SECONDS=0
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${DIR}/base.sh"
 
@@ -64,7 +65,9 @@ function showUsageAndExit() {
 function cleanup() {
     echoBold "Cleaning..."
     rm -rf "$dockerfile_path/scripts"
-    rm -rf "$dockerfile_path/puppet"
+    if [ ! -z $httpserver_pid ]; then
+        kill -9 $httpserver_pid > /dev/null 2>&1
+    fi
 }
 
 # $1 product name = esb
@@ -114,6 +117,15 @@ function validateDockerVersion(){
             exit 1
         fi
     done
+}
+
+function findHostIP() {
+    local _ip _line
+    while IFS=$': \t' read -a _line ;do
+        [ -z "${_line%inet}" ] &&
+           _ip=${_line[${#_line[1]}>4?1:2]} &&
+           [ "${_ip#127.0.0.1}" ] && echo $_ip && return 0
+    done< <(LANG=C /sbin/ifconfig)
 }
 
 verbose=true
@@ -190,15 +202,41 @@ validateDockerVersion "${docker_version}" "${min_required_docker_version}"
 # Copy common files to Dockerfile context
 echoBold "Creating Dockerfile context..."
 mkdir -p "${dockerfile_path}/scripts"
-mkdir -p "${dockerfile_path}/puppet/modules"
+#mkdir -p "${dockerfile_path}/puppet/modules"
 cp "${self_path}/entrypoint.sh" "${dockerfile_path}/scripts/init.sh"
 
-echoBold "Copying Puppet modules to Dockerfile context..."
-cp -r "${PUPPET_HOME}/modules/wso2base" "${dockerfile_path}/puppet/modules/"
-cp -r "${PUPPET_HOME}/modules/wso2${product_name}" "${dockerfile_path}/puppet/modules/"
-cp -r "${PUPPET_HOME}/hiera.yaml" "${dockerfile_path}/puppet/"
-cp -r "${PUPPET_HOME}/hieradata" "${dockerfile_path}/puppet/"
-cp -r "${PUPPET_HOME}/manifests" "${dockerfile_path}/puppet/"
+#echoBold "Copying Puppet modules to Dockerfile context..."
+#cp -r "${PUPPET_HOME}/modules/wso2base" "${dockerfile_path}/puppet/modules/"
+#cp -r "${PUPPET_HOME}/modules/wso2${product_name}" "${dockerfile_path}/puppet/modules/"
+#cp -r "${PUPPET_HOME}/hiera.yaml" "${dockerfile_path}/puppet/"
+#cp -r "${PUPPET_HOME}/hieradata" "${dockerfile_path}/puppet/"
+#cp -r "${PUPPET_HOME}/manifests" "${dockerfile_path}/puppet/"
+
+# starting http Server
+echoBold "Starting HTTP server in ${PUPPET_HOME}..."
+
+# check if port 8000 is already in use
+port_uses=$(lsof -i:8000 | wc -l)
+if [ $port_uses -gt 1 ]; then
+   echoError "Port 8000 seems to be already in use. Exiting..."
+   exit 1
+fi
+
+# start the server in background
+pushd ${PUPPET_HOME} > /dev/null 2>&1
+python -m SimpleHTTPServer 8000 & > /dev/null 2>&1
+httpserver_pid=$!
+sleep 5
+popd > /dev/null 2>&1
+
+# get host machine ip
+host_ip=`findHostIP`
+if [ -z "$host_ip" ]; then
+    echoError "Could not find host ip address. Exiting..."
+    exit 1
+fi
+httpserver_address="http://${host_ip}:8000"
+echoBold "HTTP server started at ${httpserver_address}"
 
 # Build image for each profile provided
 IFS='|' read -r -a profiles_array <<< "${product_profiles}"
@@ -235,6 +273,7 @@ do
         --build-arg WSO2_SERVER_VERSION=\"${product_version}\" \
         --build-arg WSO2_SERVER_PROFILE=\"${profile}\" \
         --build-arg WSO2_ENVIRONMENT=\"${product_env}\" \
+        --build-arg HTTP_PUPPET_SERVER=\"${httpserver_address}\" \
         -t \"${image_id}\" \"${dockerfile_path}\""
 
         {
@@ -256,4 +295,5 @@ do
 done
 
 cleanup
-echoSuccess "Build process completed"
+duration=$SECONDS
+echoSuccess "Build process completed in $(($duration / 60)) minutes and $(($duration % 60)) seconds"
