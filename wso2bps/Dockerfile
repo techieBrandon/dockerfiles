@@ -57,13 +57,14 @@ RUN addgroup wso2 \
     && puppet module install puppetlabs/stdlib \
     && puppet module install 7terminals-java \
     && puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.yaml \
-    && apt-get purge -y --auto-remove puppet \
+    && apt-get purge -y --auto-remove puppet wget \
     && rm -rfv /etc/puppet/* \
     && rm -rfv /var/lib/apt/lists/* \
     && chown wso2user:wso2 /usr/local/bin/* \
     && chown -R wso2user:wso2 /mnt
 
 USER wso2user
+WORKDIR /mnt
 
 # Expose transport ports
 EXPOSE 9763 9443
