@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------
 #
-# Copyright 2005-2015 WSO2, Inc. (http://wso2.com)
+# Copyright 2016 WSO2, Inc. (http://wso2.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License
-#
+
 # ------------------------------------------------------------------------
 
 FROM ubuntu:latest
@@ -57,13 +57,14 @@ RUN addgroup wso2 \
     && puppet module install puppetlabs/stdlib \
     && puppet module install 7terminals-java \
     && puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.yaml \
-    && apt-get purge -y --auto-remove puppet \
+    && apt-get purge -y --auto-remove puppet wget \
     && rm -rfv /etc/puppet/* \
     && rm -rfv /var/lib/apt/lists/* \
     && chown wso2user:wso2 /usr/local/bin/* \
     && chown -R wso2user:wso2 /mnt
 
 USER wso2user
+WORKDIR /mnt
 
 # Expose transport ports
 EXPOSE 7611 7711 9763 9443 9611 9711

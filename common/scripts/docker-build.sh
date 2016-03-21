@@ -1,7 +1,7 @@
 #!/bin/bash
 # ------------------------------------------------------------------------
 #
-# Copyright 2005-2015 WSO2, Inc. (http://wso2.com)
+# Copyright 2016 WSO2, Inc. (http://wso2.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -195,7 +195,8 @@ validateProductVersion "${product_name}" "${product_version}"
 validateProfile "${product_name}" "${product_version}" "${product_profiles}"
 
 # validate docker version against minimum required docker version
-docker_version=$(docker version --format '{{.Server.Version}}')
+# docker_version=$(docker version --format '{{.Server.Version}}')
+docker_version=$(docker version | grep 'Version:' | awk '{print $2}')
 min_required_docker_version=1.9.0
 validateDockerVersion "${docker_version}" "${min_required_docker_version}"
 
@@ -222,11 +223,12 @@ sleep 5
 popd > /dev/null 2>&1
 
 # get host machine ip
-host_ip=`findHostIP`
+host_ip=$(findHostIP)
 if [ -z "$host_ip" ]; then
     echoError "Could not find host ip address. Exiting..."
     exit 1
 fi
+
 httpserver_address="http://${host_ip}:8000"
 echoBold "HTTP server started at ${httpserver_address}"
 
