@@ -49,6 +49,8 @@ function showUsageAndExit () {
     echo "[OPTIONAL] [MULTIPLE] Port mappings ${exposed_ports} of the container "
     echo -en "  -k\t"
     echo "[OPTIONAL] The keystore password if SecureVault was enabled in the product."
+    echo -en "  -m\t"
+    echo "[OPTIONAL] Full path of the host location to share with containers."
     echo
 
     echoBold "Ex: ./run.sh -v 1.9.1 -i 1.0.0 -l 'manager' -k 'wso2carbon'"
@@ -56,7 +58,7 @@ function showUsageAndExit () {
     exit 1
 }
 
-while getopts :n:v:i:p:l:k: FLAG; do
+while getopts :n:v:i:p:l:k:m: FLAG; do
     case $FLAG in
         n)
             product_name=$OPTARG
@@ -75,6 +77,9 @@ while getopts :n:v:i:p:l:k: FLAG; do
             ;;
         k)
             key_store_password=$OPTARG
+            ;;
+        m)
+            host_shared_dir_path=$OPTARG
             ;;
         \?)
             showUsageAndExit
@@ -103,6 +108,11 @@ if [ -z "$port_mappings" ]
     port_mappings='-P'
 fi
 
+if [ ! -z "$host_shared_dir_path" ]
+  then
+  volume_mapping=" -v $host_shared_dir_path:/mnt/wso2-artifacts"
+fi
+
 if [ -z "$key_store_password" ]; then
     env_key_store_password=
 else
@@ -127,9 +137,9 @@ do
     fi
 
     if [[ $profile = "default" ]]; then
-        container_id=$(docker run -d ${port_mappings} ${env_key_store_password} --name "${name}" "wso2/${product_name}-${product_version}:${image_version}")
+        container_id=$(docker run -d ${volume_mapping} ${port_mappings} ${env_key_store_password} --name "${name}" "wso2/${product_name}-${product_version}:${image_version}")
     else
-        container_id=$(docker run -d ${port_mappings} ${env_key_store_password} --name "${name}" "wso2/${product_name}-${profile}-${product_version}:${image_version}")
+        container_id=$(docker run -d ${volume_mapping} ${port_mappings} ${env_key_store_password} --name "${name}" "wso2/${product_name}-${profile}-${product_version}:${image_version}")
     fi
 
     member_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${container_id}")
