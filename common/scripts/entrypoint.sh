@@ -70,6 +70,12 @@ if [ ! -z "$KEY_STORE_PASSWORD" ]
     echo "$KEY_STORE_PASSWORD" >> $password_tmp_file
 fi
 
+artifact_dir='/mnt/wso2-artifacts'
+if [[ -d ${artifact_dir} ]]; then
+    echo "copying artifacts at ${artifact_dir} to ${server_path}/${server_name}"
+    cp -r ${artifact_dir}/* ${server_path}/${server_name}
+fi
+
 # if there is an existing docker-<product_name>-<profile_name>-init.sh script, run that first
 product_init_script_name="${WSO2_SERVER}-${WSO2_SERVER_PROFILE}-init.sh"
 if [[ -f "${script_path}/${product_init_script_name}" ]]; then
