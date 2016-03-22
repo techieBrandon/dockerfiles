@@ -148,14 +148,14 @@ do
         exit 1
     fi
 
-    echoSuccess "WSO2 ${product_name} ${profile} member started: [name] ${name} [ip] ${member_ip} [container-id] ${container_id}"
+    product_name_in_uppercase=`echo ${product_name} | tr '[:lower:]' '[:upper:]'`
+    echoSuccess "WSO2 ${product_name_in_uppercase} ${profile} container started: [name] ${name} [ip] ${member_ip} [container-id] ${container_id}"
     sleep 1
-
 done
 
 if [ "${#profiles_array[@]}" -eq 1 ]; then
     echo
-    askBold "Open a Bash terminal on the spawned container? (y/n): "
+    askBold "Need to connect to the spawned container? (y/n): "
     read -r exec_v
     if [ "$exec_v" == "y" ]; then
         docker exec -it "${container_id}" /bin/bash
