@@ -37,17 +37,6 @@ function showUsageAndExit() {
     exit 1
 }
 
-#if [[ -z ${product_name} ]];
-#then
-#    echo "product name required. ex.: ./docker-base-build.sh wso2am 1.9.1"
-#    exit 1
-#fi
-#if [[ -z ${product_version} ]];
-#then
-#    echo "product version required. ex.: ./docker-base-build.sh wso2am 1.9.1"
-#    exit 1
-#fi
-
 prgdir=$(dirname "$0")
 self_path=$(cd "$prgdir"; pwd)
 
