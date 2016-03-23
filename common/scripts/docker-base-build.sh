@@ -41,6 +41,11 @@ prgdir=$(dirname "$0")
 self_path=$(cd "$prgdir"; pwd)
 
 function cleanup {
+    if [ ! -z $httpserver_pid ]; then
+        echo "stopping local HTTP Server"
+        kill -9 $httpserver_pid > /dev/null 2>&1
+    fi
+    echo "removing ${product_base_common_path}"
     rm -rf ${product_base_common_path}
 }
 
@@ -74,6 +79,42 @@ cp "${self_path}"/../../common/jdk/*  "${product_base_common_path}/jdk"
 mkdir -p "${product_base_common_path}/pack"
 cp ${product_path}/pack/"${product_name}-${product_version}".zip "${product_base_common_path}/pack"
 
+function findHostIP() {
+    local _ip _line
+    while IFS=$': \t' read -a _line ;do
+        [ -z "${_line%inet}" ] &&
+           _ip=${_line[${#_line[1]}>4?1:2]} &&
+           [ "${_ip#127.0.0.1}" ] && echo $_ip && return 0
+    done< <(LANG=C /sbin/ifconfig)
+}
+
+# check if port 8000 is already in use
+port_uses=$(lsof -i:8000 | wc -l)
+if [ $port_uses -gt 1 ]; then
+   echoError "Port 8000 seems to be already in use. Exiting..."
+   cleanup
+   exit 1
+fi
+
+# start the server in background
+echo "starting a local HTTP server"
+pushd ${product_base_common_path} > /dev/null 2>&1
+python -m SimpleHTTPServer 8000 & > /dev/null 2>&1
+httpserver_pid=$!
+sleep 5
+popd > /dev/null 2>&1
+
+# get host machine ip
+host_ip=$(findHostIP)
+if [ -z "$host_ip" ]; then
+    echoError "Could not find host ip address. Exiting..."
+    cleanup
+    exit 1
+fi
+
+httpserver_address="http://${host_ip}:8000"
+echoBold "HTTP server started at ${httpserver_address}"
+
 echoBold "Building docker image ${image_id}..."
 
 image_id=wso2/"${product_name}-${product_version}"
@@ -83,6 +124,7 @@ build_cmd="docker build --no-cache=true \
 --build-arg WSO2_SERVER_VERSION=${product_version} \
 --build-arg JDK_ARCHIVE=${jdk_archive} \
 --build-arg JAVA_INSTALL_PATH=${java_install_path} \
+--build-arg HTTP_PACK_SERVER=${httpserver_address} \
 -t ${image_id} ${dockerfile_path}"
 
 {
