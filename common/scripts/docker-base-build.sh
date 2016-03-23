@@ -97,7 +97,7 @@ if [ $port_uses -gt 1 ]; then
 fi
 
 # start the server in background
-echo "starting a local HTTP server"
+echo "starting a local HTTP server at ${product_base_common_path}"
 pushd ${product_base_common_path} > /dev/null 2>&1
 python -m SimpleHTTPServer 8000 & > /dev/null 2>&1
 httpserver_pid=$!

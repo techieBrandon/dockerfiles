@@ -28,38 +28,21 @@ ARG CONFIG_FILE_SUFFIX
 ARG JDK_ARCHIVE
 ARG JAVA_INSTALL_PATH
 ARG HTTP_PACK_SERVER
+ARG CONFIG_FILE_SUFFIX
 
 # Carbon server information
 ENV WSO2_SERVER=${WSO2_SERVER:-wso2am} \
     WSO2_SERVER_VERSION=${WSO2_SERVER_VERSION:-1.9.1} \
     JDK_ARCHIVE=${JDK_ARCHIVE:-jdk-7u80-linux-x64.tar.gz} \
     JAVA_INSTALL_PATH=${JAVA_INSTALL_PATH:-/opt/java} \
+    CONFIG_FILE_SUFFIX=${CONFIG_FILE_SUFFIX:-simple} \
     HTTP_PACK_SERVER=${HTTP_PACK_SERVER}
 
-WORKDIR /mnt
-RUN addgroup wso2 \
-    && adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user \
-    && apt-get install -y unzip wget \
-    && mkdir -p /mnt/jdk \
-    && mkdir -p /mnt/pack \
-    && wget -nH -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/jdk/${JDK_ARCHIVE} -P jdk \
-    && wget -nH -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/pack/${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip -P pack \
-    && wget -rnH --level=10 -e robots=off --reject "index.html*" --no-parent -nv ${HTTP_PACK_SERVER}/scripts/ \
-    && echo "unpacking ${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip to /mnt" \
-    && unzip -q /mnt/pack/${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip -d /mnt \
-    && mkdir -p /opt/java \
-    && echo "unpacking ${JDK_ARCHIVE} to /opt/java" \
-    && tar -xf /mnt/jdk/${JDK_ARCHIVE} -C ${JAVA_INSTALL_PATH} --strip-components=1 \
-    && chmod -R 0755 /mnt/scripts \
-    && cp /mnt/scripts/* /usr/local/bin/ \
-    && rm -rf /mnt/pack \
-    && rm -rf /mnt/jdk \
-    && rm -rf /mnt/scripts \
-    && apt-get purge -y --auto-remove wget unzip \
-    && rm -rfv /var/lib/apt/lists/* \
-    && chown wso2user:wso2 /usr/local/bin/* \
-    && chown -R wso2user:wso2 /mnt
+# Execute configuration script - a file with name <CONFIG_FILE_SUFFIX>-configurer.sh will be picked
+COPY configurer/${CONFIG_FILE_SUFFIX}-configurer.sh /${CONFIG_FILE_SUFFIX}-configurer.sh
+RUN bash /${CONFIG_FILE_SUFFIX}-configurer.sh
 
+WORKDIR /mnt
 USER wso2user
 
 # Expose transport ports

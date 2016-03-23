@@ -26,6 +26,7 @@ ARG WSO2_SERVER
 ARG WSO2_SERVER_VERSION
 ARG WSO2_SERVER_PROFILE
 ARG WSO2_ENVIRONMENT
+ARG HTTP_PUPPET_SERVER
 ARG CONFIG_FILE_SUFFIX
 
 # Carbon server information
@@ -33,8 +34,8 @@ ENV WSO2_SERVER=${WSO2_SERVER:-wso2am} \
     WSO2_SERVER_VERSION=${WSO2_SERVER_VERSION:-1.9.1} \
     WSO2_SERVER_PROFILE=${WSO2_SERVER_PROFILE:-default} \
     WSO2_ENVIRONMENT=${WSO2_ENVIRONMENT:-dev} \
-    HTTP_PUPPET_SERVER=${HTTP_PUPPET_SERVER} \
-    CONFIG_FILE_SUFFIX=${CONFIG_FILE_SUFFIX:-puppetbased}
+    CONFIG_FILE_SUFFIX=${CONFIG_FILE_SUFFIX:-puppetbased} \
+    HTTP_PUPPET_SERVER=${HTTP_PUPPET_SERVER}
 
 COPY scripts/* /usr/local/bin/
 
@@ -45,7 +46,7 @@ ENV FACTER_product_name=${WSO2_SERVER} \
     FACTER_environment=${WSO2_ENVIRONMENT} \
     FACTER_vm_type=docker
 
-# Execute configuration script - a file with name configure-using-<CONFIG_FILE_SUFFIX> will be picked
+# Execute configuration script - a file with name <CONFIG_FILE_SUFFIX>-configurer.sh will be picked
 COPY configurer/${CONFIG_FILE_SUFFIX}-configurer.sh /${CONFIG_FILE_SUFFIX}-configurer.sh
 RUN bash /${CONFIG_FILE_SUFFIX}-configurer.sh
 
