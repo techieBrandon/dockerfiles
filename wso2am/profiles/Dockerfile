@@ -26,14 +26,15 @@ ARG WSO2_SERVER
 ARG WSO2_SERVER_VERSION
 ARG WSO2_SERVER_PROFILE
 ARG WSO2_ENVIRONMENT
-ARG HTTP_PUPPET_SERVER
+ARG CONFIG_FILE_SUFFIX
 
 # Carbon server information
 ENV WSO2_SERVER=${WSO2_SERVER:-wso2am} \
     WSO2_SERVER_VERSION=${WSO2_SERVER_VERSION:-1.9.1} \
     WSO2_SERVER_PROFILE=${WSO2_SERVER_PROFILE:-default} \
     WSO2_ENVIRONMENT=${WSO2_ENVIRONMENT:-dev} \
-    HTTP_PUPPET_SERVER=${HTTP_PUPPET_SERVER}
+    HTTP_PUPPET_SERVER=${HTTP_PUPPET_SERVER} \
+    CONFIG_FILE_SUFFIX=${CONFIG_FILE_SUFFIX:-puppetbased}
 
 COPY scripts/* /usr/local/bin/
 
@@ -44,24 +45,9 @@ ENV FACTER_product_name=${WSO2_SERVER} \
     FACTER_environment=${WSO2_ENVIRONMENT} \
     FACTER_vm_type=docker
 
-# Execute puppet apply and clean
-WORKDIR /etc/puppet
-RUN addgroup wso2 \
-    && adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user \
-    && apt-get update && apt-get install -y wget puppet \
-    && wget -nH -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/hiera.yaml \
-    && wget -rnH -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/hieradata/ \
-    && wget -rnH -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/manifests/ \
-    && wget -rnH --level=10 -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/modules/wso2base/ \
-    && wget -rnH --level=10 -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/modules/${WSO2_SERVER}/ \
-    && puppet module install puppetlabs/stdlib \
-    && puppet module install 7terminals-java \
-    && puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.yaml \
-    && apt-get purge -y --auto-remove puppet wget \
-    && rm -rfv /etc/puppet/* \
-    && rm -rfv /var/lib/apt/lists/* \
-    && chown wso2user:wso2 /usr/local/bin/* \
-    && chown -R wso2user:wso2 /mnt
+# Execute configuration script - a file with name configure-using-<CONFIG_FILE_SUFFIX> will be picked
+COPY ${CONFIG_FILE_SUFFIX}-configurer.sh /${CONFIG_FILE_SUFFIX}-configurer.sh
+RUN bash /${CONFIG_FILE_SUFFIX}-configurer.sh
 
 USER wso2user
 WORKDIR /mnt
