@@ -40,6 +40,8 @@ function showUsageAndExit () {
     echo "[REQUIRED] Product version of WSO2$(echo $product_name | awk '{print toupper($0)}')"
     echo -en "  -l\t"
     echo "[OPTIONAL] '|' separated WSO2$(echo $product_name | awk '{print toupper($0)}') profiles to save. 'default' is selected if no value is specified."
+    echo -en "  -o\t"
+    echo "[OPTIONAL] Organization name. 'wso2' is selected if no value is specified."
     echo
 
     echoBold "Ex: ./save.sh -v 1.9.1 -l 'manager'"
@@ -47,13 +49,16 @@ function showUsageAndExit () {
     exit 1
 }
 
-while getopts :n:v:l: FLAG; do
+while getopts :n:v:o:l: FLAG; do
     case $FLAG in
         n)
             product_name=$OPTARG
             ;;
         v)
             product_version=$OPTARG
+            ;;
+        o)
+            organization_name=$OPTARG
             ;;
         l)
             product_profiles=$OPTARG
@@ -75,14 +80,20 @@ if [ -z "$product_profiles" ]
     product_profiles='default'
 fi
 
+if [ -z "$organization_name" ]
+  then
+    organization_name='wso2'
+fi
+
+
 IFS='|' read -r -a array <<< "${product_profiles}"
 for profile in "${array[@]}"
 do
     if [[ $profile = "default" ]]; then
-        image_id="wso2/${product_name}:${product_version}"
+        image_id="${organization_name}/${product_name}:${product_version}"
         tar_file="wso2${product_name}-${product_version}.tar"
     else
-        image_id="wso2/${product_name}-${profile}:${product_version}"
+        image_id="${organization_name}/${product_name}-${profile}:${product_version}"
         tar_file="wso2${product_name}-${profile}-${product_version}.tar"
     fi
 

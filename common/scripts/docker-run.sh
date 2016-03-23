@@ -25,7 +25,7 @@ function showUsageAndExit () {
     echoBold "Usage: ./run.sh -v [product-version]"
     echo
 
-    op_pversions=$(docker images | grep wso2/$product_name | awk '{print $1,"\t- ", $2}')
+    op_pversions=$(docker images | grep ${organization_name}/$product_name | awk '{print $1,"\t- ", $2}')
     if [ -n "$op_pversions" ]; then
         echo "Available product images:"
         echo "$op_pversions"
@@ -43,6 +43,8 @@ function showUsageAndExit () {
     echo "[REQUIRED] Product version of WSO2$(echo $product_name | awk '{print toupper($0)}')"
     echo -en "  -l\t"
     echo "[OPTIONAL] '|' separated WSO2$(echo $product_name | awk '{print toupper($0)}') profiles to run. 'default' is selected if no value is specified."
+    echo -en "  -o\t"
+    echo "[OPTIONAL] Organization name. 'wso2' is selected if no value is specified."
     echo -en "  -p\t"
     echo "[OPTIONAL] [MULTIPLE] Port mappings ${exposed_ports} of the container "
     echo -en "  -k\t"
@@ -56,13 +58,16 @@ function showUsageAndExit () {
     exit 1
 }
 
-while getopts :n:v:p:l:k:m: FLAG; do
+while getopts :n:v:o:p:l:k:m: FLAG; do
     case $FLAG in
         n)
             product_name=$OPTARG
             ;;
         v)
             product_version=$OPTARG
+            ;;
+        o)
+            organization_name=$OPTARG
             ;;
         l)
             product_profiles=$OPTARG
@@ -88,9 +93,15 @@ if [ -z "$product_version" ]
     showUsageAndExit
 fi
 
+# Default values for optional args
 if [ -z "$product_profiles" ]
   then
     product_profiles='default'
+fi
+
+if [ -z "$organization_name" ]
+  then
+    organization_name='wso2'
 fi
 
 if [ -z "$port_mappings" ]
@@ -127,9 +138,9 @@ do
     fi
 
     if [[ $profile = "default" ]]; then
-        container_id=$(docker run -d ${volume_mapping} ${port_mappings} ${env_key_store_password} --name "${name}" "wso2/${product_name}:${product_version}")
+        container_id=$(docker run -d ${volume_mapping} ${port_mappings} ${env_key_store_password} --name "${name}" "${organization_name}/${product_name}:${product_version}")
     else
-        container_id=$(docker run -d ${volume_mapping} ${port_mappings} ${env_key_store_password} --name "${name}" "wso2/${product_name}-${profile}:${product_version}")
+        container_id=$(docker run -d ${volume_mapping} ${port_mappings} ${env_key_store_password} --name "${name}" "${organization_name}/${product_name}-${profile}:${product_version}")
     fi
 
     member_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${container_id}")

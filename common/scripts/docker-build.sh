@@ -49,6 +49,8 @@ function showUsageAndExit() {
     echo "[OPTIONAL] '|' separated WSO2$(echo $product_name | awk '{print toupper($0)}') profiles to build. 'default' is selected if no value is specified."
     echo -en "  -e\t"
     echo "[OPTIONAL] Environment. 'dev' is selected if no value is specified."
+    echo -en "  -o\t"
+    echo "[OPTIONAL] Preferred organization name. 'wso2' is selected if no value is specified."
     echo -en "  -q\t"
     echo "[OPTIONAL] Quiet flag. If used, the docker build run output will be suppressed"
     echo
@@ -128,7 +130,7 @@ function findHostIP() {
 
 verbose=true
 
-while getopts :n:v:e:l:d:q FLAG; do
+while getopts :n:v:e:l:d:o:q FLAG; do
     case $FLAG in
         n)
             product_name=$OPTARG
@@ -144,6 +146,9 @@ while getopts :n:v:e:l:d:q FLAG; do
             ;;
         d)
             dockerfile_path=$OPTARG
+            ;;
+        o)
+            organization_name=$OPTARG
             ;;
         q)
             verbose=false
@@ -169,6 +174,7 @@ if [ -z "$product_version" ]
     showUsageAndExit
 fi
 
+# Default values for optional args
 if [ -z "$product_profiles" ]
   then
     product_profiles="default"
@@ -176,6 +182,10 @@ fi
 
 if [ -z "$product_env" ]; then
     product_env="dev"
+fi
+
+if [ -z "$organization_name" ]; then
+    organization_name="wso2"
 fi
 
 # check if provided product version exists in PUPPET_HOME
@@ -228,9 +238,9 @@ for profile in "${profiles_array[@]}"
 do
     # set image name according to the profile list
     if [[ "${profile}" = "default" ]]; then
-        image_id="wso2/${product_name}:${product_version}"
+        image_id="${organization_name}/${product_name}:${product_version}"
     else
-        image_id="wso2/${product_name}-${profile}:${product_version}"
+        image_id="${organization_name}/${product_name}-${profile}:${product_version}"
     fi
 
     image_exists=$(docker images $image_id | wc -l)
