@@ -22,31 +22,61 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${DIR}/base.sh"
 source "${DIR}/default-values.sh"
 
-product_name=$1
-product_version=$2
+function showUsageAndExit() {
+    echoError "Insufficient or invalid options provided!"
+    echo
+    echoBold "Usage: ./build.sh -v [product-version] "
+    echo
 
-if [[ -z ${product_name} ]];
-then
-    echo "product name required. ex.: ./docker-base-build.sh wso2am 1.9.1"
+    echoBold "Build Docker images for WSO2$(echo $product_name | awk '{print toupper($0)}')"
+    echo
+    echo -en "  -l\t"
+    echo "[REQUIRED] Product version"
+    echo
+
     exit 1
-fi
-if [[ -z ${product_version} ]];
-then
-    echo "product version required. ex.: ./docker-base-build.sh wso2am 1.9.1"
-    exit 1
-fi
+}
+
+#if [[ -z ${product_name} ]];
+#then
+#    echo "product name required. ex.: ./docker-base-build.sh wso2am 1.9.1"
+#    exit 1
+#fi
+#if [[ -z ${product_version} ]];
+#then
+#    echo "product version required. ex.: ./docker-base-build.sh wso2am 1.9.1"
+#    exit 1
+#fi
 
 prgdir=$(dirname "$0")
 self_path=$(cd "$prgdir"; pwd)
-# copy common stuff (entrypoint.sh and jdk)
 
 function cleanup {
     rm -rf ${product_base_common_path}
 }
 
-product_path="${self_path}/../../${product_name}"
+
+while getopts :n:v:e:l:d:o:q FLAG; do
+    case $FLAG in
+        n)
+            product_name='wso2'$OPTARG
+            ;;
+        v)
+            product_version=$OPTARG
+            ;;
+        d)
+            dockerfile_path=$OPTARG
+            ;;
+        \?)
+            showUsageAndExit
+            ;;
+    esac
+done
+
+product_path="${dockerfile_path}/../"
 product_base_path="${product_path}/base"
 product_base_common_path="${product_base_path}/common"
+
 mkdir -p "${product_base_common_path}"
 mkdir -p "${product_base_common_path}/scripts"
 cp "${self_path}/entrypoint.sh" "${product_base_common_path}/scripts/init.sh"
@@ -58,7 +88,6 @@ cp ${product_path}/pack/"${product_name}-${product_version}".zip "${product_base
 echoBold "Building docker image ${image_id}..."
 
 image_id=wso2/"${product_name}-${product_version}"
-dockerfile_path=${product_base_path}
 
 build_cmd="docker build --no-cache=true \
 --build-arg WSO2_SERVER=${product_name} \
