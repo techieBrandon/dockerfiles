@@ -46,8 +46,8 @@ RUN addgroup wso2 \
     && echo "unpacking ${JDK_ARCHIVE} to /opt/java" \
     && tar -xf /mnt/jdk/${JDK_ARCHIVE} -C ${JAVA_INSTALL_PATH} --strip-components=1 \
     && cp /mnt/scripts/* /usr/local/bin/ \
-    && rm /mnt/pack/${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip \
-    && rm /mnt/jdk/${JDK_ARCHIVE} \
+    && rm -rf /mnt/pack \
+    && rm -rf /mnt/jdk \
     && chown wso2user:wso2 /usr/local/bin/* \
     && chown -R wso2user:wso2 /mnt
 
