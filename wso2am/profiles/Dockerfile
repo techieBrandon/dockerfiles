@@ -46,7 +46,7 @@ ENV FACTER_product_name=${WSO2_SERVER} \
     FACTER_vm_type=docker
 
 # Execute configuration script - a file with name configure-using-<CONFIG_FILE_SUFFIX> will be picked
-COPY ${CONFIG_FILE_SUFFIX}-configurer.sh /${CONFIG_FILE_SUFFIX}-configurer.sh
+COPY configurer/${CONFIG_FILE_SUFFIX}-configurer.sh /${CONFIG_FILE_SUFFIX}-configurer.sh
 RUN bash /${CONFIG_FILE_SUFFIX}-configurer.sh
 
 USER wso2user

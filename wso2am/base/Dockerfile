@@ -34,17 +34,19 @@ ENV WSO2_SERVER=${WSO2_SERVER:-wso2am} \
     CONFIG_FILE_SUFFIX=${CONFIG_FILE_SUFFIX:-simple} \
     JDK_ARCHIVE=${JDK_ARCHIVE:-jdk-7u80-linux-x64.tar.gz}
 
-COPY common/ pack/${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip  /mnt/
+COPY common/ /mnt/
 
 # Execute configuration script - a file with name <CONFIG_FILE_SUFFIX>-configurer will be picked
 RUN addgroup wso2 \
     && adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user \
     && apt-get install zip unzip \
-    && unzip -q /mnt/${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip -d /mnt \
+    && echo "unpacking ${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip to /mnt" \
+    && unzip -q /mnt/pack/${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip -d /mnt \
     && mkdir -p /opt/java \
+    && echo "unpacking $${JDK_ARCHIVE} to /opt/java" \
     && tar -xf /mnt/jdk/${JDK_ARCHIVE} -C /opt/java --strip-components=1 \
     && cp /mnt/scripts/* /usr/local/bin/ \
-    && rm /mnt/${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip \
+    && rm /mnt/pack/${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip \
     && rm /mnt/jdk/${JDK_ARCHIVE} \
     && chown wso2user:wso2 /usr/local/bin/* \
     && chown -R wso2user:wso2 /mnt

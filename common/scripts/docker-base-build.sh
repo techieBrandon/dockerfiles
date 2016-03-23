@@ -43,13 +43,16 @@ function cleanup {
     rm -rf ${product_base_common_path}
 }
 
-product_base_path="${self_path}/../../${product_name}/base"
+product_path="${self_path}/../../${product_name}"
+product_base_path="${product_path}/base"
 product_base_common_path="${product_base_path}/common"
 mkdir -p "${product_base_common_path}"
 mkdir -p "${product_base_common_path}/scripts"
 cp "${self_path}/entrypoint.sh" "${product_base_common_path}/scripts/init.sh"
 mkdir -p "${product_base_common_path}/jdk"
 cp "${self_path}"/../../common/jdk/*  "${product_base_common_path}/jdk"
+mkdir -p "${product_base_common_path}/pack"
+cp ${product_path}/pack/"${product_name}-${product_version}".zip "${product_base_common_path}/pack"
 
 echoBold "Building docker image ${image_id}..."
 
