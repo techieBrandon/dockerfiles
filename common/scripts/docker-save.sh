@@ -24,7 +24,7 @@ source "${DIR}/base.sh"
 function showUsageAndExit () {
     echoError "Insufficient or invalid options provided!"
     echo
-    echoBold "Usage: ./save.sh -v [product-version] -i [docker-image-version] [OPTIONS]"
+    echoBold "Usage: ./save.sh -v [product-version]"
     echo
 
     op_pversions=$(docker images | grep wso2/$product_name | awk '{print $1,"\t- ", $2}')
@@ -38,27 +38,22 @@ function showUsageAndExit () {
     echo
     echo -en "  -v\t"
     echo "[REQUIRED] Product version of WSO2$(echo $product_name | awk '{print toupper($0)}')"
-    echo -en "  -i\t"
-    echo "[REQUIRED] Docker image version"
     echo -en "  -l\t"
     echo "[OPTIONAL] '|' separated WSO2$(echo $product_name | awk '{print toupper($0)}') profiles to save. 'default' is selected if no value is specified."
     echo
 
-    echoBold "Ex: ./save.sh -v 1.9.1 -i 1.0.0 -l 'manager'"
+    echoBold "Ex: ./save.sh -v 1.9.1 -l 'manager'"
     echo
     exit 1
 }
 
-while getopts :n:v:i:l: FLAG; do
+while getopts :n:v:l: FLAG; do
     case $FLAG in
         n)
             product_name=$OPTARG
             ;;
         v)
             product_version=$OPTARG
-            ;;
-        i)
-            image_version=$OPTARG
             ;;
         l)
             product_profiles=$OPTARG
@@ -75,11 +70,6 @@ if [ -z "$product_version" ]
     showUsageAndExit
 fi
 
-if [ -z "$image_version" ]
-  then
-    showUsageAndExit
-fi
-
 if [ -z "$product_profiles" ]
   then
     product_profiles='default'
@@ -89,11 +79,11 @@ IFS='|' read -r -a array <<< "${product_profiles}"
 for profile in "${array[@]}"
 do
     if [[ $profile = "default" ]]; then
-        image_id="wso2/${product_name}-${product_version}:${image_version}"
-        tar_file="wso2${product_name}-${product_version}-${image_version}.tar"
+        image_id="wso2/${product_name}:${product_version}"
+        tar_file="wso2${product_name}-${product_version}.tar"
     else
-        image_id="wso2/${product_name}-${profile}-${product_version}:${image_version}"
-        tar_file="wso2${product_name}-${profile}-${product_version}-${image_version}.tar"
+        image_id="wso2/${product_name}-${profile}:${product_version}"
+        tar_file="wso2${product_name}-${profile}-${product_version}.tar"
     fi
 
     echo "Saving docker image ${image_id} to ${HOME}/docker/images/${tar_file}"

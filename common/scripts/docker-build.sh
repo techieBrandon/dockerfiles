@@ -26,7 +26,7 @@ source "${DIR}/base.sh"
 function showUsageAndExit() {
     echoError "Insufficient or invalid options provided!"
     echo
-    echoBold "Usage: ./build.sh -v [product-version] -i [docker-image-version] [OPTIONS]"
+    echoBold "Usage: ./build.sh -v [product-version]"
     echo
 
     op_versions=$(listFiles "${PUPPET_HOME}/hieradata/dev/wso2/wso2${product_name}/")
@@ -45,8 +45,6 @@ function showUsageAndExit() {
     echo
     echo -en "  -v\t"
     echo "[REQUIRED] Product version of WSO2$(echo $product_name | awk '{print toupper($0)}')"
-    echo -en "  -i\t"
-    echo "[REQUIRED] Docker image version"
     echo -en "  -l\t"
     echo "[OPTIONAL] '|' separated WSO2$(echo $product_name | awk '{print toupper($0)}') profiles to build. 'default' is selected if no value is specified."
     echo -en "  -e\t"
@@ -57,7 +55,7 @@ function showUsageAndExit() {
 
     ex_version=$(echo ${op_versions_str} | head -n1 | awk '{print $1}')
     ex_profile=$(echo ${op_profiles_str} | head -n1 | awk '{print $1}')
-    echoBold "Ex: ./build.sh -v ${ex_version//,/} -i 1.0.0 -l '${ex_profile//,/}'"
+    echoBold "Ex: ./build.sh -v ${ex_version//,/} -l '${ex_profile//,/}'"
     echo
     exit 1
 }
@@ -130,16 +128,13 @@ function findHostIP() {
 
 verbose=true
 
-while getopts :n:v:i:e:l:d:q FLAG; do
+while getopts :n:v:e:l:d:q FLAG; do
     case $FLAG in
         n)
             product_name=$OPTARG
             ;;
         v)
             product_version=$OPTARG
-            ;;
-        i)
-            image_version=$OPTARG
             ;;
         l)
             product_profiles=$OPTARG
@@ -170,11 +165,6 @@ fi
 
 # Validate mandatory args
 if [ -z "$product_version" ]
-  then
-    showUsageAndExit
-fi
-
-if [ -z "$image_version" ]
   then
     showUsageAndExit
 fi
@@ -238,9 +228,9 @@ for profile in "${profiles_array[@]}"
 do
     # set image name according to the profile list
     if [[ "${profile}" = "default" ]]; then
-        image_id="wso2/${product_name}-${product_version}:${image_version}"
+        image_id="wso2/${product_name}:${product_version}"
     else
-        image_id="wso2/${product_name}-${profile}-${product_version}:${image_version}"
+        image_id="wso2/${product_name}-${profile}:${product_version}"
     fi
 
     image_exists=$(docker images $image_id | wc -l)
