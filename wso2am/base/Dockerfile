@@ -26,13 +26,13 @@ ARG WSO2_SERVER
 ARG WSO2_SERVER_VERSION
 ARG CONFIG_FILE_SUFFIX
 ARG JDK_ARCHIVE
+ARG JAVA_INSTALL_PATH
 
 # Carbon server information
 ENV WSO2_SERVER=${WSO2_SERVER:-wso2am} \
     WSO2_SERVER_VERSION=${WSO2_SERVER_VERSION:-1.9.1} \
-    WSO2_ENVIRONMENT=${WSO2_ENVIRONMENT:-dev} \
-    CONFIG_FILE_SUFFIX=${CONFIG_FILE_SUFFIX:-simple} \
-    JDK_ARCHIVE=${JDK_ARCHIVE:-jdk-7u80-linux-x64.tar.gz}
+    JDK_ARCHIVE=${JDK_ARCHIVE:-jdk-7u80-linux-x64.tar.gz} \
+    JAVA_INSTALL_PATH=${JAVA_INSTALL_PATH:-/opt/java}
 
 COPY common/ /mnt/
 
@@ -44,7 +44,7 @@ RUN addgroup wso2 \
     && unzip -q /mnt/pack/${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip -d /mnt \
     && mkdir -p /opt/java \
     && echo "unpacking $${JDK_ARCHIVE} to /opt/java" \
-    && tar -xf /mnt/jdk/${JDK_ARCHIVE} -C /opt/java --strip-components=1 \
+    && tar -xf /mnt/jdk/${JDK_ARCHIVE} -C ${JAVA_INSTALL_PATH} --strip-components=1 \
     && cp /mnt/scripts/* /usr/local/bin/ \
     && rm /mnt/pack/${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip \
     && rm /mnt/jdk/${JDK_ARCHIVE} \

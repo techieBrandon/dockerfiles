@@ -20,6 +20,7 @@ set -e
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${DIR}/base.sh"
+source "${DIR}/default-values.sh"
 
 product_name=$1
 product_version=$2
@@ -62,6 +63,8 @@ dockerfile_path=${product_base_path}
 build_cmd="docker build --no-cache=true \
 --build-arg WSO2_SERVER=${product_name} \
 --build-arg WSO2_SERVER_VERSION=${product_version} \
+--build-arg JDK_ARCHIVE=${jdk_archive} \
+--build-arg JAVA_INSTALL_PATH=${java_install_path} \
 -t ${image_id} ${dockerfile_path}"
 
 {
