@@ -24,7 +24,7 @@ source "${DIR}/base.sh"
 function showUsageAndExit () {
     echoError "Insufficient or invalid options provided!"
     echo
-    echoBold "Usage: ./scp.sh -h [host-list] -v [product-version] -i [docker-image-version] [OPTIONS]"
+    echoBold "Usage: ./scp.sh -h [host-list] -v [product-version]"
     echo
 
     op_images=$(listFiles "${HOME}/docker/images" | grep wso2$product_name)
@@ -40,27 +40,22 @@ function showUsageAndExit () {
     echo "[REQUIRED] The '|' separated list of hosts to transfer the Docker images. This should be of format 'user@ip1|user@ip2|user@ip3'"
     echo -en "  -v\t"
     echo "[REQUIRED] Product version of WSO2$(echo $product_name | awk '{print toupper($0)}')"
-    echo -en "  -i\t"
-    echo "[REQUIRED] Docker image version"
     echo -en "  -l\t"
     echo "[OPTIONAL] '|' separated WSO2$(echo $product_name | awk '{print toupper($0)}') profiles to SCP. 'default' is selected if no value is specified."
     echo
 
-    echoBold "Ex: ./scp.sh -h 'core@172.17.8.102|core@172.17.8.103' -v 1.9.1 -i 1.0.0 -l 'manager'"
+    echoBold "Ex: ./scp.sh -h 'core@172.17.8.102|core@172.17.8.103' -v 1.9.1 -l 'manager'"
     echo
     exit 1
 }
 
-while getopts :n:v:i:l:h: FLAG; do
+while getopts :n:v:l:h: FLAG; do
     case $FLAG in
         n)
             product_name=$OPTARG
             ;;
         v)
             product_version=$OPTARG
-            ;;
-        i)
-            image_version=$OPTARG
             ;;
         l)
             product_profiles=$OPTARG
@@ -80,11 +75,6 @@ if [ -z "$product_version" ]
     showUsageAndExit
 fi
 
-if [ -z "$image_version" ]
-  then
-    showUsageAndExit
-fi
-
 if [ -z "$nodes" ]
   then
     showUsageAndExit
@@ -99,9 +89,9 @@ IFS='|' read -r -a array <<< "${product_profiles}"
 for profile in "${array[@]}"
 do
     if [[ $profile = "default" ]]; then
-        tar_file="wso2${product_name}-${product_version}-${image_version}.tar"
+        tar_file="wso2${product_name}-${product_version}.tar"
     else
-        tar_file="wso2${product_name}-${profile}-${product_version}-${image_version}.tar"
+        tar_file="wso2${product_name}-${profile}-${product_version}.tar"
     fi
 
     IFS='|' read -r -a array2 <<< "${nodes}"

@@ -22,7 +22,7 @@ source "${DIR}/base.sh"
 function showUsageAndExit () {
     echoError "Insufficient or invalid options provided!"
     echo
-    echoBold "Usage: ./run.sh -v [product-version] -i [docker-image-version] [OPTIONS]"
+    echoBold "Usage: ./run.sh -v [product-version]"
     echo
 
     op_pversions=$(docker images | grep wso2/$product_name | awk '{print $1,"\t- ", $2}')
@@ -41,8 +41,6 @@ function showUsageAndExit () {
     echo
     echo -en "  -v\t"
     echo "[REQUIRED] Product version of WSO2$(echo $product_name | awk '{print toupper($0)}')"
-    echo -en "  -i\t"
-    echo "[REQUIRED] Docker image version"
     echo -en "  -l\t"
     echo "[OPTIONAL] '|' separated WSO2$(echo $product_name | awk '{print toupper($0)}') profiles to run. 'default' is selected if no value is specified."
     echo -en "  -p\t"
@@ -53,21 +51,18 @@ function showUsageAndExit () {
     echo "[OPTIONAL] Full path of the host location to share with containers."
     echo
 
-    echoBold "Ex: ./run.sh -v 1.9.1 -i 1.0.0 -l 'manager' -k 'wso2carbon'"
+    echoBold "Ex: ./run.sh -v 1.9.1 -l 'manager' -k 'wso2carbon'"
     echo
     exit 1
 }
 
-while getopts :n:v:i:p:l:k:m: FLAG; do
+while getopts :n:v:p:l:k:m: FLAG; do
     case $FLAG in
         n)
             product_name=$OPTARG
             ;;
         v)
             product_version=$OPTARG
-            ;;
-        i)
-            image_version=$OPTARG
             ;;
         l)
             product_profiles=$OPTARG
@@ -89,11 +84,6 @@ done
 
 # Validate mandatory args
 if [ -z "$product_version" ]
-  then
-    showUsageAndExit
-fi
-
-if [ -z "$image_version" ]
   then
     showUsageAndExit
 fi
@@ -137,9 +127,9 @@ do
     fi
 
     if [[ $profile = "default" ]]; then
-        container_id=$(docker run -d ${volume_mapping} ${port_mappings} ${env_key_store_password} --name "${name}" "wso2/${product_name}-${product_version}:${image_version}")
+        container_id=$(docker run -d ${volume_mapping} ${port_mappings} ${env_key_store_password} --name "${name}" "wso2/${product_name}:${product_version}")
     else
-        container_id=$(docker run -d ${volume_mapping} ${port_mappings} ${env_key_store_password} --name "${name}" "wso2/${product_name}-${profile}-${product_version}:${image_version}")
+        container_id=$(docker run -d ${volume_mapping} ${port_mappings} ${env_key_store_password} --name "${name}" "wso2/${product_name}-${profile}:${product_version}")
     fi
 
     member_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${container_id}")
@@ -148,14 +138,14 @@ do
         exit 1
     fi
 
-    echoSuccess "WSO2 ${product_name} ${profile} member started: [name] ${name} [ip] ${member_ip} [container-id] ${container_id}"
+    product_name_in_uppercase=`echo ${product_name} | tr '[:lower:]' '[:upper:]'`
+    echoSuccess "WSO2 ${product_name_in_uppercase} ${profile} container started: [name] ${name} [ip] ${member_ip} [container-id] ${container_id}"
     sleep 1
-
 done
 
 if [ "${#profiles_array[@]}" -eq 1 ]; then
     echo
-    askBold "Open a Bash terminal on the spawned container? (y/n): "
+    askBold "Need to connect to the spawned container? (y/n): "
     read -r exec_v
     if [ "$exec_v" == "y" ]; then
         docker exec -it "${container_id}" /bin/bash
