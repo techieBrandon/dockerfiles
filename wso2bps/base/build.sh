@@ -19,7 +19,7 @@
 
 set -e
 
-product_name=bps
+product_name=wso2bps
 product_version=$1
 
 prgdir=$(dirname "$0")

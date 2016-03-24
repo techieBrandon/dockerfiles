@@ -19,7 +19,7 @@
 
 set -e
 
-product_name=cep
+product_name=wso2cep
 product_version=$1
 
 prgdir=$(dirname "$0")
