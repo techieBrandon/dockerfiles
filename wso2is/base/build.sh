@@ -20,10 +20,9 @@
 set -e
 
 product_name=wso2is
-product_version=$1
 
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
 common_folder=$(cd "${script_path}/../../common/scripts/"; pwd)
 
-bash ${common_folder}/docker-base-build.sh -n ${product_name} -v ${product_version} -d ${script_path} $*
+bash ${common_folder}/docker-base-build.sh -n ${product_name} -d ${script_path} $*
