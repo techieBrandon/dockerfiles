@@ -88,11 +88,7 @@ fi
 IFS='|' read -r -a array <<< "${product_profiles}"
 for profile in "${array[@]}"
 do
-    if [[ $profile = "default" ]]; then
-        tar_file="${product_name}-${product_version}.tar"
-    else
-        tar_file="${product_name}-${profile}-${product_version}.tar"
-    fi
+    tar_file="${product_name}-${profile}-${product_version}.tar"
 
     IFS='|' read -r -a array2 <<< "${nodes}"
     for node in "${array2[@]}"

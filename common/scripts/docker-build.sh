@@ -236,12 +236,7 @@ echoBold "HTTP server started at ${httpserver_address}"
 IFS='|' read -r -a profiles_array <<< "${product_profiles}"
 for profile in "${profiles_array[@]}"
 do
-    # set image name according to the profile list
-    if [[ "${profile}" = "default" ]]; then
-        image_id="${organization_name}/${product_name}:${product_version}"
-    else
-        image_id="${organization_name}/${product_name}-${profile}:${product_version}"
-    fi
+    image_id="${organization_name}/${product_name}-${profile}:${product_version}"
 
     image_exists=$(docker images $image_id | wc -l)
     if [ ${image_exists} == "2" ]; then
