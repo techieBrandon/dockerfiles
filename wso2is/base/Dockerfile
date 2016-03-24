@@ -39,7 +39,7 @@ ENV WSO2_SERVER=${WSO2_SERVER:-wso2is} \
     HTTP_PACK_SERVER=${HTTP_PACK_SERVER}
 
 # Execute configuration script - a file with name <CONFIG_FILE_SUFFIX>-configurer.sh will be picked
-COPY configurer/${CONFIG_FILE_SUFFIX}-configurer.sh /${CONFIG_FILE_SUFFIX}-configurer.sh
+COPY common/configurer/${CONFIG_FILE_SUFFIX}-configurer.sh /${CONFIG_FILE_SUFFIX}-configurer.sh
 RUN bash /${CONFIG_FILE_SUFFIX}-configurer.sh
 
 WORKDIR /mnt
