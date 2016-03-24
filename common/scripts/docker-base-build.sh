@@ -28,7 +28,7 @@ function showUsageAndExit() {
     echoBold "Usage: ./build.sh -v [product-version] "
     echo
 
-    echoBold "Build Docker images for WSO2$(echo $product_name | awk '{print toupper($0)}')"
+    echoBold "Build Docker images for $(echo $product_name | awk '{print toupper($0)}')"
     echo
     echo -en "  -v\t"
     echo "[REQUIRED] Product version"
@@ -52,7 +52,7 @@ function cleanup {
 while getopts :n:v:d: FLAG; do
     case $FLAG in
         n)
-            product_name='wso2'$OPTARG
+            product_name=$OPTARG
             ;;
         v)
             product_version=$OPTARG
@@ -70,7 +70,7 @@ if [[ -z ${product_version} ]] || [[ -z ${product_name} ]] || [[ -z ${dockerfile
    showUsageAndExit
 fi
 
-product_path="${dockerfile_path}/../"
+product_path="${dockerfile_path}/.."
 product_base_path="${product_path}/base"
 product_base_common_path="${product_base_path}/common"
 

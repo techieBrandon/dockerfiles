@@ -37,12 +37,12 @@ function showUsageAndExit () {
         exposed_ports="for the exposed ports ${exposed_ports}"
     fi
 
-    echoBold "Run WSO2$(echo $product_name | awk '{print toupper($0)}') Docker containers"
+    echoBold "Run $(echo $product_name | awk '{print toupper($0)}') Docker containers"
     echo
     echo -en "  -v\t"
-    echo "[REQUIRED] Product version of WSO2$(echo $product_name | awk '{print toupper($0)}')"
+    echo "[REQUIRED] Product version of $(echo $product_name | awk '{print toupper($0)}')"
     echo -en "  -l\t"
-    echo "[OPTIONAL] '|' separated WSO2$(echo $product_name | awk '{print toupper($0)}') profiles to run. 'default' is selected if no value is specified."
+    echo "[OPTIONAL] '|' separated $(echo $product_name | awk '{print toupper($0)}') profiles to run. 'default' is selected if no value is specified."
     echo -en "  -o\t"
     echo "[OPTIONAL] Organization name. 'wso2' is selected if no value is specified."
     echo -en "  -p\t"
@@ -123,7 +123,7 @@ fi
 IFS='|' read -r -a profiles_array <<< "${product_profiles}"
 for profile in "${profiles_array[@]}"
 do
-    name="wso2${product_name}-${profile}"
+    name="${product_name}-${profile}"
 
     existing_container=$(docker ps -a | awk '{print $NF}' | grep "${name}")
     if [[ $existing_container = "$name" ]]; then
@@ -150,7 +150,7 @@ do
     fi
 
     product_name_in_uppercase=`echo ${product_name} | tr '[:lower:]' '[:upper:]'`
-    echoSuccess "WSO2 ${product_name_in_uppercase} ${profile} container started: [name] ${name} [ip] ${member_ip} [container-id] ${container_id}"
+    echoSuccess "${product_name_in_uppercase} ${profile} container started: [name] ${name} [ip] ${member_ip} [container-id] ${container_id}"
     sleep 1
 done
 

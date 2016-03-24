@@ -18,7 +18,7 @@
 # ------------------------------------------------------------------------
 set -e
 
-product_name=bps
+product_name=wso2bps
 
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)

@@ -27,21 +27,21 @@ function showUsageAndExit () {
     echoBold "Usage: ./scp.sh -h [host-list] -v [product-version]"
     echo
 
-    op_images=$(listFiles "${HOME}/docker/images" | grep wso2$product_name)
+    op_images=$(listFiles "${HOME}/docker/images" | grep $product_name)
     if [ -n "$op_images" ]; then
         echo "Available tarballs:"
         echo "$op_images"
         echo
     fi
 
-    echoBold "SCP saved Docker images for WSO2$(echo $product_name | awk '{print toupper($0)}') to specified hosts"
+    echoBold "SCP saved Docker images for $(echo $product_name | awk '{print toupper($0)}') to specified hosts"
     echo
     echo -en "  -h\t"
     echo "[REQUIRED] The '|' separated list of hosts to transfer the Docker images. This should be of format 'user@ip1|user@ip2|user@ip3'"
     echo -en "  -v\t"
-    echo "[REQUIRED] Product version of WSO2$(echo $product_name | awk '{print toupper($0)}')"
+    echo "[REQUIRED] Product version of $(echo $product_name | awk '{print toupper($0)}')"
     echo -en "  -l\t"
-    echo "[OPTIONAL] '|' separated WSO2$(echo $product_name | awk '{print toupper($0)}') profiles to SCP. 'default' is selected if no value is specified."
+    echo "[OPTIONAL] '|' separated $(echo $product_name | awk '{print toupper($0)}') profiles to SCP. 'default' is selected if no value is specified."
     echo
 
     echoBold "Ex: ./scp.sh -h 'core@172.17.8.102|core@172.17.8.103' -v 1.9.1 -l 'manager'"
@@ -89,9 +89,9 @@ IFS='|' read -r -a array <<< "${product_profiles}"
 for profile in "${array[@]}"
 do
     if [[ $profile = "default" ]]; then
-        tar_file="wso2${product_name}-${product_version}.tar"
+        tar_file="${product_name}-${product_version}.tar"
     else
-        tar_file="wso2${product_name}-${profile}-${product_version}.tar"
+        tar_file="${product_name}-${profile}-${product_version}.tar"
     fi
 
     IFS='|' read -r -a array2 <<< "${nodes}"

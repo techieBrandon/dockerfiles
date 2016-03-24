@@ -19,7 +19,7 @@
 
 set -e
 
-product_name=cep
+product_name=wso2cep
 
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
