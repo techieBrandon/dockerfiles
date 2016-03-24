@@ -35,12 +35,11 @@ ENV WSO2_SERVER=${WSO2_SERVER:-wso2bps} \
     WSO2_SERVER_VERSION=${WSO2_SERVER_VERSION:-3.5.0} \
     JDK_ARCHIVE=${JDK_ARCHIVE:-jdk-7u80-linux-x64.tar.gz} \
     JAVA_INSTALL_PATH=${JAVA_INSTALL_PATH:-/opt/java} \
-    CONFIG_FILE_SUFFIX=${CONFIG_FILE_SUFFIX:-simple} \
     HTTP_PACK_SERVER=${HTTP_PACK_SERVER}
 
-# Execute configuration script - a file with name <CONFIG_FILE_SUFFIX>-configurer.sh will be picked
-COPY common/configurer/${CONFIG_FILE_SUFFIX}-configurer.sh /${CONFIG_FILE_SUFFIX}-configurer.sh
-RUN bash /${CONFIG_FILE_SUFFIX}-configurer.sh
+# Execute install script - will just download the product and jdk archives and unpack them
+COPY common/install/install.sh /install.sh
+RUN bash /install.sh
 
 WORKDIR /mnt
 USER wso2user
