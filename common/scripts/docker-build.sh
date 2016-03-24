@@ -65,6 +65,7 @@ function showUsageAndExit() {
 function cleanup() {
     echoBold "Cleaning..."
     rm -rf "$dockerfile_path/scripts"
+    rm -rf "$dockerfile_path/configurer"
     if [ ! -z $httpserver_pid ]; then
         kill -9 $httpserver_pid > /dev/null 2>&1
     fi
@@ -204,6 +205,8 @@ validateDockerVersion "${docker_version}" "${min_required_docker_version}"
 echoBold "Creating Dockerfile context..."
 mkdir -p "${dockerfile_path}/scripts"
 cp "${self_path}/entrypoint.sh" "${dockerfile_path}/scripts/init.sh"
+mkdir -p "${dockerfile_path}/configurer"
+cp "${self_path}/configurer/puppetbased-configurer.sh" "${dockerfile_path}/configurer/puppetbased-configurer.sh"
 
 # starting http server
 echoBold "Starting HTTP server in ${PUPPET_HOME}..."
