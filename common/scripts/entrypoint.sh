@@ -84,7 +84,10 @@ if [[ -f "${script_path}/${product_init_script_name}" ]]; then
 fi
 
 export CARBON_HOME="${server_path}/${server_name}"
-export JAVA_HOME=/opt/java
+if [[ ! -z ${JAVA_INSTALL_PATH} ]];
+then
+    export JAVA_HOME=${JAVA_INSTALL_PATH}
+fi
 echo "Starting ${WSO2_SERVER}..."
 ${CARBON_HOME}/bin/wso2server.sh
 

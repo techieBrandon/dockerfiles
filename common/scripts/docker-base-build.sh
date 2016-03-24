@@ -30,7 +30,7 @@ function showUsageAndExit() {
 
     echoBold "Build Docker images for WSO2$(echo $product_name | awk '{print toupper($0)}')"
     echo
-    echo -en "  -l\t"
+    echo -en "  -v\t"
     echo "[REQUIRED] Product version"
     echo
 
@@ -49,8 +49,7 @@ function cleanup {
     rm -rf ${product_base_common_path}
 }
 
-
-while getopts :n:v:e:l:d:o:q FLAG; do
+while getopts :n:v:d: FLAG; do
     case $FLAG in
         n)
             product_name='wso2'$OPTARG
@@ -66,6 +65,10 @@ while getopts :n:v:e:l:d:o:q FLAG; do
             ;;
     esac
 done
+
+if [[ -z ${product_version} ]] || [[ -z ${product_name} ]] || [[ -z ${dockerfile_path} ]]; then
+   showUsageAndExit
+fi
 
 product_path="${dockerfile_path}/../"
 product_base_path="${product_path}/base"
@@ -117,7 +120,7 @@ echoBold "HTTP server started at ${httpserver_address}"
 
 echoBold "Building docker image ${image_id}..."
 
-image_id=wso2/"${product_name}-${product_version}"
+image_id=wso2/"${product_name}":"${product_version}"
 
 build_cmd="docker build --no-cache=true \
 --build-arg WSO2_SERVER=${product_name} \
