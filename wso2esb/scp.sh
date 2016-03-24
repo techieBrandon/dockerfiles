@@ -18,7 +18,7 @@
 # ------------------------------------------------------------------------
 set -e
 
-product_name=esb
+product_name=wso2esb
 
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)

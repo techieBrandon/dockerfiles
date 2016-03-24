@@ -19,7 +19,7 @@
 
 set -e
 
-product_name=am
+product_name=wso2am
 
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)

@@ -29,11 +29,11 @@ function showUsageAndExit() {
     echoBold "Usage: ./build.sh -v [product-version]"
     echo
 
-    op_versions=$(listFiles "${PUPPET_HOME}/hieradata/dev/wso2/wso2${product_name}/")
+    op_versions=$(listFiles "${PUPPET_HOME}/hieradata/dev/wso2/${product_name}/")
     op_versions_str=$(echo $op_versions | tr ' ' ',')
     op_versions_str="${op_versions_str//,/, }"
 
-    op_profiles=$(listFiles "${PUPPET_HOME}/hieradata/dev/wso2/wso2${product_name}/$(echo $op_versions | head -n1 | awk '{print $1}')/")
+    op_profiles=$(listFiles "${PUPPET_HOME}/hieradata/dev/wso2/${product_name}/$(echo $op_versions | head -n1 | awk '{print $1}')/")
     op_profiles_str=$(echo $op_profiles | tr ' ' ',')
     op_profiles_str="${op_profiles_str//.yaml/}"
     op_profiles_str="${op_profiles_str//,/, }"
@@ -41,12 +41,12 @@ function showUsageAndExit() {
     echo "Available product profiles: ${op_profiles_str}"
     echo
 
-    echoBold "Build Docker images for WSO2$(echo $product_name | awk '{print toupper($0)}')"
+    echoBold "Build Docker images for $(echo $product_name | awk '{print toupper($0)}')"
     echo
     echo -en "  -v\t"
-    echo "[REQUIRED] Product version of WSO2$(echo $product_name | awk '{print toupper($0)}')"
+    echo "[REQUIRED] Product version of $(echo $product_name | awk '{print toupper($0)}')"
     echo -en "  -l\t"
-    echo "[OPTIONAL] '|' separated WSO2$(echo $product_name | awk '{print toupper($0)}') profiles to build. 'default' is selected if no value is specified."
+    echo "[OPTIONAL] '|' separated $(echo $product_name | awk '{print toupper($0)}') profiles to build. 'default' is selected if no value is specified."
     echo -en "  -e\t"
     echo "[OPTIONAL] Environment. 'dev' is selected if no value is specified."
     echo -en "  -o\t"
@@ -73,10 +73,10 @@ function cleanup() {
 # $1 product name = esb
 # $2 product version = 4.9.0
 function validateProductVersion() {
-    ver_dir="${PUPPET_HOME}/hieradata/dev/wso2/wso2${1}/${2}"
+    ver_dir="${PUPPET_HOME}/hieradata/dev/wso2/${1}/${2}"
     if [ ! -d "$ver_dir" ]; then
-        echoError "Provided product version wso2${1}:${2} doesn't exist in PUPPET_HOME: ${PUPPET_HOME}. Available versions are,"
-        listFiles "${PUPPET_HOME}/hieradata/dev/wso2/wso2${1}/"
+        echoError "Provided product version ${1}:${2} doesn't exist in PUPPET_HOME: ${PUPPET_HOME}. Available versions are,"
+        listFiles "${PUPPET_HOME}/hieradata/dev/wso2/${1}/"
         echo
         showUsageAndExit
     fi
@@ -90,7 +90,7 @@ function validateProfile() {
     IFS='|' read -r -a array <<< "${3}"
     for profile in "${array[@]}"
     do
-        profile_yaml="${PUPPET_HOME}/hieradata/dev/wso2/wso2${1}/${2}/${profile}.yaml"
+        profile_yaml="${PUPPET_HOME}/hieradata/dev/wso2/${1}/${2}/${profile}.yaml"
         if [ ! -e "${profile_yaml}" ] || [ ! -s "${profile_yaml}" ]
         then
             invalidFound=true
@@ -99,8 +99,8 @@ function validateProfile() {
 
     if [ "${invalidFound}" == true ]
     then
-        echoError "One or more provided product profiles wso2${1}:${2}-[${3}] do not exist in PUPPET_HOME: ${PUPPET_HOME}. Available profiles are,"
-        listFiles "${PUPPET_HOME}/hieradata/dev/wso2/wso2${1}/${2}/"
+        echoError "One or more provided product profiles ${1}:${2}-[${3}] do not exist in PUPPET_HOME: ${PUPPET_HOME}. Available profiles are,"
+        listFiles "${PUPPET_HOME}/hieradata/dev/wso2/${1}/${2}/"
         echo
         showUsageAndExit
     fi
@@ -253,7 +253,7 @@ do
 
         # if there is a custom init.sh script supplied specific for the profile of this product, pack
         # it to ${dockerfile_path}/scripts/
-        product_init_script_name="wso2${product_name}-${profile}-init.sh"
+        product_init_script_name="${product_name}-${profile}-init.sh"
         if [[ -f "${dockerfile_path}/${product_init_script_name}" ]]; then
             pushd "${dockerfile_path}" > /dev/null
             cp "${product_init_script_name}" scripts/
@@ -263,7 +263,7 @@ do
         echoBold "Building docker image ${image_id}..."
 
         build_cmd="docker build --no-cache=true \
-        --build-arg WSO2_SERVER=\"wso2${product_name}\" \
+        --build-arg WSO2_SERVER=\"${product_name}\" \
         --build-arg WSO2_SERVER_VERSION=\"${product_version}\" \
         --build-arg WSO2_SERVER_PROFILE=\"${profile}\" \
         --build-arg WSO2_ENVIRONMENT=\"${product_env}\" \

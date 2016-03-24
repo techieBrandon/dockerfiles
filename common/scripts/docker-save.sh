@@ -91,10 +91,10 @@ for profile in "${array[@]}"
 do
     if [[ $profile = "default" ]]; then
         image_id="${organization_name}/${product_name}:${product_version}"
-        tar_file="wso2${product_name}-${product_version}.tar"
+        tar_file="${product_name}-${product_version}.tar"
     else
         image_id="${organization_name}/${product_name}-${profile}:${product_version}"
-        tar_file="wso2${product_name}-${profile}-${product_version}.tar"
+        tar_file="${product_name}-${profile}-${product_version}.tar"
     fi
 
     echo "Saving docker image ${image_id} to ${HOME}/docker/images/${tar_file}"
