@@ -54,6 +54,6 @@ USER wso2user
 WORKDIR /mnt
 
 # Expose transport ports
-EXPOSE 8000 8280 8243 9763 9443 10500
+EXPOSE 8000 9763 9443 10500
 
 ENTRYPOINT /usr/local/bin/init.sh
