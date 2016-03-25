@@ -41,6 +41,8 @@ function showUsageAndExit () {
     echo
     echo -en "  -v\t"
     echo "[REQUIRED] Product version of $(echo $product_name | awk '{print toupper($0)}')"
+    echo -en "  -i\t"
+    echo "[OPTIONAL] Docker image version."
     echo -en "  -l\t"
     echo "[OPTIONAL] '|' separated $(echo $product_name | awk '{print toupper($0)}') profiles to run. 'default' is selected if no value is specified."
     echo -en "  -o\t"
@@ -58,13 +60,16 @@ function showUsageAndExit () {
     exit 1
 }
 
-while getopts :n:v:o:p:l:k:m: FLAG; do
+while getopts :n:v:i:o:p:l:k:m: FLAG; do
     case $FLAG in
         n)
             product_name=$OPTARG
             ;;
         v)
             product_version=$OPTARG
+            ;;
+        i)
+            image_version=$OPTARG
             ;;
         o)
             organization_name=$OPTARG
@@ -97,6 +102,11 @@ fi
 if [ -z "$product_profiles" ]
   then
     product_profiles='default'
+fi
+
+if [ -z "$image_version" ]
+  then
+    image_version=''
 fi
 
 if [ -z "$organization_name" ]
@@ -137,7 +147,11 @@ do
         fi
     fi
 
-    container_id=$(docker run -d ${volume_mapping} ${port_mappings} ${env_key_store_password} --name "${name}" "${organization_name}/${product_name}-${profile}:${product_version}")
+    if [ -z "$image_version" ]; then
+        container_id=$(docker run -d ${volume_mapping} ${port_mappings} ${env_key_store_password} --name "${name}" "${organization_name}/${product_name}-${profile}:${product_version}")
+    else
+        container_id=$(docker run -d ${volume_mapping} ${port_mappings} ${env_key_store_password} --name "${name}" "${organization_name}/${product_name}-${profile}:${product_version}-${image_version}")
+    fi
 
     member_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${container_id}")
     if [ -z "${member_ip}" ]; then

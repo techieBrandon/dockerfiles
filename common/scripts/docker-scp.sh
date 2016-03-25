@@ -49,13 +49,16 @@ function showUsageAndExit () {
     exit 1
 }
 
-while getopts :n:v:l:h: FLAG; do
+while getopts :n:v:i:l:h: FLAG; do
     case $FLAG in
         n)
             product_name=$OPTARG
             ;;
         v)
             product_version=$OPTARG
+            ;;
+        i)
+            image_version=$OPTARG
             ;;
         l)
             product_profiles=$OPTARG
@@ -88,7 +91,11 @@ fi
 IFS='|' read -r -a array <<< "${product_profiles}"
 for profile in "${array[@]}"
 do
-    tar_file="${product_name}-${profile}-${product_version}.tar"
+    if [ -z "$image_version" ]; then
+        tar_file="${product_name}-${profile}-${product_version}.tar"
+    else
+        tar_file="${product_name}-${profile}-${product_version}-${image_version}.tar"
+    fi
 
     IFS='|' read -r -a array2 <<< "${nodes}"
     for node in "${array2[@]}"

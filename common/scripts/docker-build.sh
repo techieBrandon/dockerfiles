@@ -49,6 +49,8 @@ function showUsageAndExit() {
     echo "[OPTIONAL] '|' separated $(echo $product_name | awk '{print toupper($0)}') profiles to build. 'default' is selected if no value is specified."
     echo -en "  -e\t"
     echo "[OPTIONAL] Environment. 'dev' is selected if no value is specified."
+    echo -en "  -i\t"
+    echo "[OPTIONAL] Docker image version."
     echo -en "  -o\t"
     echo "[OPTIONAL] Preferred organization name. 'wso2' is selected if no value is specified."
     echo -en "  -q\t"
@@ -131,13 +133,16 @@ function findHostIP() {
 
 verbose=true
 
-while getopts :n:v:e:l:d:o:q FLAG; do
+while getopts :n:v:e:l:i:d:o:q FLAG; do
     case $FLAG in
         n)
             product_name=$OPTARG
             ;;
         v)
             product_version=$OPTARG
+            ;;
+        i)
+            image_version=$OPTARG
             ;;
         l)
             product_profiles=$OPTARG
@@ -239,7 +244,12 @@ echoBold "HTTP server started at ${httpserver_address}"
 IFS='|' read -r -a profiles_array <<< "${product_profiles}"
 for profile in "${profiles_array[@]}"
 do
-    image_id="${organization_name}/${product_name}-${profile}:${product_version}"
+    #add image version to tag if specified
+    if [ -z "$image_version" ]; then
+        image_id="${organization_name}/${product_name}-${profile}:${product_version}"
+    else
+        image_id="${organization_name}/${product_name}-${profile}:${product_version}-${image_version}"
+    fi
 
     image_exists=$(docker images $image_id | wc -l)
     if [ ${image_exists} == "2" ]; then

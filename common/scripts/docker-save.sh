@@ -38,6 +38,8 @@ function showUsageAndExit () {
     echo
     echo -en "  -v\t"
     echo "[REQUIRED] Product version of WSO2$(echo $product_name | awk '{print toupper($0)}')"
+    echo -en "  -i\t"
+    echo "[OPTIONAL] Docker image version."
     echo -en "  -l\t"
     echo "[OPTIONAL] '|' separated WSO2$(echo $product_name | awk '{print toupper($0)}') profiles to save. 'default' is selected if no value is specified."
     echo -en "  -o\t"
@@ -49,13 +51,16 @@ function showUsageAndExit () {
     exit 1
 }
 
-while getopts :n:v:o:l: FLAG; do
+while getopts :n:v:i:o:l: FLAG; do
     case $FLAG in
         n)
             product_name=$OPTARG
             ;;
         v)
             product_version=$OPTARG
+            ;;
+        i)
+            image_version=$OPTARG
             ;;
         o)
             organization_name=$OPTARG
@@ -91,6 +96,14 @@ for profile in "${array[@]}"
 do
     image_id="${organization_name}/${product_name}-${profile}:${product_version}"
         tar_file="${product_name}-${profile}-${product_version}.tar"
+
+    if [ -z "$image_version" ]; then
+        image_id="${organization_name}/${product_name}-${profile}:${product_version}"
+        tar_file="${product_name}-${profile}-${product_version}.tar"
+    else
+        image_id="${organization_name}/${product_name}-${profile}:${product_version}-${image_version}"
+        tar_file="${product_name}-${profile}-${product_version}-${image_version}.tar"
+    fi
 
     echo "Saving docker image ${image_id} to ${HOME}/docker/images/${tar_file}"
     mkdir -p "${HOME}/docker/images/"
