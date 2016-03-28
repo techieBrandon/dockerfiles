@@ -22,7 +22,7 @@ set -e
 pushd /mnt > /dev/null
 addgroup wso2
 adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user
-apt-get install -y unzip wget
+apt-get update && apt-get install -y unzip wget
 mkdir -p /mnt/jdk
 mkdir -p /mnt/pack
 wget -nH -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/jdk/${JDK_ARCHIVE} -P jdk

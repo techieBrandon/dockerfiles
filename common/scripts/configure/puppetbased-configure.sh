@@ -21,8 +21,8 @@ set -e
 
 mkdir -p /etc/puppet
 pushd /etc/puppet > /dev/null
-addgroup wso2
-adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user
+getent group wso2 > /dev/null 2>&1 || addgroup wso2
+id -u wso2user > /dev/null 2>&1 || adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user
 apt-get update && apt-get install -y wget puppet
 wget -nH -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/hiera.yaml
 wget -rnH -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/hieradata/

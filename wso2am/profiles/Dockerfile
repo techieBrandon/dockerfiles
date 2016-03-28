@@ -16,7 +16,7 @@
 
 # ------------------------------------------------------------------------
 
-FROM ubuntu:latest
+FROM wso2/wso2am:1.10.0
 MAINTAINER dev@wso2.org
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -44,7 +44,9 @@ ENV FACTER_product_name=${WSO2_SERVER} \
     FACTER_product_version=${WSO2_SERVER_VERSION} \
     FACTER_product_profile=${WSO2_SERVER_PROFILE} \
     FACTER_environment=${WSO2_ENVIRONMENT} \
-    FACTER_vm_type=docker
+    FACTER_vm_type=docker \
+    FACTER_wso2_patching_mode=true \
+    FACTER_wso2_upgrade_jdk=false
 
 # Execute configuration script - a file with name <CONFIG_FILE_SUFFIX>-configure.sh will be picked
 COPY configure/${CONFIG_FILE_SUFFIX}-configure.sh /${CONFIG_FILE_SUFFIX}-configure.sh

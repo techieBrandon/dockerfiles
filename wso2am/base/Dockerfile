@@ -41,7 +41,7 @@ COPY common/install/install.sh /install.sh
 RUN bash /install.sh
 
 WORKDIR /mnt
-USER wso2user
+# USER wso2user
 
 # Expose transport ports
 EXPOSE 10397 8280 8243 9763 9443
