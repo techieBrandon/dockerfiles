@@ -79,10 +79,18 @@ mkdir -p "${product_base_common_path}/scripts"
 cp "${self_path}/entrypoint.sh" "${product_base_common_path}/scripts/init.sh"
 mkdir -p "${product_base_common_path}/install"
 cp "${self_path}/install/install.sh" "${product_base_common_path}/install/install.sh"
+
 mkdir -p "${product_base_common_path}/jdk"
-cp "${self_path}"/../../common/jdk/*  "${product_base_common_path}/jdk"
 mkdir -p "${product_base_common_path}/pack"
-cp ${product_path}/pack/"${product_name}-${product_version}".zip "${product_base_common_path}/pack"
+
+# if PUPPET_HOME environment variable is set try to take the jdk and the product distribution from there
+if [ -n ${PUPPET_HOME} ]; then
+    cp -v ${PUPPET_HOME}/modules/wso2base/files/jdk*.tar.gz "${product_base_common_path}/jdk"
+    cp -v ${PUPPET_HOME}/modules/${product_name}/files/"${product_name}-${product_version}".zip "${product_base_common_path}/pack"
+else
+    cp -v "${self_path}"/../../common/jdk/*  "${product_base_common_path}/jdk"
+    cp -v ${product_path}/pack/"${product_name}-${product_version}".zip "${product_base_common_path}/pack"
+fi
 
 function findHostIP() {
     local _ip _line
