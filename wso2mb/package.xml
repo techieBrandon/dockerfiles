@@ -28,10 +28,10 @@
             <directory>${project.basedir}/../</directory>
             <outputDirectory>./</outputDirectory>
             <includes>
-                <include>${wso2.product.name}/*</include>
+                <include>${wso2.product.name}/**</include>
             </includes>
             <excludes>
-                <exclude>${wso2.product.name}/target</exclude>
+                <exclude>${wso2.product.name}/target/**</exclude>
                 <exclude>**/package.xml</exclude>
                 <exclude>**/pom.xml</exclude>
                 <exclude>**/*.zip</exclude>
@@ -48,9 +48,14 @@
             <outputDirectory>./common/</outputDirectory>
             <includes>
                 <include>**</include>
-                <include>scripts/docker/**</include>
-                <include>scripts/base.sh</include>
             </includes>
+            <excludes>
+                <exclude>**/*.zip</exclude>
+                <exclude>**/*.jar</exclude>
+                <exclude>**/*.tar.gz</exclude>
+                <exclude>**/.git*</exclude>
+                <exclude>**/*.iml</exclude>
+            </excludes>
         </fileSet>
     </fileSets>
     <files>
