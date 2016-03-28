@@ -25,7 +25,6 @@ source "${DIR}/base.sh"
 # Show usage and exit
 function showUsageAndExit() {
     echoError "Insufficient or invalid options provided!"
-    echo
     echoBold "Usage: ./build.sh -v [product-version]"
     echo
 
@@ -41,7 +40,7 @@ function showUsageAndExit() {
     echo "Available product profiles: ${op_profiles_str}"
     echo
 
-    echoBold "Build Docker images for $(echo $product_name | awk '{print toupper($0)}')"
+    echoBold "Options:"
     echo
     echo -en "  -v\t"
     echo "[REQUIRED] Product version of $(echo $product_name | awk '{print toupper($0)}')"

@@ -24,11 +24,9 @@ source "${DIR}/default-values.sh"
 
 function showUsageAndExit() {
     echoError "Insufficient or invalid options provided!"
-    echo
     echoBold "Usage: ./build.sh -v [product-version] "
     echo
-
-    echoBold "Build Docker images for $(echo $product_name | awk '{print toupper($0)}')"
+    echoBold "Options:"
     echo
     echo -en "  -v\t"
     echo "[REQUIRED] Product version"
