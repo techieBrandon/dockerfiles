@@ -34,7 +34,7 @@ function showUsageAndExit () {
         echo
     fi
 
-    echoBold "Save WSO2$(echo $product_name | awk '{print toupper($0)}') Docker images to tarballs to ${HOME}/docker/images"
+    echoBold "Options:"
     echo
     echo -en "  -v\t"
     echo "[REQUIRED] Product version of WSO2$(echo $product_name | awk '{print toupper($0)}')"

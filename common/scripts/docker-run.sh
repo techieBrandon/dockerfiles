@@ -37,7 +37,7 @@ function showUsageAndExit () {
         exposed_ports="for the exposed ports ${exposed_ports}"
     fi
 
-    echoBold "Run $(echo $product_name | awk '{print toupper($0)}') Docker containers"
+    echoBold "Options:"
     echo
     echo -en "  -v\t"
     echo "[REQUIRED] Product version of $(echo $product_name | awk '{print toupper($0)}')"

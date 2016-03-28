@@ -34,7 +34,7 @@ function showUsageAndExit () {
         echo
     fi
 
-    echoBold "SCP saved Docker images for $(echo $product_name | awk '{print toupper($0)}') to specified hosts"
+    echoBold "Options:"
     echo
     echo -en "  -h\t"
     echo "[REQUIRED] The '|' separated list of hosts to transfer the Docker images. This should be of format 'user@ip1|user@ip2|user@ip3'"
