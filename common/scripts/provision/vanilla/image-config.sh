@@ -23,23 +23,25 @@ pushd /mnt > /dev/null
 addgroup wso2
 adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user
 apt-get update && apt-get install -y unzip wget
-mkdir -p /mnt/jdk
-mkdir -p /mnt/pack
-wget -nH -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/jdk/${JDK_ARCHIVE} -P jdk
-wget -nH -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/pack/${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip -P pack
-wget -rnH --level=10 -e robots=off --reject "index.html*" --no-parent -nv ${HTTP_PACK_SERVER}/scripts/
+wget -nH -r -e robots=off --reject "index.html*" -A "jdk*.tar.gz" -nv ${HTTP_PACK_SERVER}/
+wget -nH -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip
 echo "unpacking ${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip to /mnt"
-unzip -q /mnt/pack/${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip -d /mnt
+unzip -q /mnt/${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip -d /mnt
 mkdir -p /opt/java
-echo "unpacking ${JDK_ARCHIVE} to /opt/java"
-tar -xf /mnt/jdk/${JDK_ARCHIVE} -C ${JAVA_INSTALL_PATH} --strip-components=1
-chmod -R 0755 /mnt/scripts
-cp /mnt/scripts/* /usr/local/bin/
-rm -rf /mnt/pack
-rm -rf /mnt/jdk
-rm -rf /mnt/scripts
+echo "unpacking the JDK to /opt/java"
+tar -xf /mnt/jdk* -C /opt/java --strip-components=1
+rm -rf /mnt/${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip
+rm -rf /mnt/jdk*
 apt-get purge -y --auto-remove wget unzip
 rm -rfv /var/lib/apt/lists/*
 chown wso2user:wso2 /usr/local/bin/*
 chown -R wso2user:wso2 /mnt
+
+cat > /etc/profile.d/set_java_home.sh << EOF
+export JAVA_HOME=/opt/java
+export PATH=/opt/java/bin:\$PATH
+EOF
+
+cat /etc/profile.d/set_java_home.sh
+
 popd > /dev/null

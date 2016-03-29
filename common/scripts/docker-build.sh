@@ -19,8 +19,8 @@
 set -e
 
 SECONDS=0
-DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-source "${DIR}/base.sh"
+self_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source "${self_path}/base.sh"
 
 # Show usage and exit
 function showUsageAndExit() {
@@ -28,17 +28,17 @@ function showUsageAndExit() {
     echoBold "Usage: ./build.sh -v [product-version]"
     echo
 
-    op_versions=$(listFiles "${PUPPET_HOME}/hieradata/dev/wso2/${product_name}/")
-    op_versions_str=$(echo $op_versions | tr ' ' ',')
-    op_versions_str="${op_versions_str//,/, }"
-
-    op_profiles=$(listFiles "${PUPPET_HOME}/hieradata/dev/wso2/${product_name}/$(echo $op_versions | head -n1 | awk '{print $1}')/")
-    op_profiles_str=$(echo $op_profiles | tr ' ' ',')
-    op_profiles_str="${op_profiles_str//.yaml/}"
-    op_profiles_str="${op_profiles_str//,/, }"
-    echo "Available product versions: ${op_versions_str}"
-    echo "Available product profiles: ${op_profiles_str}"
-    echo
+    # op_versions=$(listFiles "${PUPPET_HOME}/hieradata/dev/wso2/${product_name}/")
+    # op_versions_str=$(echo $op_versions | tr ' ' ',')
+    # op_versions_str="${op_versions_str//,/, }"
+    #
+    # op_profiles=$(listFiles "${PUPPET_HOME}/hieradata/dev/wso2/${product_name}/$(echo $op_versions | head -n1 | awk '{print $1}')/")
+    # op_profiles_str=$(echo $op_profiles | tr ' ' ',')
+    # op_profiles_str="${op_profiles_str//.yaml/}"
+    # op_profiles_str="${op_profiles_str//,/, }"
+    # echo "Available product versions: ${op_versions_str}"
+    # echo "Available product profiles: ${op_profiles_str}"
+    # echo
 
     echoBold "Options:"
     echo
@@ -46,14 +46,14 @@ function showUsageAndExit() {
     echo "[REQUIRED] Product version of $(echo $product_name | awk '{print toupper($0)}')"
     echo -en "  -l\t"
     echo "[OPTIONAL] '|' separated $(echo $product_name | awk '{print toupper($0)}') profiles to build. 'default' is selected if no value is specified."
-    echo -en "  -e\t"
-    echo "[OPTIONAL] Environment. 'dev' is selected if no value is specified."
     echo -en "  -i\t"
     echo "[OPTIONAL] Docker image version."
     echo -en "  -o\t"
     echo "[OPTIONAL] Preferred organization name. 'wso2' is selected if no value is specified."
     echo -en "  -q\t"
     echo "[OPTIONAL] Quiet flag. If used, the docker build run output will be suppressed"
+    echo -en "  -r\t"
+    echo "[OPTIONAL] Provisioning method. If not specified this is defaulted to \"vanilla\"."
     echo
 
     ex_version=$(echo ${op_versions_str} | head -n1 | awk '{print $1}')
@@ -131,14 +131,24 @@ function findHostIP() {
 }
 
 verbose=true
+provision_method="vanilla"
 
-while getopts :n:v:e:l:i:d:o:q FLAG; do
+while getopts :r:n:v:d:l:i:o:q FLAG; do
     case $FLAG in
+        r)
+            provision_method=$OPTARG
+            ;;
+        q)
+            verbose=false
+            ;;
         n)
             product_name=$OPTARG
             ;;
         v)
             product_version=$OPTARG
+            ;;
+        d)
+            dockerfile_path=$OPTARG
             ;;
         i)
             image_version=$OPTARG
@@ -146,17 +156,8 @@ while getopts :n:v:e:l:i:d:o:q FLAG; do
         l)
             product_profiles=$OPTARG
             ;;
-        e)
-            product_env=$OPTARG
-            ;;
-        d)
-            dockerfile_path=$OPTARG
-            ;;
         o)
             organization_name=$OPTARG
-            ;;
-        q)
-            verbose=false
             ;;
         \?)
             showUsageAndExit
@@ -164,61 +165,66 @@ while getopts :n:v:e:l:i:d:o:q FLAG; do
     esac
 done
 
-prgdir2=$(dirname "$0")
-self_path=$(cd "$prgdir2"; pwd)
-
-# Check if a Puppet folder is set
-if [ -z "$PUPPET_HOME" ]; then
-    echoError "Puppet home folder could not be found! Set PUPPET_HOME environment variable pointing to local puppet folder."
-    exit 1
+if [[ -z ${product_version} ]] || [[ -z ${product_name} ]] || [[ -z ${dockerfile_path} ]]; then
+   showUsageAndExit
 fi
 
-# Validate mandatory args
-if [ -z "$product_version" ]
-  then
-    showUsageAndExit
-fi
-
-# Default values for optional args
-if [ -z "$product_profiles" ]
-  then
-    product_profiles="default"
-fi
-
-if [ -z "$product_env" ]; then
-    product_env="dev"
-fi
-
-# Appending characters to suit the image id
-if [ ! -z "$image_version" ]; then
-    image_version="-${image_version}"
-fi
-
+# org name adjustment
 if [ ! -z "$organization_name" ]; then
     organization_name="${organization_name}/"
 fi
 
-# check if provided product version exists in PUPPET_HOME
-validateProductVersion "${product_name}" "${product_version}"
+# Default values for optional args
+if [ -z "$product_profiles" ]
+then
+    product_profiles="default"
+fi
 
-# check if provided profile exists in PUPPET_HOME
-validateProfile "${product_name}" "${product_version}" "${product_profiles}"
+echo "Provisioning Method: ${provision_method}"
+
+pushd "${self_path}/provision/${provision_method}" > /dev/null 2>&1
+source image-prep.sh
+popd > /dev/null 2>&1
 
 # validate docker version against minimum required docker version
 # docker_version=$(docker version --format '{{.Server.Version}}')
 docker_version=$(docker version | grep 'Version:' | awk '{print $2}')
 min_required_docker_version=1.9.0
 validateDockerVersion "${docker_version}" "${min_required_docker_version}"
+#
+# # Check if a Puppet folder is set
+# if [ -z "$PUPPET_HOME" ]; then
+#     echoError "Puppet home folder could not be found! Set PUPPET_HOME environment variable pointing to local puppet folder."
+#     exit 1
+# fi
+#
+# # Validate mandatory args
+# if [ -z "$product_version" ]
+#   then
+#     showUsageAndExit
+# fi
+#
+#
+# if [ -z "$product_env" ]; then
+#     product_env="dev"
+# fi
+#
+
+#
+# # check if provided product version exists in PUPPET_HOME
+# validateProductVersion "${product_name}" "${product_version}"
+#
+# # check if provided profile exists in PUPPET_HOME
+# validateProfile "${product_name}" "${product_version}" "${product_profiles}"
 
 # Copy common files to Dockerfile context
 echoBold "Creating Dockerfile context..."
 mkdir -p "${dockerfile_path}/scripts"
 cp "${self_path}/entrypoint.sh" "${dockerfile_path}/scripts/init.sh"
-mkdir -p "${dockerfile_path}/configure"
-cp "${self_path}/configure/puppetbased-configure.sh" "${dockerfile_path}/configure/puppetbased-configure.sh"
+cp "${self_path}/provision/${provision_method}/image-config.sh" "${dockerfile_path}/scripts/image-config.sh"
 
 # starting http server
-echoBold "Starting HTTP server in ${PUPPET_HOME}..."
+echoBold "Starting HTTP server in ${file_location}/..."
 
 # check if port 8000 is already in use
 port_uses=$(lsof -i:8000 | wc -l)
@@ -228,7 +234,7 @@ if [ $port_uses -gt 1 ]; then
 fi
 
 # start the server in background
-pushd ${PUPPET_HOME} > /dev/null 2>&1
+pushd ${file_location} > /dev/null 2>&1
 python -m SimpleHTTPServer 8000 & > /dev/null 2>&1
 httpserver_pid=$!
 sleep 5
@@ -248,12 +254,21 @@ echoBold "HTTP server started at ${httpserver_address}"
 IFS='|' read -r -a profiles_array <<< "${product_profiles}"
 for profile in "${profiles_array[@]}"
 do
-
-    if [[ "${profile}" = "default" ]]; then
-        image_id="${organization_name}${product_name}:${product_version}${image_version}"
+    #add image version to tag if specified
+    if [ -z "$image_version" ]; then
+        image_version_section="${product_version}"
     else
-        image_id="${organization_name}${product_name}-${profile}:${product_version}${image_version}"
+        image_version_section="${product_version}-${image_version}"
     fi
+
+    # set image name according to the profile list
+    if [[ "${profile}" = "default" ]]; then
+        image_name_section="${organization_name}${product_name}"
+    else
+        image_name_section="${organization_name}${product_name}-${profile}"
+    fi
+
+    image_id="${image_name_section}:${image_version_section}"
 
     image_exists=$(docker images $image_id | wc -l)
     if [ ${image_exists} == "2" ]; then
@@ -268,7 +283,7 @@ do
         product_init_script_name="${product_name}-${profile}-init.sh"
         if [[ -f "${dockerfile_path}/${product_init_script_name}" ]]; then
             pushd "${dockerfile_path}" > /dev/null
-            cp "${product_init_script_name}" scripts/
+            cp "${product_init_script_name}" "${file_location}"/scripts/
             popd > /dev/null
         fi
 
@@ -279,7 +294,7 @@ do
         --build-arg WSO2_SERVER_VERSION=\"${product_version}\" \
         --build-arg WSO2_SERVER_PROFILE=\"${profile}\" \
         --build-arg WSO2_ENVIRONMENT=\"${product_env}\" \
-        --build-arg HTTP_PUPPET_SERVER=\"${httpserver_address}\" \
+        --build-arg HTTP_PACK_SERVER=\"${httpserver_address}\" \
         -t \"${image_id}\" \"${dockerfile_path}\""
 
         {
