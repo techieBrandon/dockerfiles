@@ -83,19 +83,23 @@ if [ -z "$nodes" ]
     showUsageAndExit
 fi
 
+# Default values for optional args
 if [ -z "$product_profiles" ]
   then
     product_profiles='default'
 fi
 
+# Appending a character to suit the image id
+if [ ! -z "$image_version" ]
+  then
+    image_version="-${image_version}"
+fi
+
 IFS='|' read -r -a array <<< "${product_profiles}"
 for profile in "${array[@]}"
 do
-    if [ -z "$image_version" ]; then
-        tar_file="${product_name}-${profile}-${product_version}.tar"
-    else
-        tar_file="${product_name}-${profile}-${product_version}-${image_version}.tar"
-    fi
+
+    tar_file="${product_name}-${profile}-${product_version}${image_version}.tar"
 
     IFS='|' read -r -a array2 <<< "${nodes}"
     for node in "${array2[@]}"

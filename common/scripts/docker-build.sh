@@ -189,8 +189,13 @@ if [ -z "$product_env" ]; then
     product_env="dev"
 fi
 
-if [ -z "$organization_name" ]; then
-    organization_name="wso2"
+# Appending characters to suit the image id
+if [ ! -z "$image_version" ]; then
+    image_version="-${image_version}"
+fi
+
+if [ ! -z "$organization_name" ]; then
+    organization_name="${organization_name}/"
 fi
 
 # check if provided product version exists in PUPPET_HOME
@@ -243,12 +248,8 @@ echoBold "HTTP server started at ${httpserver_address}"
 IFS='|' read -r -a profiles_array <<< "${product_profiles}"
 for profile in "${profiles_array[@]}"
 do
-    #add image version to tag if specified
-    if [ -z "$image_version" ]; then
-        image_id="${organization_name}/${product_name}-${profile}:${product_version}"
-    else
-        image_id="${organization_name}/${product_name}-${profile}:${product_version}-${image_version}"
-    fi
+
+    image_id="${organization_name}${product_name}-${profile}:${product_version}${image_version}"
 
     image_exists=$(docker images $image_id | wc -l)
     if [ ${image_exists} == "2" ]; then

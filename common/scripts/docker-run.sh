@@ -25,7 +25,7 @@ function showUsageAndExit () {
     echoBold "Usage: ./run.sh -v [product-version]"
     echo
 
-    op_pversions=$(docker images | grep ${organization_name}/$product_name | awk '{print $1,"\t- ", $2}')
+    op_pversions=$(docker images | grep $product_name | awk '{print $1,"\t- ", $2}')
     if [ -n "$op_pversions" ]; then
         echo "Available product images:"
         echo "$op_pversions"
@@ -104,16 +104,6 @@ if [ -z "$product_profiles" ]
     product_profiles='default'
 fi
 
-if [ -z "$image_version" ]
-  then
-    image_version=''
-fi
-
-if [ -z "$organization_name" ]
-  then
-    organization_name='wso2'
-fi
-
 if [ -z "$port_mappings" ]
   then
     port_mappings='-P'
@@ -128,6 +118,18 @@ if [ -z "$key_store_password" ]; then
     env_key_store_password=
 else
     env_key_store_password="-e KEY_STORE_PASSWORD=${key_store_password}"
+fi
+
+
+# Appending characters to suit the image id
+if [ ! -z "$image_version" ]
+  then
+    image_version="-${image_version}"
+fi
+
+if [ ! -z "$organization_name" ]
+  then
+    organization_name="${organization_name}/"
 fi
 
 IFS='|' read -r -a profiles_array <<< "${product_profiles}"
@@ -147,11 +149,7 @@ do
         fi
     fi
 
-    if [ -z "$image_version" ]; then
-        container_id=$(docker run -d ${volume_mapping} ${port_mappings} ${env_key_store_password} --name "${name}" "${organization_name}/${product_name}-${profile}:${product_version}")
-    else
-        container_id=$(docker run -d ${volume_mapping} ${port_mappings} ${env_key_store_password} --name "${name}" "${organization_name}/${product_name}-${profile}:${product_version}-${image_version}")
-    fi
+    container_id=$(docker run -d ${volume_mapping} ${port_mappings} ${env_key_store_password} --name "${name}" "${organization_name}${product_name}-${profile}:${product_version}${image_version}")
 
     member_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${container_id}")
     if [ -z "${member_ip}" ]; then

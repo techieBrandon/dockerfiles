@@ -27,7 +27,7 @@ function showUsageAndExit () {
     echoBold "Usage: ./save.sh -v [product-version]"
     echo
 
-    op_pversions=$(docker images | grep wso2/$product_name | awk '{print $1,"\t- ", $2}')
+    op_pversions=$(docker images | grep $product_name | awk '{print $1,"\t- ", $2}')
     if [ -n "$op_pversions" ]; then
         echo "Available product images:"
         echo "$op_pversions"
@@ -85,10 +85,17 @@ if [ -z "$product_profiles" ]
     product_profiles='default'
 fi
 
-if [ -z "$organization_name" ]
+# Appending characters to suit the image id
+if [ ! -z "$image_version" ]
   then
-    organization_name='wso2'
+    image_version="-${image_version}"
 fi
+
+if [ ! -z "$organization_name" ]
+  then
+    organization_name="${organization_name}/"
+fi
+
 
 
 IFS='|' read -r -a array <<< "${product_profiles}"
@@ -97,13 +104,8 @@ do
     image_id="${organization_name}/${product_name}-${profile}:${product_version}"
         tar_file="${product_name}-${profile}-${product_version}.tar"
 
-    if [ -z "$image_version" ]; then
-        image_id="${organization_name}/${product_name}-${profile}:${product_version}"
-        tar_file="${product_name}-${profile}-${product_version}.tar"
-    else
-        image_id="${organization_name}/${product_name}-${profile}:${product_version}-${image_version}"
-        tar_file="${product_name}-${profile}-${product_version}-${image_version}.tar"
-    fi
+    image_id="${organization_name}${product_name}-${profile}:${product_version}${image_version}"
+    tar_file="${product_name}-${profile}-${product_version}${image_version}.tar"
 
     echo "Saving docker image ${image_id} to ${HOME}/docker/images/${tar_file}"
     mkdir -p "${HOME}/docker/images/"
