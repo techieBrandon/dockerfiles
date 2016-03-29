@@ -149,7 +149,11 @@ do
         fi
     fi
 
-    container_id=$(docker run -d ${volume_mapping} ${port_mappings} ${env_key_store_password} --name "${name}" "${organization_name}${product_name}-${profile}:${product_version}${image_version}")
+    if [[ "${profile}" = "default" ]]; then
+        container_id=$(docker run -d ${volume_mapping} ${port_mappings} ${env_key_store_password} --name "${name}" "${organization_name}${product_name}:${product_version}${image_version}")
+    else
+        container_id=$(docker run -d ${volume_mapping} ${port_mappings} ${env_key_store_password} --name "${name}" "${organization_name}${product_name}-${profile}:${product_version}${image_version}")
+    fi
 
     member_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${container_id}")
     if [ -z "${member_ip}" ]; then

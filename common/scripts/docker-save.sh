@@ -101,11 +101,14 @@ fi
 IFS='|' read -r -a array <<< "${product_profiles}"
 for profile in "${array[@]}"
 do
-    image_id="${organization_name}/${product_name}-${profile}:${product_version}"
-        tar_file="${product_name}-${profile}-${product_version}.tar"
 
-    image_id="${organization_name}${product_name}-${profile}:${product_version}${image_version}"
-    tar_file="${product_name}-${profile}-${product_version}${image_version}.tar"
+    if [[ "${profile}" = "default" ]]; then
+        image_id="${organization_name}${product_name}:${product_version}${image_version}"
+        tar_file="${product_name}-${product_version}${image_version}.tar"
+    else
+        image_id="${organization_name}${product_name}-${profile}:${product_version}${image_version}"
+        tar_file="${product_name}-${profile}-${product_version}${image_version}.tar"
+    fi
 
     echo "Saving docker image ${image_id} to ${HOME}/docker/images/${tar_file}"
     mkdir -p "${HOME}/docker/images/"

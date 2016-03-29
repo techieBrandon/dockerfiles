@@ -249,7 +249,11 @@ IFS='|' read -r -a profiles_array <<< "${product_profiles}"
 for profile in "${profiles_array[@]}"
 do
 
-    image_id="${organization_name}${product_name}-${profile}:${product_version}${image_version}"
+    if [[ "${profile}" = "default" ]]; then
+        image_id="${organization_name}${product_name}:${product_version}${image_version}"
+    else
+        image_id="${organization_name}${product_name}-${profile}:${product_version}${image_version}"
+    fi
 
     image_exists=$(docker images $image_id | wc -l)
     if [ ${image_exists} == "2" ]; then
