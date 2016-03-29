@@ -38,10 +38,8 @@ chown wso2user:wso2 /usr/local/bin/*
 chown -R wso2user:wso2 /mnt
 
 cat > /etc/profile.d/set_java_home.sh << EOF
-export JAVA_HOME=/opt/java
-export PATH=/opt/java/bin:\$PATH
+export JAVA_HOME="/opt/java"
+export PATH="/opt/java/bin:\$PATH"
 EOF
-
-cat /etc/profile.d/set_java_home.sh
 
 popd > /dev/null
