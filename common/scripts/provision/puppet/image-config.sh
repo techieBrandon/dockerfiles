@@ -24,11 +24,11 @@ pushd /etc/puppet > /dev/null
 getent group wso2 > /dev/null 2>&1 || addgroup wso2
 id -u wso2user > /dev/null 2>&1 || adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user
 apt-get update && apt-get install -y wget puppet
-wget -nH -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/hiera.yaml
-wget -rnH -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/hieradata/
-wget -rnH -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/manifests/
-wget -rnH --level=10 -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/modules/wso2base/
-wget -rnH --level=10 -e robots=off --reject "index.html*" ${HTTP_PUPPET_SERVER}/modules/${WSO2_SERVER}/
+wget -nH -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/hiera.yaml
+wget -rnH -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/hieradata/
+wget -rnH -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/manifests/
+wget -rnH --level=10 -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/modules/wso2base/
+wget -rnH --level=10 -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/modules/${WSO2_SERVER}/
 puppet module install puppetlabs/stdlib
 puppet module install 7terminals-java
 puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.yaml

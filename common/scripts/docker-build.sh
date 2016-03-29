@@ -56,10 +56,10 @@ function showUsageAndExit() {
     echo "[OPTIONAL] Provisioning method. If not specified this is defaulted to \"vanilla\"."
     echo
 
-    ex_version=$(echo ${op_versions_str} | head -n1 | awk '{print $1}')
-    ex_profile=$(echo ${op_profiles_str} | head -n1 | awk '{print $1}')
-    echoBold "Ex: ./build.sh -v ${ex_version//,/} -l '${ex_profile//,/}'"
-    echo
+#    ex_version=$(echo ${op_versions_str} | head -n1 | awk '{print $1}')
+#    ex_profile=$(echo ${op_profiles_str} | head -n1 | awk '{print $1}')
+#    echoBold "Ex: ./build.sh -v ${ex_version//,/} -l '${ex_profile//,/}'"
+#    echo
     exit 1
 }
 
@@ -72,41 +72,41 @@ function cleanup() {
     fi
 }
 
-# $1 product name = esb
-# $2 product version = 4.9.0
-function validateProductVersion() {
-    ver_dir="${PUPPET_HOME}/hieradata/dev/wso2/${1}/${2}"
-    if [ ! -d "$ver_dir" ]; then
-        echoError "Provided product version ${1}:${2} doesn't exist in PUPPET_HOME: ${PUPPET_HOME}. Available versions are,"
-        listFiles "${PUPPET_HOME}/hieradata/dev/wso2/${1}/"
-        echo
-        showUsageAndExit
-    fi
-}
-
-# $1 product name = esb
-# $2 product version = 4.9.0
-# $3 product profile list = 'default|worker|manager'
-function validateProfile() {
-    invalidFound=false
-    IFS='|' read -r -a array <<< "${3}"
-    for profile in "${array[@]}"
-    do
-        profile_yaml="${PUPPET_HOME}/hieradata/dev/wso2/${1}/${2}/${profile}.yaml"
-        if [ ! -e "${profile_yaml}" ] || [ ! -s "${profile_yaml}" ]
-        then
-            invalidFound=true
-        fi
-    done
-
-    if [ "${invalidFound}" == true ]
-    then
-        echoError "One or more provided product profiles ${1}:${2}-[${3}] do not exist in PUPPET_HOME: ${PUPPET_HOME}. Available profiles are,"
-        listFiles "${PUPPET_HOME}/hieradata/dev/wso2/${1}/${2}/"
-        echo
-        showUsageAndExit
-    fi
-}
+## $1 product name = esb
+## $2 product version = 4.9.0
+#function validateProductVersion() {
+#    ver_dir="${PUPPET_HOME}/hieradata/dev/wso2/${1}/${2}"
+#    if [ ! -d "$ver_dir" ]; then
+#        echoError "Provided product version ${1}:${2} doesn't exist in PUPPET_HOME: ${PUPPET_HOME}. Available versions are,"
+#        listFiles "${PUPPET_HOME}/hieradata/dev/wso2/${1}/"
+#        echo
+#        showUsageAndExit
+#    fi
+#}
+#
+## $1 product name = esb
+## $2 product version = 4.9.0
+## $3 product profile list = 'default|worker|manager'
+#function validateProfile() {
+#    invalidFound=false
+#    IFS='|' read -r -a array <<< "${3}"
+#    for profile in "${array[@]}"
+#    do
+#        profile_yaml="${PUPPET_HOME}/hieradata/dev/wso2/${1}/${2}/${profile}.yaml"
+#        if [ ! -e "${profile_yaml}" ] || [ ! -s "${profile_yaml}" ]
+#        then
+#            invalidFound=true
+#        fi
+#    done
+#
+#    if [ "${invalidFound}" == true ]
+#    then
+#        echoError "One or more provided product profiles ${1}:${2}-[${3}] do not exist in PUPPET_HOME: ${PUPPET_HOME}. Available profiles are,"
+#        listFiles "${PUPPET_HOME}/hieradata/dev/wso2/${1}/${2}/"
+#        echo
+#        showUsageAndExit
+#    fi
+#}
 
 function validateDockerVersion(){
     IFS='.' read -r -a version_1 <<< "$1"
