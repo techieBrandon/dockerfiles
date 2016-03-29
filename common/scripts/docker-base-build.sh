@@ -82,7 +82,7 @@ mkdir -p "${product_base_common_path}/jdk"
 mkdir -p "${product_base_common_path}/pack"
 
 # if PUPPET_HOME environment variable is set try to take the jdk and the product distribution from there
-if [ -n ${PUPPET_HOME} ]; then
+if [ ! -z ${PUPPET_HOME} ]; then
     cp -v ${PUPPET_HOME}/modules/wso2base/files/jdk*.tar.gz "${product_base_common_path}/jdk"
     cp -v ${PUPPET_HOME}/modules/${product_name}/files/"${product_name}-${product_version}".zip "${product_base_common_path}/pack"
 else
