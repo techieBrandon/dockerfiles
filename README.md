@@ -2,7 +2,6 @@
 WSO2 Dockerfiles define the resources and instructions to build the Docker images with the WSO2 products and runtime configurations. This process uses Puppet and Hiera to configure the Docker images.
 
 ## Try it out
-Quick steps to build the WSO2 Product's docker image and run in your local machine
 
 The cloned local copy of WSO2 Dockerfiles will be reffered as DOCKERFILES_HOME.
 
