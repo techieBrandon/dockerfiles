@@ -22,6 +22,12 @@ set -e
 provision_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${provision_path}/../../base.sh"
 
+# Check if a Puppet folder is set
+if [ -z "$PUPPET_HOME" ]; then
+    echoError "Puppet home folder could not be found! Set PUPPET_HOME environment variable pointing to local puppet folder."
+    exit 1
+fi
+
 # $1 product environment = dev
 function validateProductEnvironment() {
     env_dir="${PUPPET_HOME}/hieradata/${1}"
@@ -71,24 +77,6 @@ function validateProfile() {
          exit 1
     fi
 }
-
-while getopts :e: FLAG; do
-    case $FLAG in
-        e)
-            product_env=$OPTARG
-            ;;
-    esac
-done
-
-# Check if a Puppet folder is set
-if [ -z "$PUPPET_HOME" ]; then
-    echoError "Puppet home folder could not be found! Set PUPPET_HOME environment variable pointing to local puppet folder."
-    exit 1
-fi
-
-if [ -z "$product_env" ]; then
-    product_env="dev"
-fi
 
 # check if provided product environment exists in PUPPET_HOME
 validateProductEnvironment "${product_env}"
