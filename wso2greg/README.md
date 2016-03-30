@@ -1,31 +1,28 @@
 # Dockerfile for WSO2 Governance Registry #
-The Dockerfile define the resources and instructions to build the Docker images with the WSO2 products and runtime configurations. This process uses Puppet and Hiera to configure the Docker images.
+The Dockerfile define the resources and instructions to build the Docker images with the WSO2 products and runtime configurations.
 
 ## Try it out
 Quick steps to build the WSO2 Governance Registry docker image and run in your local machine
 
-* Get Puppet Modules
-    - The Puppet modules for WSO2 products can be found in the [WSO2 Puppet Modules repository](https://github.com/wso2/puppet-modules). You can obtain the latest release from the [releases page](https://github.com/wso2/puppet-modules/releases).
-    - After getting the `wso2-puppet-modules-<version>.zip` file, extract it and set `PUPPET_HOME` environment variable pointing to extracted folder.
+The cloned local copy of WSO2 Dockerfiles will be referred as DOCKERFILES_HOME.
 
 * Add product packs and dependencies
-    - Download and copy JDK 1.7 ([jdk-7u80-linux-x64.tar.gz](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)) pack to `<PUPPET_HOME>/modules/wso2base/files`
-    - Download the necessary product packs and copy them to `<PUPPET_HOME>/modules/<MODULE>/files`. For example, for WSO2 Governance Registry 5.1.0 download the [product pack](http://wso2.com/products/governance-registry/) and copy the zip file to `<PUPPET_HOME>/modules/wso2greg/files`.
+    - Download and copy JDK 1.7 ([jdk-7u80-linux-x64.tar.gz](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)) pack to `<DOCKERFILES_HOME>/common/provision/default/files`.
+    - Download the WSO2 Governance Registry zip file (http://wso2.com/products/governance-registry/) and copy it to `<DOCKERFILES_HOME>/common/provision/default/files`.
 
 * Build the docker image
-    - Navigate to `<REPOSITORY_HOME>/wso2greg`.
-    - Execute `build.sh` script and provide the product version, image version and the product profiles to be built.
-        + `./build.sh -v 5.1.0 -i 1.0.0`
+    - Navigate to `<DOCKERFILES_HOME>/wso2greg`.
+    - Execute `build.sh` script and provide the product version.
+        + `./build.sh -v 5.1.0`
 
 * Docker run
-    - Execute `run.sh` script and provide the product version, image version and the product profiles to be run.
-        + `./run.sh -v 5.1.0 -i 1.0.0`
+    - Navigate to `<DOCKERFILES_HOME>/wso2greg`.
+    - Execute `run.sh` script and provide the product version.
+        + `./run.sh -v 5.1.0`
 
 * Access management console
-    - Add an `/etc/hosts` entry in your local machine for `<docker_host_ip> greg.wso2.com`. For example:
-        + `127.0.0.1       greg.wso2.com`
-    -  To access the management console.
-        + `https://greg.wso2.com:32002/carbon`
+    -  To access the management console, use the docker host ip and port 9443.
+        + `https://<DOCKER_HOST_IP>:9443/carbon`
 
 ## Detailed Configurations
 
