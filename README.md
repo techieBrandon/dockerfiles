@@ -1,5 +1,5 @@
 # WSO2 Dockerfiles
-WSO2 Dockerfiles define the resources and instructions to build the Docker images with the WSO2 products and runtime configurations. This process uses Puppet and Hiera to configure the Docker images.
+WSO2 Dockerfiles define the resources and instructions to build the Docker images with the WSO2 products and runtime configurations.
 
 ## Try it out
 

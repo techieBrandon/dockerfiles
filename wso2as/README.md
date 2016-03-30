@@ -1,8 +1,7 @@
 # Dockerfile for WSO2 Application Server #
-The Dockerfile define the resources and instructions to build the Docker images with the WSO2 products and runtime configurations. This process uses Puppet and Hiera to configure the Docker images.
+The Dockerfile define the resources and instructions to build the Docker images with the WSO2 products and runtime configurations.
 
 ## Try it out
-Quick steps to build the WSO2 Application Server docker image and run in your local machine
 
 The cloned local copy of WSO2 Dockerfiles will be referred as DOCKERFILES_HOME.
 
