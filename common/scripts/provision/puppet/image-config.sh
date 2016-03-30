@@ -19,6 +19,13 @@
 
 set -e
 
+# Export facter variables
+export FACTER_product_name=${WSO2_SERVER}
+export FACTER_product_version=${WSO2_SERVER_VERSION}
+export FACTER_product_profile=${WSO2_SERVER_PROFILE}
+export FACTER_environment=${WSO2_ENVIRONMENT}
+export FACTER_vm_type=docker
+
 mkdir -p /etc/puppet
 pushd /etc/puppet > /dev/null
 getent group wso2 > /dev/null 2>&1 || addgroup wso2
