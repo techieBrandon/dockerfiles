@@ -22,7 +22,6 @@ provision_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${provision_path}/../../base.sh"
 
 jdk_archive=jdk-7u80-linux-x64.tar.gz
-# export java_install_path=/opt/java
 
 # Validate if files exist in the files folder
 if [ ! -e "${provision_path}/files/${jdk_archive}" ]; then

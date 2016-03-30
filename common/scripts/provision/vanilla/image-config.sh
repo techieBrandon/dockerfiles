@@ -19,6 +19,9 @@
 
 set -e
 
+jdk_install_dir=/mnt/jdk-7u80
+java_home_dir=/opt/java
+
 pushd /mnt > /dev/null
 addgroup wso2
 adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user
@@ -27,19 +30,21 @@ wget -nH -r -e robots=off --reject "index.html*" -A "jdk*.tar.gz" -nv ${HTTP_PAC
 wget -nH -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip
 echo "unpacking ${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip to /mnt"
 unzip -q /mnt/${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip -d /mnt
-mkdir -p /opt/java
-echo "unpacking the JDK to /opt/java"
-tar -xf /mnt/jdk* -C /opt/java --strip-components=1
+mkdir -p ${jdk_install_dir}
+echo "unpacking the JDK to ${jdk_install_dir}"
+tar -xf /mnt/jdk*tar.gz -C ${jdk_install_dir} --strip-components=1
+ln -s ${jdk_install_dir} ${java_home_dir}
+echo "created symlink for java: ${java_home_dir} -> ${jdk_install_dir}"
 rm -rf /mnt/${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip
-rm -rf /mnt/jdk*
+rm -rf /mnt/jdk*tar.gz
 apt-get purge -y --auto-remove wget unzip
 rm -rfv /var/lib/apt/lists/*
 chown wso2user:wso2 /usr/local/bin/*
 chown -R wso2user:wso2 /mnt
 
 cat > /etc/profile.d/set_java_home.sh << EOF
-export JAVA_HOME="/opt/java"
-export PATH="/opt/java/bin:\$PATH"
+export JAVA_HOME="${java_home_dir}"
+export PATH="${java_home_dir}/bin:\$PATH"
 EOF
 
 popd > /dev/null
