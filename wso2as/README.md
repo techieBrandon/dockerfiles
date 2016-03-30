@@ -6,8 +6,8 @@ The Dockerfile define the resources and instructions to build the Docker images 
 The cloned local copy of WSO2 Dockerfiles will be referred as DOCKERFILES_HOME.
 
 * Add product packs and dependencies
-    - Download and copy JDK 1.7 ([jdk-7u80-linux-x64.tar.gz](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)) pack to `<DOCKERFILES_HOME>/common/scripts/provision/default/files`
-    - Download the WSO2 Application Server zip file (http://wso2.com/products/application-server/) and copy it to `<DOCKERFILES_HOME>/common/scripts/provision/default/files`
+    - Download and copy JDK 1.7 ([jdk-7u80-linux-x64.tar.gz](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)) pack to `<DOCKERFILES_HOME>/common/provision/default/files`.
+    - Download the WSO2 Application Server zip file (http://wso2.com/products/application-server/) and copy it to `<DOCKERFILES_HOME>/common/provision/default/files`.
 
 * Build the docker image
     - Navigate to `<DOCKERFILES_HOME>/wso2as`.
