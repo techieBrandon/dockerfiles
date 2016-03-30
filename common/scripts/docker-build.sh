@@ -283,7 +283,7 @@ do
         product_init_script_name="${product_name}-${profile}-init.sh"
         if [[ -f "${dockerfile_path}/${product_init_script_name}" ]]; then
             pushd "${dockerfile_path}" > /dev/null
-            cp "${product_init_script_name}" "${file_location}"/scripts/
+            cp "${product_init_script_name}" scripts/
             popd > /dev/null
         fi
 
