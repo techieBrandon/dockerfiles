@@ -15,6 +15,7 @@ The cloned local copy of WSO2 Dockerfiles will be referred as DOCKERFILES_HOME.
         + `./build.sh -v 1.9.1`
 
 * Docker run
+    - Navigate to the module folder of the WSO2 product. For example, for WSO2 API Manager (eg: `<REPOSITORY_HOME>/wso2am`).
     - Execute `run.sh` script and provide the product version.
         + `./run.sh -v 1.9.1`
 
