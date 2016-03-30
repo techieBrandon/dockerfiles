@@ -19,7 +19,7 @@
 set -e
 
 provision_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-source "${provision_path}/../../base.sh"
+source "${provision_path}/../../scripts/base.sh"
 
 jdk_archive=jdk-7u80-linux-x64.tar.gz
 

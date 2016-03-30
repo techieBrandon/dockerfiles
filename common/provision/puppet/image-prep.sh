@@ -20,7 +20,7 @@
 set -e
 
 provision_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-source "${provision_path}/../../base.sh"
+source "${provision_path}/../../scripts/base.sh"
 
 # Check if a Puppet folder is set
 if [ -z "$PUPPET_HOME" ]; then
