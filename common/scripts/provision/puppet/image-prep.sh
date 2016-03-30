@@ -19,19 +19,28 @@
 
 set -e
 
-# Check if a Puppet folder is set
-if [ -z "$PUPPET_HOME" ]; then
-    echoError "Puppet home folder could not be found! Set PUPPET_HOME environment variable pointing to local puppet folder."
-    exit 1
-fi
+provision_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source "${provision_path}/../../base.sh"
+
+# $1 product environment = dev
+function validateProductEnvironment() {
+    env_dir="${PUPPET_HOME}/hieradata/${1}"
+    if [ ! -d "$env_dir" ]; then
+        echoError "Provided product environment ${1} doesn't exist in PUPPET_HOME: ${PUPPET_HOME}. Available environments are,"
+        listFiles "${PUPPET_HOME}/hieradata/"
+        echo
+        exit 1
+    fi
+}
 
 # $1 product name = esb
 # $2 product version = 4.9.0
+# $3 product environment = dev
 function validateProductVersion() {
-    ver_dir="${PUPPET_HOME}/hieradata/dev/wso2/${1}/${2}"
+    ver_dir="${PUPPET_HOME}/hieradata/${3}/wso2/${1}/${2}"
     if [ ! -d "$ver_dir" ]; then
         echoError "Provided product version ${1}:${2} doesn't exist in PUPPET_HOME: ${PUPPET_HOME}. Available versions are,"
-        listFiles "${PUPPET_HOME}/hieradata/dev/wso2/${1}/"
+        listFiles "${PUPPET_HOME}/hieradata/${3}/wso2/${1}/"
         echo
         exit 1
     fi
@@ -40,12 +49,13 @@ function validateProductVersion() {
 # $1 product name = esb
 # $2 product version = 4.9.0
 # $3 product profile list = 'default|worker|manager'
+# $4 product environment = dev
 function validateProfile() {
     invalidFound=false
     IFS='|' read -r -a array <<< "${3}"
     for profile in "${array[@]}"
     do
-        profile_yaml="${PUPPET_HOME}/hieradata/dev/wso2/${1}/${2}/${profile}.yaml"
+        profile_yaml="${PUPPET_HOME}/hieradata/${4}/wso2/${1}/${2}/${profile}.yaml"
         if [ ! -e "${profile_yaml}" ] || [ ! -s "${profile_yaml}" ]
         then
             invalidFound=true
@@ -55,11 +65,32 @@ function validateProfile() {
     if [ "${invalidFound}" == true ]
     then
         echoError "One or more provided product profiles ${1}:${2}-[${3}] do not exist in PUPPET_HOME: ${PUPPET_HOME}. Available profiles are,"
-        listFiles "${PUPPET_HOME}/hieradata/dev/wso2/${1}/${2}/"
+        listFiles "${PUPPET_HOME}/hieradata/${4}/wso2/${1}/${2}/"
         echo
          exit 1
     fi
 }
+
+while getopts :e: FLAG; do
+    case $FLAG in
+        e)
+            product_env=$OPTARG
+            ;;
+    esac
+done
+
+# Check if a Puppet folder is set
+if [ -z "$PUPPET_HOME" ]; then
+    echoError "Puppet home folder could not be found! Set PUPPET_HOME environment variable pointing to local puppet folder."
+    exit 1
+fi
+
+if [ -z "$product_env" ]; then
+    product_env="dev"
+fi
+
+# check if provided product environment exists in PUPPET_HOME
+validateProductEnvironment "${product_env}"
 
 # check if provided product version exists in PUPPET_HOME
 validateProductVersion "${product_name}" "${product_version}"

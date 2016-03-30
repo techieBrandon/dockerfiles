@@ -66,47 +66,10 @@ function showUsageAndExit() {
 function cleanup() {
     echoBold "Cleaning..."
     rm -rf "$dockerfile_path/scripts"
-    rm -rf "$dockerfile_path/configure"
     if [ ! -z $httpserver_pid ]; then
         kill -9 $httpserver_pid > /dev/null 2>&1
     fi
 }
-
-## $1 product name = esb
-## $2 product version = 4.9.0
-#function validateProductVersion() {
-#    ver_dir="${PUPPET_HOME}/hieradata/dev/wso2/${1}/${2}"
-#    if [ ! -d "$ver_dir" ]; then
-#        echoError "Provided product version ${1}:${2} doesn't exist in PUPPET_HOME: ${PUPPET_HOME}. Available versions are,"
-#        listFiles "${PUPPET_HOME}/hieradata/dev/wso2/${1}/"
-#        echo
-#        showUsageAndExit
-#    fi
-#}
-#
-## $1 product name = esb
-## $2 product version = 4.9.0
-## $3 product profile list = 'default|worker|manager'
-#function validateProfile() {
-#    invalidFound=false
-#    IFS='|' read -r -a array <<< "${3}"
-#    for profile in "${array[@]}"
-#    do
-#        profile_yaml="${PUPPET_HOME}/hieradata/dev/wso2/${1}/${2}/${profile}.yaml"
-#        if [ ! -e "${profile_yaml}" ] || [ ! -s "${profile_yaml}" ]
-#        then
-#            invalidFound=true
-#        fi
-#    done
-#
-#    if [ "${invalidFound}" == true ]
-#    then
-#        echoError "One or more provided product profiles ${1}:${2}-[${3}] do not exist in PUPPET_HOME: ${PUPPET_HOME}. Available profiles are,"
-#        listFiles "${PUPPET_HOME}/hieradata/dev/wso2/${1}/${2}/"
-#        echo
-#        showUsageAndExit
-#    fi
-#}
 
 function validateDockerVersion(){
     IFS='.' read -r -a version_1 <<< "$1"
@@ -183,7 +146,7 @@ fi
 echo "Provisioning Method: ${provision_method}"
 
 pushd "${self_path}/provision/${provision_method}" > /dev/null 2>&1
-source image-prep.sh
+source image-prep.sh $*
 popd > /dev/null 2>&1
 
 # validate docker version against minimum required docker version
@@ -191,31 +154,6 @@ popd > /dev/null 2>&1
 docker_version=$(docker version | grep 'Version:' | awk '{print $2}')
 min_required_docker_version=1.9.0
 validateDockerVersion "${docker_version}" "${min_required_docker_version}"
-#
-# # Check if a Puppet folder is set
-# if [ -z "$PUPPET_HOME" ]; then
-#     echoError "Puppet home folder could not be found! Set PUPPET_HOME environment variable pointing to local puppet folder."
-#     exit 1
-# fi
-#
-# # Validate mandatory args
-# if [ -z "$product_version" ]
-#   then
-#     showUsageAndExit
-# fi
-#
-#
-# if [ -z "$product_env" ]; then
-#     product_env="dev"
-# fi
-#
-
-#
-# # check if provided product version exists in PUPPET_HOME
-# validateProductVersion "${product_name}" "${product_version}"
-#
-# # check if provided profile exists in PUPPET_HOME
-# validateProfile "${product_name}" "${product_version}" "${product_profiles}"
 
 # Copy common files to Dockerfile context
 echoBold "Creating Dockerfile context..."
