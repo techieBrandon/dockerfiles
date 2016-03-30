@@ -4,28 +4,24 @@ WSO2 Dockerfiles define the resources and instructions to build the Docker image
 ## Try it out
 Quick steps to build the WSO2 Product's docker image and run in your local machine
 
-* Get Puppet Modules
-    - The Puppet modules for WSO2 products can be found in the [WSO2 Puppet Modules repository](https://github.com/wso2/puppet-modules). You can obtain the latest release from the [releases page](https://github.com/wso2/puppet-modules/releases).
-    - After getting the `wso2-puppet-modules-<version>.zip` file, extract it and set `PUPPET_HOME` environment variable pointing to extracted folder.
+The cloned local copy of WSO2 Dockerfiles will be reffered as DOCKERFILES_HOME.
 
 * Add product packs and dependencies
-    - Download and copy JDK 1.7 ([jdk-7u80-linux-x64.tar.gz](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)) pack to `<PUPPET_HOME>/modules/wso2base/files`
-    - Download the necessary product packs and copy them to `<PUPPET_HOME>/modules/<MODULE>/files`. For example, for WSO2 API Manager 1.9.1 download the [product pack](http://wso2.com/products/api-manager/) and copy the zip file to `<PUPPET_HOME>/modules/wso2am/files`.
+    - Download and copy JDK 1.7 ([jdk-7u80-linux-x64.tar.gz](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)) pack to `<DOCKERFILES_HOME>/common/scripts/provision/vanilla/files` directory.
+    - Download the necessary product packs and copy them to `<DOCKERFILES_HOME>/common/scripts/provision/vanilla/files` directory. For example, for WSO2 API Manager 1.9.1 download the [product pack](http://wso2.com/products/api-manager/) and copy the zip file to `<DOCKERFILES_HOME>/common/scripts/provision/vanilla/files`.
 
 * Build docker image
     - Navigate to the module folder of the WSO2 product. For example, for WSO2 API Manager (eg: `<REPOSITORY_HOME>/wso2am`).
-    - Execute `build.sh` script and provide the product version, image version and the product profiles to be built.
-        + `./build.sh -v 1.9.1 -i 1.0.0`
+    - Execute `build.sh` script and provide the product version. 
+        + `./build.sh -v 1.9.1`
 
 * Docker run
-    - Execute `run.sh` script and provide the product version, image version and the product profiles to be run.
-        + `./run.sh -v 1.9.1 -i 1.0.0`
+    - Execute `run.sh` script and provide the product version.
+        + `./run.sh -v 1.9.1`
 
 * Access management console
-    - Add an `etc/hosts` entry in your local machine for `<docker_host_ip> am.wso2.com`. For example:
-        + `127.0.0.1       am.wso2.com`
-    -  To access the management console.
-        + `https://am.wso2.com:32004/carbon`
+    -  To access the management console, use the docker host ip and port 9443.
+        + `https://<DOCKER_HOST_IP>:9443/carbon`
 
 ## Detailed description
 
