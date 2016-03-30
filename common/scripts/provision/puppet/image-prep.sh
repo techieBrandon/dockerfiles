@@ -56,6 +56,7 @@ function validateProfile() {
     for profile in "${array[@]}"
     do
         profile_yaml="${PUPPET_HOME}/hieradata/${4}/wso2/${1}/${2}/${profile}.yaml"
+        echo "profile yaml:${profile_yaml}"
         if [ ! -e "${profile_yaml}" ] || [ ! -s "${profile_yaml}" ]
         then
             invalidFound=true
@@ -93,9 +94,9 @@ fi
 validateProductEnvironment "${product_env}"
 
 # check if provided product version exists in PUPPET_HOME
-validateProductVersion "${product_name}" "${product_version}"
+validateProductVersion "${product_name}" "${product_version}" "${product_env}"
 
 # check if provided profile exists in PUPPET_HOME
-validateProfile "${product_name}" "${product_version}" "${product_profiles}"
+validateProfile "${product_name}" "${product_version}" "${product_profiles}" "${product_env}"
 
 export file_location=${PUPPET_HOME}
