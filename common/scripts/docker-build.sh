@@ -25,6 +25,7 @@ source "${self_path}/base.sh"
 # Show usage and exit
 function showUsageAndExit() {
     echoError "Insufficient or invalid options provided!"
+    echo
     echoBold "Usage: ./build.sh -v [product-version]"
     echo
 
@@ -46,7 +47,7 @@ function showUsageAndExit() {
     echo "[OPTIONAL] Provisioning method. If not specified this is defaulted to \"vanilla\"."
     echo
 
-   echoBold "Ex: ./build.sh -v 1.10.0 -l 'worker|manager'"
+   echoBold "Ex: ./build.sh -v 1.10.0 -l worker|manager -o myorganization -i 1.0.0"
    echo
     exit 1
 }
