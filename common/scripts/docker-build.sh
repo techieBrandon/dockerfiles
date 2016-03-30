@@ -49,9 +49,9 @@ function showUsageAndExit() {
     echo -en "  -i\t"
     echo "[OPTIONAL] Docker image version."
     echo -en "  -o\t"
-    echo "[OPTIONAL] Preferred organization name. 'wso2' is selected if no value is specified."
+    echo "[OPTIONAL] Preferred organization name. If not specified, will be kept empty."
     echo -en "  -q\t"
-    echo "[OPTIONAL] Quiet flag. If used, the docker build run output will be suppressed"
+    echo "[OPTIONAL] Quiet flag. If used, the docker build run output will be suppressed."
     echo -en "  -r\t"
     echo "[OPTIONAL] Provisioning method. If not specified this is defaulted to \"vanilla\"."
     echo
