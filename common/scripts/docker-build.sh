@@ -44,7 +44,7 @@ function showUsageAndExit() {
     echo -en "  -q\t"
     echo "[OPTIONAL] Quiet flag. If used, the docker build run output will be suppressed."
     echo -en "  -r\t"
-    echo "[OPTIONAL] Provisioning method. If not specified this is defaulted to \"vanilla\"."
+    echo "[OPTIONAL] Provisioning method. If not specified this is defaulted to \"default\"."
     echo
 
    echoBold "Ex: ./build.sh -v 1.10.0 -l worker|manager -o myorganization -i 1.0.0"
@@ -83,7 +83,7 @@ function findHostIP() {
 }
 
 verbose=true
-provision_method="vanilla"
+provision_method="default"
 
 while getopts :r:n:v:d:l:i:o:e:q FLAG; do
     case $FLAG in
