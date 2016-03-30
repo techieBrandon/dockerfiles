@@ -140,8 +140,8 @@ then
 fi
 
 echo "Provisioning Method: ${provision_method}"
-image_config_file=${self_path}/provision/${provision_method}/image-config.sh
-image_prep_file=${self_path}/provision/${provision_method}/image-prep.sh
+image_config_file=${self_path}/../provision/${provision_method}/image-config.sh
+image_prep_file=${self_path}/../provision/${provision_method}/image-prep.sh
 if [[ ! -f  ${image_config_file} ]]; then
     echoError "Image config script ${image_config_file} does not exist"
     exit 1
@@ -152,7 +152,7 @@ if [[ ! -f  ${image_prep_file} ]]; then
     exit 1
 fi
 
-pushd "${self_path}/provision/${provision_method}" > /dev/null 2>&1
+pushd "${self_path}/../provision/${provision_method}" > /dev/null 2>&1
 source image-prep.sh $*
 popd > /dev/null 2>&1
 
@@ -166,7 +166,7 @@ validateDockerVersion "${docker_version}" "${min_required_docker_version}"
 echoBold "Creating Dockerfile context..."
 mkdir -p "${dockerfile_path}/scripts"
 cp "${self_path}/entrypoint.sh" "${dockerfile_path}/scripts/init.sh"
-cp "${self_path}/provision/${provision_method}/image-config.sh" "${dockerfile_path}/scripts/image-config.sh"
+cp "${self_path}/../provision/${provision_method}/image-config.sh" "${dockerfile_path}/scripts/image-config.sh"
 
 # starting http server
 echoBold "Starting HTTP server in ${file_location}/..."
