@@ -144,6 +144,17 @@ then
 fi
 
 echo "Provisioning Method: ${provision_method}"
+image_config_file=${self_path}/provision/${provision_method}/image-config.sh
+image_prep_file=${self_path}/provision/${provision_method}/image-prep.sh
+if [[ ! -f  ${image_config_file} ]]; then
+    echoError "Image config script ${image_config_file} does not exist"
+    exit 1
+fi
+
+if [[ ! -f  ${image_prep_file} ]]; then
+    echoError "Image preparation script ${image_prep_file} does not exist"
+    exit 1
+fi
 
 pushd "${self_path}/provision/${provision_method}" > /dev/null 2>&1
 source image-prep.sh $*
