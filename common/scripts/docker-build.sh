@@ -96,7 +96,7 @@ function findHostIP() {
 verbose=true
 provision_method="vanilla"
 
-while getopts :r:n:v:d:l:i:o:q FLAG; do
+while getopts :r:n:v:d:l:i:o:e:q FLAG; do
     case $FLAG in
         r)
             provision_method=$OPTARG
@@ -122,6 +122,9 @@ while getopts :r:n:v:d:l:i:o:q FLAG; do
         o)
             organization_name=$OPTARG
             ;;
+        e)
+            product_env=$OPTARG
+            ;;
         \?)
             showUsageAndExit
             ;;
@@ -130,6 +133,10 @@ done
 
 if [[ -z ${product_version} ]] || [[ -z ${product_name} ]] || [[ -z ${dockerfile_path} ]]; then
    showUsageAndExit
+fi
+
+if [ -z "$product_env" ]; then
+    product_env="dev"
 fi
 
 # org name adjustment
