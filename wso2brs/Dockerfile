@@ -37,13 +37,6 @@ ENV WSO2_SERVER=${WSO2_SERVER:-wso2brs} \
 
 COPY scripts/*.sh /usr/local/bin/
 
-# Export facter variables
-ENV FACTER_product_name=${WSO2_SERVER} \
-    FACTER_product_version=${WSO2_SERVER_VERSION} \
-    FACTER_product_profile=${WSO2_SERVER_PROFILE} \
-    FACTER_environment=${WSO2_ENVIRONMENT} \
-    FACTER_vm_type=docker
-
 # Execute configuration script
 RUN bash /usr/local/bin/image-config.sh
 

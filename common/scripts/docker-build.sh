@@ -28,26 +28,16 @@ function showUsageAndExit() {
     echoBold "Usage: ./build.sh -v [product-version]"
     echo
 
-    # op_versions=$(listFiles "${PUPPET_HOME}/hieradata/dev/wso2/${product_name}/")
-    # op_versions_str=$(echo $op_versions | tr ' ' ',')
-    # op_versions_str="${op_versions_str//,/, }"
-    #
-    # op_profiles=$(listFiles "${PUPPET_HOME}/hieradata/dev/wso2/${product_name}/$(echo $op_versions | head -n1 | awk '{print $1}')/")
-    # op_profiles_str=$(echo $op_profiles | tr ' ' ',')
-    # op_profiles_str="${op_profiles_str//.yaml/}"
-    # op_profiles_str="${op_profiles_str//,/, }"
-    # echo "Available product versions: ${op_versions_str}"
-    # echo "Available product profiles: ${op_profiles_str}"
-    # echo
-
     echoBold "Options:"
     echo
     echo -en "  -v\t"
     echo "[REQUIRED] Product version of $(echo $product_name | awk '{print toupper($0)}')"
     echo -en "  -l\t"
-    echo "[OPTIONAL] '|' separated $(echo $product_name | awk '{print toupper($0)}') profiles to build. 'default' is selected if no value is specified."
+    echo "[OPTIONAL] '|' separated $(echo $product_name | awk '{print toupper($0)}') profiles to build. \"default\" is selected if no value is specified."
     echo -en "  -i\t"
     echo "[OPTIONAL] Docker image version."
+    echo -en "  -e\t"
+    echo "[OPTIONAL] Product environment. If not specified this is defaulted to \"dev\"."
     echo -en "  -o\t"
     echo "[OPTIONAL] Preferred organization name. If not specified, will be kept empty."
     echo -en "  -q\t"
@@ -56,10 +46,8 @@ function showUsageAndExit() {
     echo "[OPTIONAL] Provisioning method. If not specified this is defaulted to \"vanilla\"."
     echo
 
-#    ex_version=$(echo ${op_versions_str} | head -n1 | awk '{print $1}')
-#    ex_profile=$(echo ${op_profiles_str} | head -n1 | awk '{print $1}')
-#    echoBold "Ex: ./build.sh -v ${ex_version//,/} -l '${ex_profile//,/}'"
-#    echo
+   echoBold "Ex: ./build.sh -v 1.10.0 -l 'worker|manager'"
+   echo
     exit 1
 }
 
