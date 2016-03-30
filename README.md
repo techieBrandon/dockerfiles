@@ -10,12 +10,12 @@ The cloned local copy of WSO2 Dockerfiles will be referred as DOCKERFILES_HOME.
     - Download the necessary product packs and copy them to `<DOCKERFILES_HOME>/common/provision/default/files` directory. For example, for WSO2 API Manager 1.9.1 download the [product pack](http://wso2.com/products/api-manager/) and copy the zip file to `<DOCKERFILES_HOME>/common/scripts/provision/default/files`.
 
 * Build docker image
-    - Navigate to the module folder of the WSO2 product. For example, for WSO2 API Manager (eg: `<REPOSITORY_HOME>/wso2am`).
+    - Navigate to the module folder of the WSO2 product. For example, for WSO2 API Manager (eg: `<DOCKERFILES_HOME>/wso2am`).
     - Execute `build.sh` script and provide the product version.
         + `./build.sh -v 1.9.1`
 
 * Docker run
-    - Navigate to the module folder of the WSO2 product. For example, for WSO2 API Manager (eg: `<REPOSITORY_HOME>/wso2am`).
+    - Navigate to the module folder of the WSO2 product. For example, for WSO2 API Manager (eg: `<DOCKERFILES_HOME>/wso2am`).
     - Execute `run.sh` script and provide the product version.
         + `./run.sh -v 1.9.1`
 

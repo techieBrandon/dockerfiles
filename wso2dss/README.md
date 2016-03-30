@@ -16,7 +16,7 @@ The cloned local copy of WSO2 Dockerfiles will be referred as DOCKERFILES_HOME.
         + `./build.sh -v 3.5.0`
 
 * Docker run
-    - Navigate to `<DOCKERFILES_HOME>/wso2es`.
+    - Navigate to `<DOCKERFILES_HOME>/wso2dss`.
     - Execute `run.sh` script and provide the product version.
         + `./run.sh -v 3.5.0`
 
