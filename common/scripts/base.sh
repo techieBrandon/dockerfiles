@@ -47,3 +47,11 @@ function askBold () {
 function listFiles () {
     find "${1}" -maxdepth 1 -mindepth 1 \( ! -iname ".*" \)| rev | cut -d '/' -f1 | rev | awk NF
 }
+
+function listDirectories () {
+    IFS=' ' read -r -a dirs <<< `ls -l --time-style="long-iso" $1 | egrep '^d' | awk '{print $8}'`
+    for dir in "${dirs[@]}"
+    do
+        echo "${dir}"
+    done
+}

@@ -139,16 +139,25 @@ then
     product_profiles="default"
 fi
 
+provisioning_dir="${self_path}/../provision"
+if [[ ! -d ${provisioning_dir}/${provision_method} ]]; then
+    echoError "Unable to find the provisioning method ${provision_method}"
+    echo "Available provisioning methods:"
+    echo "$(listDirectories ${self_path}/../provision)"
+    exit 1
+fi
+
 echo "Provisioning Method: ${provision_method}"
-image_config_file=${self_path}/../provision/${provision_method}/image-config.sh
-image_prep_file=${self_path}/../provision/${provision_method}/image-prep.sh
+
+image_config_file=${provisioning_dir}/${provision_method}/image-config.sh
+image_prep_file=${provisioning_dir}/${provision_method}/image-prep.sh
 if [[ ! -f  ${image_config_file} ]]; then
-    echoError "Image config script ${image_config_file} does not exist"
+    echoError "Unable to find image-config.sh script for provisioning method ${provision_method}"
     exit 1
 fi
 
 if [[ ! -f  ${image_prep_file} ]]; then
-    echoError "Image preparation script ${image_prep_file} does not exist"
+    echoError "Unable to find image-prep.sh script for provisioning method ${provision_method}"
     exit 1
 fi
 
