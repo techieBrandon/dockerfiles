@@ -27,22 +27,24 @@ while getopts :n: FLAG; do
     esac
 done
 
-mapfile -t running_containers < <(docker ps | awk -F '[[:space:]][[:space:]]+' '{if (NR!=1) print $NF, "-", $1, "Started",$4}' | grep $product_name)
-
-if [ "${#running_containers[@]}" -eq 0 ]; then
+# mapfile -t running_containers < <(docker ps  | grep $product_name | awk -F '[[:space:]][[:space:]]+' '{if (NR!=1) print $NF, "-", $1, "Started",$4}') > /dev/null 2>&1
+read -r -a running_container_ids <<< $(docker ps | grep $product_name | awk '{print $1}')
+if [ "${#running_container_ids[@]}" -eq 0 ]; then
     echo "No running containers for $(echo $product_name | awk '{print toupper($0)}') was found."
 else
-    for running_container in "${running_containers[@]}"
+    echoBold "Found ${#running_container_ids[@]} containers matching $(echo $product_name | awk '{print toupper($0)}')"
+    for running_container_id in "${running_container_ids[@]}"
     do
-        container_id=$(echo $running_container | awk '{print $3}')
-        echo -n "${running_container}"
+        # container_id=$(echo $running_container | awk '{print $3}')
+        running_container_info=$(docker ps -f "id=${running_container_id}" | awk -F '[[:space:]][[:space:]]+' '{if (NR!=1) print $NF,"-",$1,"Started", $4, "from image", $2}')
+        echo -n "${running_container_info}"
         askBold " - Terminate? (y/n): "
         read -r terminate_v
         if [ "$terminate_v" == "y" ]; then
             {
-                docker kill $container_id > /dev/null 2>&1 && echoSuccess "$(echo $running_container | awk '{print $1,"(",$3,")"}') was terminated."
+                docker kill $running_container_id > /dev/null 2>&1 && echoSuccess "$(echo $running_container_info | awk '{print $1,"(",$3,")"}') was terminated."
             } || {
-                echoError "Couldn't terminate container $(echo $running_container | awk '{print $1,"(",$3,")"}')."
+                echoError "Couldn't terminate container $(echo $running_container_info | awk '{print $1,"(",$3,")"}')."
             }
         fi
     done
@@ -53,7 +55,7 @@ askBold "Clean already exited containers? (y/n): "
 read -r clean_exited_v
 if [ "$clean_exited_v" == "y" ]; then
     {
-        docker rm $(docker ps -q -f status=exited) > /dev/null 2>&1 && echoSuccess "Cleaned all exited containers."
+        echo "Cleaning..." && docker rm $(docker ps -q -f status=exited) > /dev/null 2>&1 && echoSuccess "Cleaned all exited containers."
     } || {
         echoError "Could not clean one or more exited containers."
     }
