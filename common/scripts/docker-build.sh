@@ -29,6 +29,9 @@ function showUsageAndExit() {
     echoBold "Usage: ./build.sh -v [product-version]"
     echo
 
+    available_provisioning=$(listDirectories ${self_path}/../provision)
+    available_provisioning=$(echo $available_provisioning | tr ' ' ', ')
+
     echoBold "Options:"
     echo
     echo -en "  -v\t"
@@ -44,7 +47,7 @@ function showUsageAndExit() {
     echo -en "  -q\t"
     echo "[OPTIONAL] Quiet flag. If used, the docker build run output will be suppressed."
     echo -en "  -r\t"
-    echo "[OPTIONAL] Provisioning method. If not specified this is defaulted to \"default\"."
+    echo "[OPTIONAL] Provisioning method. If not specified this is defaulted to \"default\". Available provisioning methods are ${available_provisioning//,/, }."
     echo
 
     echoBold "Ex: ./build.sh -v 1.10.0 -l worker|manager -o myorganization -i 1.0.0"
