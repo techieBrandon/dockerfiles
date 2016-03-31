@@ -31,20 +31,31 @@ mapfile -t running_containers < <(docker ps | awk -F '[[:space:]][[:space:]]+' '
 
 if [ "${#running_containers[@]}" -eq 0 ]; then
     echo "No running containers for $(echo $product_name | awk '{print toupper($0)}') was found."
-    exit 1
+else
+    for running_container in "${running_containers[@]}"
+    do
+        container_id=$(echo $running_container | awk '{print $3}')
+        echo -n "${running_container}"
+        askBold " - Terminate? (y/n): "
+        read -r terminate_v
+        if [ "$terminate_v" == "y" ]; then
+            {
+                docker kill $container_id > /dev/null 2>&1 && echoSuccess "$(echo $running_container | awk '{print $1,"(",$3,")"}') was terminated."
+            } || {
+                echoError "Couldn't terminate container $(echo $running_container | awk '{print $1,"(",$3,")"}')."
+            }
+        fi
+    done
 fi
 
-for running_container in "${running_containers[@]}"
-do
-    container_id=$(echo $running_container | awk '{print $3}')
-    echo -n "${running_container}"
-    askBold " - Terminate? (y/n): "
-    read -r terminate_v
-    if [ "$terminate_v" == "y" ]; then
-        {
-            docker kill $container_id > /dev/null 2>&1 && echoSuccess "$(echo $running_container | awk '{print $1,"(",$3,")"}') was terminated."
-        } || {
-            echoError "Couldn't terminate container $(echo $running_container | awk '{print $1,"(",$3,")"}')."
-        }
-    fi
-done
+echo
+askBold "Clean already exited containers? (y/n): "
+read -r clean_exited_v
+if [ "$clean_exited_v" == "y" ]; then
+    {
+        docker rm $(docker ps -q -f status=exited) > /dev/null 2>&1 && echoSuccess "Cleaned all exited containers."
+    } || {
+        echoError "Could not clean one or more exited containers."
+    }
+
+fi
