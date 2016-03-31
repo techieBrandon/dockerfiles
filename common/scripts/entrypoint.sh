@@ -71,7 +71,7 @@ if [ ! -z "$KEY_STORE_PASSWORD" ]
     echo "$KEY_STORE_PASSWORD" >> $password_tmp_file
 fi
 
-artifact_dir='/mnt/wso2-artifacts/carbon-home'
+artifact_dir='/mnt/wso2/carbon-home'
 if [[ -d ${artifact_dir} ]]; then
     echo "copying artifacts at ${artifact_dir} to ${server_path}/${server_name}"
     cp -r ${artifact_dir}/* ${server_path}/${server_name}

@@ -111,7 +111,7 @@ fi
 
 if [ ! -z "$host_shared_dir_path" ]
   then
-  volume_mapping=" -v $host_shared_dir_path:/mnt/wso2-artifacts"
+  volume_mapping=" -v $host_shared_dir_path:/mnt/wso2"
 fi
 
 if [ -z "$key_store_password" ]; then
