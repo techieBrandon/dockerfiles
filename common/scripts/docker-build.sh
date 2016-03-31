@@ -29,7 +29,7 @@ function showUsageAndExit() {
     echoBold "Usage: ./build.sh -v [product-version]"
     echo
 
-    available_provisioning=$(listDirectories ${self_path}/../provision)
+    available_provisioning=$(listFiles ${self_path}/../provision)
     available_provisioning=$(echo $available_provisioning | tr ' ' ', ')
 
     echoBold "Options:"
@@ -146,7 +146,7 @@ provisioning_dir="${self_path}/../provision"
 if [[ ! -d ${provisioning_dir}/${provision_method} ]]; then
     echoError "Unable to find the provisioning method ${provision_method}"
     echo "Available provisioning methods:"
-    echo "$(listDirectories ${self_path}/../provision)"
+    echo "$(listFiles ${self_path}/../provision)"
     exit 1
 fi
 
