@@ -27,7 +27,6 @@ while getopts :n: FLAG; do
     esac
 done
 
-# mapfile -t running_containers < <(docker ps  | grep $product_name | awk -F '[[:space:]][[:space:]]+' '{if (NR!=1) print $NF, "-", $1, "Started",$4}') > /dev/null 2>&1
 read -r -a running_container_ids <<< $(docker ps | grep $product_name | awk '{print $1}')
 if [ "${#running_container_ids[@]}" -eq 0 ]; then
     echo "No running containers for $(echo $product_name | awk '{print toupper($0)}') was found."
@@ -35,7 +34,6 @@ else
     echoBold "Found ${#running_container_ids[@]} containers matching $(echo $product_name | awk '{print toupper($0)}')"
     for running_container_id in "${running_container_ids[@]}"
     do
-        # container_id=$(echo $running_container | awk '{print $3}')
         running_container_info=$(docker ps -f "id=${running_container_id}" | awk -F '[[:space:]][[:space:]]+' '{if (NR!=1) print $NF,"-",$1,"Started", $4, "from image", $2}')
         echo -n "${running_container_info}"
         askBold " - Terminate? (y/n): "
