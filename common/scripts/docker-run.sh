@@ -168,12 +168,12 @@ done
 
 if [ "${#profiles_array[@]}" -eq 1 ]; then
     echo
-    askBold "Need to connect to the spawned container? (y/n): "
+    askBold "Connect to the spawned container? (y/n): "
     read -r exec_v
     if [ "$exec_v" == "y" ]; then
         docker exec -it "${container_id}" /bin/bash
     fi
 else
-    echo "To get bash into a running container use following command..."
+    echo "To connect to a running container use following command..."
     echo "docker exec -it <containerId or name> bash"
 fi

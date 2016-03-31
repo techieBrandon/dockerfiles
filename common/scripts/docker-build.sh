@@ -47,8 +47,8 @@ function showUsageAndExit() {
     echo "[OPTIONAL] Provisioning method. If not specified this is defaulted to \"default\"."
     echo
 
-   echoBold "Ex: ./build.sh -v 1.10.0 -l worker|manager -o myorganization -i 1.0.0"
-   echo
+    echoBold "Ex: ./build.sh -v 1.10.0 -l worker|manager -o myorganization -i 1.0.0"
+    echo
     exit 1
 }
 
