@@ -1,5 +1,5 @@
 # Dockerfile for WSO2 Identity Server #
-The Dockerfile define the resources and instructions to build the Docker images with the WSO2 products and runtime configurations.
+The Dockerfile defines the resources and instructions to build the Docker images with the WSO2 products and runtime configurations.
 
 ## Try it out
 Quick steps to build the WSO2 Identity Server docker image and run in your local machine
@@ -24,7 +24,7 @@ The cloned local copy of WSO2 Dockerfiles will be referred as DOCKERFILES_HOME.
     -  To access the management console, use the docker host ip and port 9443.
         + `https:<DOCKER_HOST_IP>:9443/carbon`
 
-## Detailed Configurations
+## Detailed Configuration
 
 * [Introduction] (https://docs.wso2.com/display/DF100/Introduction+to+Docker+Images)
 

@@ -1,5 +1,5 @@
 # Dockerfile for WSO2 API Manager #
-The Dockerfile define the resources and instructions to build the Docker images with the WSO2 products and runtime configurations.
+The Dockerfile defines the resources and instructions to build the Docker images with the WSO2 products and runtime configurations.
 
 ## Try it out
 
@@ -26,7 +26,7 @@ The cloned local copy of WSO2 Dockerfiles will be referred as DOCKERFILES_HOME.
         + `https://<DOCKER_HOST_IP>:9443/store`
         + `https://<DOCKER_HOST_IP>:9443/publisher`
 
-## Detailed Configurations
+## Detailed Configuration
 
 * [Introduction] (https://docs.wso2.com/display/DF100/Introduction+to+Docker+Images)
 

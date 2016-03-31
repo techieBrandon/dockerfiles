@@ -23,7 +23,7 @@ The cloned local copy of WSO2 Dockerfiles will be referred as DOCKERFILES_HOME.
     -  To access the management console, use the docker host ip and port 9443.
         + `https://<DOCKER_HOST_IP>:9443/carbon`
 
-## Detailed description
+## Detailed Configuration
 
 * [Introduction] (https://docs.wso2.com/display/DF100/Introduction+to+Docker+Images)
 
