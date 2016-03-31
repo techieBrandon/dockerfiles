@@ -29,7 +29,7 @@ done
 
 read -r -a running_container_ids <<< $(docker ps | grep $product_name | awk '{print $1}')
 if [ "${#running_container_ids[@]}" -eq 0 ]; then
-    echo "No running containers for $(echo $product_name | awk '{print toupper($0)}') was found."
+    echo "No running containers for $(echo $product_name | awk '{print toupper($0)}') were found."
 else
     echoBold "Found ${#running_container_ids[@]} containers matching $(echo $product_name | awk '{print toupper($0)}')"
     for running_container_id in "${running_container_ids[@]}"
@@ -52,10 +52,14 @@ echo
 askBold "Clean already exited containers? (y/n): "
 read -r clean_exited_v
 if [ "$clean_exited_v" == "y" ]; then
-    {
-        echo "Cleaning..." && docker rm $(docker ps -q -f status=exited) > /dev/null 2>&1 && echoSuccess "Cleaned all exited containers."
-    } || {
-        echoError "Could not clean one or more exited containers."
-    }
-
+    exited_container_ids=$(docker ps -q -f status=exited)
+    if [ -z "$exited_container_ids" ]; then
+        echo "No exited containers were found."
+    else
+        {
+            echo "Cleaning..." && docker rm $exited_container_ids > /dev/null 2>&1 && echoSuccess "Cleaned all exited containers."
+        } || {
+            echoError "Could not clean one or more exited containers."
+        }
+    fi
 fi
