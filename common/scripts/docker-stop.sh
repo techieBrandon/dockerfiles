@@ -48,7 +48,7 @@ else
             {
                 docker kill $running_container_id > /dev/null 2>&1 && echoSuccess "$(echo $running_container_info | awk '{print $1,"(",$2,")"}') was terminated."
             } || {
-                echoError "Couldn't terminate container $(echo $running_container_info | awk '{print $1,"(",$3,")"}')."
+                echoError "Couldn't terminate container $(echo $running_container_info | awk '{print $1,"(",$2,")"}')."
             }
         fi
     done
