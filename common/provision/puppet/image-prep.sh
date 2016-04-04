@@ -78,6 +78,21 @@ function validateProfile() {
     fi
 }
 
+function validateNeededPacks() {
+    # TODO: remove hardcoded jdk tarball name
+    jdk_path="${PUPPET_HOME}/modules/wso2base/files/jdk-7u80-linux-x64.tar.gz"
+    pack_path="${PUPPET_HOME}/modules/${1}/files/${1}-${2}.zip"
+    if [ -e $jdk_path ]; then
+        if [ ! -e $pack_path ]; then
+            echoError "Product pack for $(echo $1 | awk '{print toupper($0)}') was not found. Expected: ${pack_path}"
+            exit 1
+        fi
+    else
+        echoError "A JDK was not found. Expected: ${jdk_path}"
+        exit 1
+    fi
+}
+
 # check if provided product environment exists in PUPPET_HOME
 validateProductEnvironment "${product_env}"
 
@@ -85,6 +100,9 @@ validateProductEnvironment "${product_env}"
 validateProductVersion "${product_name}" "${product_version}" "${product_env}"
 
 # check if provided profile exists in PUPPET_HOME
-validateProfile "${product_name}" "${product_version}" "${product_profiles}" "${product_env}"
+validateProfile "${product_name}" "${product_version}"
+
+# check if packs are copied to PUPPET_HOME
+validateNeededPacks "${product_name}" "${product_version}" "${product_profiles}" "${product_env}"
 
 export file_location=${PUPPET_HOME}

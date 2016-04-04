@@ -3,25 +3,18 @@ WSO2 Dockerfiles define the resources and instructions to build the Docker image
 
 ## Try it out
 
-The cloned local copy of WSO2 Dockerfiles will be referred as DOCKERFILES_HOME.
-
-* Add product packs and dependencies
-    - Download and copy JDK 1.7 ([jdk-7u80-linux-x64.tar.gz](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)) pack to `<DOCKERFILES_HOME>/common/provision/default/files` directory.
-    - Download the necessary product packs and copy them to `<DOCKERFILES_HOME>/common/provision/default/files` directory. For example, for WSO2 API Manager 1.9.1 download the [product pack](http://wso2.com/products/api-manager/) and copy the zip file to `<DOCKERFILES_HOME>/common/scripts/provision/default/files`.
-
-* Build docker image
-    - Navigate to the module folder of the WSO2 product. For example, for WSO2 API Manager (eg: `<DOCKERFILES_HOME>/wso2am`).
-    - Execute `build.sh` script and provide the product version.
-        + `./build.sh -v 1.9.1`
-
-* Docker run
-    - Navigate to the module folder of the WSO2 product. For example, for WSO2 API Manager (eg: `<DOCKERFILES_HOME>/wso2am`).
-    - Execute `run.sh` script and provide the product version.
-        + `./run.sh -v 1.9.1`
-
-* Access management console
-    -  To access the management console, use the docker host ip and port 9443.
-        + `https://<DOCKER_HOST_IP>:9443/carbon`
+To try the WSO2 products on Docker simply follow the instructions in the README in the relevant folder.
+* [WSO2 API Manager](https://github.com/wso2/dockerfiles/tree/master/wso2am)
+* [WSO2 Application Server](https://github.com/wso2/dockerfiles/tree/master/wso2as)
+* [WSO2 Business Process Server](https://github.com/wso2/dockerfiles/tree/master/wso2bps)
+* [WSO2 Business Rules Server](https://github.com/wso2/dockerfiles/tree/master/wso2brs)
+* [WSO2 Complex Event Processor](https://github.com/wso2/dockerfiles/tree/master/wso2cep)
+* [WSO2 Data Analytics Server](https://github.com/wso2/dockerfiles/tree/master/wso2das)
+* [WSO2 Data Services Server](https://github.com/wso2/dockerfiles/tree/master/wso2dss)
+* [WSO2 Enterprise Store](https://github.com/wso2/dockerfiles/tree/master/wso2es)
+* [WSO2 Enterprise Service Bus](https://github.com/wso2/dockerfiles/tree/master/wso2esb)
+* [WSO2 Governance Registry](https://github.com/wso2/dockerfiles/tree/master/wso2greg)
+* [WSO2 Message Broker](https://github.com/wso2/dockerfiles/tree/master/wso2mb)
 
 ## Detailed Configuration
 

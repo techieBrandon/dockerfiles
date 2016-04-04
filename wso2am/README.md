@@ -3,7 +3,7 @@ The Dockerfile defines the resources and instructions to build the Docker images
 
 ## Try it out
 
-The cloned local copy of WSO2 Dockerfiles will be referred as DOCKERFILES_HOME.
+The cloned local copy of WSO2 Dockerfiles will be referred as `DOCKERFILES_HOME`.
 
 * Add product packs and dependencies
     - Download and copy JDK 1.7 ([jdk-7u80-linux-x64.tar.gz](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)) pack to `<DOCKERFILES_HOME>/common/provision/default/files`.
@@ -20,9 +20,9 @@ The cloned local copy of WSO2 Dockerfiles will be referred as DOCKERFILES_HOME.
         + `./run.sh -v 1.10.0`
 
 * Access management console
-    -  To access the management console, use the docker host ip and port 9443.
+    -  To access the management console, use the docker host IP and port 9443.
         + `https://<DOCKER_HOST_IP>:9443/carbon`
-    -  To access the Store and Publisher, use the docker host ip, port 9443 and store / publisher contexts.
+    -  To access the Store and Publisher, use the docker host IP, port 9443 and store / publisher contexts.
         + `https://<DOCKER_HOST_IP>:9443/store`
         + `https://<DOCKER_HOST_IP>:9443/publisher`
 
