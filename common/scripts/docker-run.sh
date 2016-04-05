@@ -157,7 +157,7 @@ do
 
     member_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${container_id}")
     if [ -z "${member_ip}" ]; then
-        echoError "Couldn't start container ${container-id} with name ${name}"
+        echoError "Couldn't start container ${container_id} with name ${name}"
         exit 1
     fi
 
