@@ -21,7 +21,7 @@ source common/scripts/base.sh
 function build() {
   product_name=$1
   product_version=$2
-  image_tag=wso2/${product_name}:${product_version}
+  image_tag=${product_name}:${product_version}
   image_exists=$(docker images $image_tag | wc -l)
   if [ ${image_exists} == "2" ]; then
     # docker image already built
