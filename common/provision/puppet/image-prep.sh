@@ -79,17 +79,17 @@ function validateProfile() {
 }
 
 function validateNeededPacks() {
-    # TODO: remove hardcoded jdk tarball name
-    jdk_path="${PUPPET_HOME}/modules/wso2base/files/jdk-7u80-linux-x64.tar.gz"
+    base_files_folder="${PUPPET_HOME}/modules/wso2base/files"
+    jdks_found=$(find $base_files_folder -name "jdk*.tar.gz")
     pack_path="${PUPPET_HOME}/modules/${1}/files/${1}-${2}.zip"
-    if [ -e $jdk_path ]; then
+    if [ -z $jdks_found ]; then
+        echoError "A JDK was not found. Copy the JDK in to ${base_files_folder}."
+        exit 1
+    else
         if [ ! -e $pack_path ]; then
             echoError "Product pack for $(echo $1 | awk '{print toupper($0)}') was not found. Expected: ${pack_path}"
             exit 1
         fi
-    else
-        echoError "A JDK was not found. Expected: ${jdk_path}"
-        exit 1
     fi
 }
 
