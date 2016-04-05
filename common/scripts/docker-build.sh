@@ -48,9 +48,12 @@ function showUsageAndExit() {
     echo "[OPTIONAL] Quiet flag. If used, the docker build run output will be suppressed."
     echo -en "  -r\t"
     echo "[OPTIONAL] Provisioning method. If not specified this is defaulted to \"default\". Available provisioning methods are ${available_provisioning//,/, }."
+    echo -en "  -t\t"
+    echo "[OPTIONAL] Image name. If this is specified, it will be used as the image name instead of \"wso2{product}\" format."
     echo
 
     echoBold "Ex: ./build.sh -v 1.10.0 -l worker|manager -o myorganization -i 1.0.0"
+    echoBold "Ex: ./build.sh -v 1.10.0 -t wso2am-customized"
     echo
     exit 1
 }
@@ -88,7 +91,7 @@ function findHostIP() {
 verbose=true
 provision_method="default"
 
-while getopts :r:n:v:d:l:i:o:e:q FLAG; do
+while getopts :r:n:v:d:l:i:o:e:t:q FLAG; do
     case $FLAG in
         r)
             provision_method=$OPTARG
@@ -116,6 +119,9 @@ while getopts :r:n:v:d:l:i:o:e:q FLAG; do
             ;;
         e)
             product_env=$OPTARG
+            ;;
+        t)
+            tag_name=$OPTARG
             ;;
         \?)
             showUsageAndExit
@@ -218,11 +224,15 @@ do
         image_version_section="${product_version}-${image_version}"
     fi
 
+    if [ -z "$tag_name" ]; then
+        tag_name=$product_name
+    fi
+
     # set image name according to the profile list
     if [[ "${profile}" = "default" ]]; then
-        image_name_section="${organization_name}${product_name}"
+        image_name_section="${organization_name}${tag_name}"
     else
-        image_name_section="${organization_name}${product_name}-${profile}"
+        image_name_section="${organization_name}${tag_name}-${profile}"
     fi
 
     image_id="${image_name_section}:${image_version_section}"
