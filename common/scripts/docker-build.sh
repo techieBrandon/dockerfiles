@@ -50,6 +50,8 @@ function showUsageAndExit() {
     echo "[OPTIONAL] Provisioning method. If not specified this is defaulted to \"default\". Available provisioning methods are ${available_provisioning//,/, }."
     echo -en "  -t\t"
     echo "[OPTIONAL] Image name. If this is specified, it will be used as the image name instead of \"wso2{product}\" format."
+    echo -en "  -y\t"
+    echo "[OPTIONAL] Automatic yes to prompts; assume \"y\" (yes) as answer to all prompts and run non-interactively."
     echo
 
     echoBold "Ex: ./build.sh -v 1.10.0 -l worker|manager -o myorganization -i 1.0.0"
@@ -90,8 +92,9 @@ function findHostIP() {
 
 verbose=true
 provision_method="default"
+overwrite_v='n'
 
-while getopts :r:n:v:d:l:i:o:e:t:q FLAG; do
+while getopts :r:n:v:d:l:i:o:e:t:qy FLAG; do
     case $FLAG in
         r)
             provision_method=$OPTARG
@@ -122,6 +125,9 @@ while getopts :r:n:v:d:l:i:o:e:t:q FLAG; do
             ;;
         t)
             tag_name=$OPTARG
+            ;;
+        y)
+            overwrite_v='y'
             ;;
         \?)
             showUsageAndExit
@@ -238,7 +244,7 @@ do
     image_id="${image_name_section}:${image_version_section}"
 
     image_exists=$(docker images $image_id | wc -l)
-    if [ ${image_exists} == "2" ]; then
+    if [ ${image_exists} == "2" ] && [ $overwrite_v != "y" ]; then
         askBold "Docker image \"${image_id}\" already exists? Overwrite? (y/n): "
         read -r overwrite_v
     fi
