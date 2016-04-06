@@ -195,16 +195,21 @@ cp "${self_path}/../provision/${provision_method}/image-config.sh" "${dockerfile
 # starting http server
 echoBold "Starting HTTP server in ${file_location}/..."
 
-# check if port 8000 is already in use
-port_uses=$(lsof -i:8000 | wc -l)
-if [ $port_uses -gt 1 ]; then
-   echoError "Port 8000 seems to be already in use. Exiting..."
-   exit 1
-fi
+# Select a port between 8000 - 8010 for the http server
+http_server_port=8000
+while [ $(lsof -i:${http_server_port} | wc -l) -gt 1 ]; do
+   echoDim "Port ${http_server_port} seems to be already in use, trying port $((http_server_port + 1))..."
+   http_server_port=$((http_server_port + 1))
+   if [ ${http_server_port} = 8011 ]; then
+     echoError "Could not find a free port between 8000 - 8010"
+     exit 1
+   fi
+done
+echoDim "Port ${http_server_port} was selected for the http server"
 
 # start the server in background
 pushd ${file_location} > /dev/null 2>&1
-python -m SimpleHTTPServer 8000 & > /dev/null 2>&1
+python -m SimpleHTTPServer ${http_server_port} & > /dev/null 2>&1
 httpserver_pid=$!
 sleep 5
 popd > /dev/null 2>&1
@@ -216,8 +221,8 @@ if [ -z "$host_ip" ]; then
     exit 1
 fi
 
-httpserver_address="http://${host_ip}:8000"
-echoBold "HTTP server started at ${httpserver_address}"
+http_server_address="http://${host_ip}:${http_server_port}"
+echoBold "HTTP server started at ${http_server_address}"
 
 # Build image for each profile provided
 IFS='|' read -r -a profiles_array <<< "${product_profiles}"
@@ -267,7 +272,7 @@ do
         --build-arg WSO2_SERVER_VERSION=\"${product_version}\" \
         --build-arg WSO2_SERVER_PROFILE=\"${profile}\" \
         --build-arg WSO2_ENVIRONMENT=\"${product_env}\" \
-        --build-arg HTTP_PACK_SERVER=\"${httpserver_address}\" \
+        --build-arg HTTP_PACK_SERVER=\"${http_server_address}\" \
         -t \"${image_id}\" \"${dockerfile_path}\""
 
         {
