@@ -77,6 +77,8 @@ if [[ -d ${artifact_dir} ]]; then
     cp -r ${artifact_dir}/* ${server_path}/${server_name}
 fi
 
+export CARBON_HOME="${server_path}/${server_name}"
+
 # if there is an existing docker-<product_name>-<profile_name>-init.sh script, run that first
 product_init_script_name="${WSO2_SERVER}-${WSO2_SERVER_PROFILE}-init.sh"
 if [[ -f "${script_path}/${product_init_script_name}" ]]; then
@@ -84,6 +86,5 @@ if [[ -f "${script_path}/${product_init_script_name}" ]]; then
     bash "${script_path}/${product_init_script_name}" || exit $?
 fi
 
-export CARBON_HOME="${server_path}/${server_name}"
 echo "Starting ${WSO2_SERVER}..."
 ${CARBON_HOME}/bin/wso2server.sh
