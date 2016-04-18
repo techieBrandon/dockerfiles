@@ -24,7 +24,16 @@ export FACTER_product_name=${WSO2_SERVER}
 export FACTER_product_version=${WSO2_SERVER_VERSION}
 export FACTER_product_profile=${WSO2_SERVER_PROFILE}
 export FACTER_environment=${WSO2_ENVIRONMENT}
+export FACTER_platform=${PLATFORM}
 export FACTER_vm_type=docker
+
+echo "facters used: "
+echo "product_name=${FACTER_product_name}"
+echo "product_version=${FACTER_product_version}"
+echo "product_profile=${FACTER_product_profile}"
+echo "environment=${FACTER_environment}"
+echo "platform=${FACTER_platform}"
+echo "vm_type=${FACTER_vm_type}"
 
 mkdir -p /etc/puppet
 pushd /etc/puppet > /dev/null
@@ -32,10 +41,10 @@ getent group wso2 > /dev/null 2>&1 || addgroup wso2
 id -u wso2user > /dev/null 2>&1 || adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user
 apt-get update && apt-get install -y wget puppet
 wget -nH -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/hiera.yaml
-wget -rnH -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/hieradata/
-wget -rnH -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/manifests/
-wget -rnH --level=10 -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/modules/wso2base/
-wget -rnH --level=10 -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/modules/${WSO2_SERVER}/
+wget -rnH --level=0 -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/hieradata/
+wget -rnH --level=0 -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/manifests/
+wget -rnH --level=0 -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/modules/wso2base/
+wget -rnH --level=0 -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/modules/${WSO2_SERVER}/
 puppet module install puppetlabs/stdlib
 puppet module install 7terminals-java
 puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.yaml

@@ -52,6 +52,8 @@ function showUsageAndExit() {
     echo "[OPTIONAL] Image name. If this is specified, it will be used as the image name instead of \"wso2{product}\" format."
     echo -en "  -y\t"
     echo "[OPTIONAL] Automatic yes to prompts; assume \"y\" (yes) as answer to all prompts and run non-interactively."
+    echo -en "  -s\t"
+    echo "[OPTIONAL] Platform to be used to run the Dockerfile (ex.: kubernetes). If not specified  will assume the value as 'default'."
     echo
 
     echoBold "Ex: ./build.sh -v 1.10.0 -l worker|manager -o myorganization -i 1.0.0"
@@ -93,8 +95,9 @@ function findHostIP() {
 verbose=true
 provision_method="default"
 overwrite_v='n'
+platform='default'
 
-while getopts :r:n:v:d:l:i:o:e:t:qy FLAG; do
+while getopts :r:n:v:d:l:i:o:e:t:s:qy FLAG; do
     case $FLAG in
         r)
             provision_method=$OPTARG
@@ -128,6 +131,9 @@ while getopts :r:n:v:d:l:i:o:e:t:qy FLAG; do
             ;;
         y)
             overwrite_v='y'
+            ;;
+        s)
+            platform=$OPTARG
             ;;
         \?)
             showUsageAndExit
@@ -273,6 +279,7 @@ do
         --build-arg WSO2_SERVER_PROFILE=\"${profile}\" \
         --build-arg WSO2_ENVIRONMENT=\"${product_env}\" \
         --build-arg HTTP_PACK_SERVER=\"${http_server_address}\" \
+        --build-arg PLATFORM=\"${platform}\" \
         -t \"${image_id}\" \"${dockerfile_path}\""
 
         {
