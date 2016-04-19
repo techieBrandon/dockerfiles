@@ -53,7 +53,7 @@ function showUsageAndExit() {
     echo -en "  -y\t"
     echo "[OPTIONAL] Automatic yes to prompts; assume \"y\" (yes) as answer to all prompts and run non-interactively."
     echo -en "  -s\t"
-    echo "[OPTIONAL] Platform to be used to run the Dockerfile (ex.: kubernetes). If not specified  will assume the value as 'default'."
+    echo "[OPTIONAL] Platform to be used to run the Dockerfile (ex.: kubernetes). If not specified will assume the value as 'default'."
     echo
 
     echoBold "Ex: ./build.sh -v 1.10.0 -l worker|manager -o myorganization -i 1.0.0"
