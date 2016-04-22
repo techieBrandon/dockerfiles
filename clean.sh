@@ -18,36 +18,30 @@
 set -e
 source common/scripts/base.sh
 
-function build() {
+function remove() {
   product_name=$1
   product_version=$2
   image_tag=${product_name}:${product_version}
   image_exists=$(docker images $image_tag | wc -l)
   if [ ${image_exists} == "2" ]; then
-    # docker image already built
-    echoBold "Docker image ${image_tag} already exist, skipping..."
-  else
-    # docker image not found
-    echoBold "==> Building ${image_tag}"
-    pushd ${product_name}/
-    ./build.sh -v ${product_version} -y
-    popd
-    echoSuccess "==> ${product_name} ${product_version} build completed!"
+    echoBold "Removing docker image ${image_tag}..."
+    docker rmi -f ${image_tag}
+    echoSuccess "==> ${product_name} ${product_version} removed"
   fi
 }
 
 # Update the below product list and versions as required
-echoBold "Building WSO2 docker images..."
-build wso2am 1.10.0
-build wso2as 5.3.0
-build wso2bps 3.5.0
-build wso2brs 2.2.0
-build wso2cep 4.1.0
-build wso2das 3.0.1
-build wso2dss 3.5.0
-build wso2es 2.0.0
-build wso2esb 4.9.0
-build wso2greg 5.1.0
-build wso2is 5.1.0
-build wso2mb 3.1.0
-echoSuccess "WSO2 docker images built successfully!"
+echoBold "Removing WSO2 docker images..."
+remove wso2am 1.10.0
+remove wso2as 5.3.0
+remove wso2bps 3.5.0
+remove wso2brs 2.2.0
+remove wso2cep 4.1.0
+remove wso2das 3.0.1
+remove wso2dss 3.5.0
+remove wso2es 2.0.0
+remove wso2esb 4.9.0
+remove wso2greg 5.1.0
+remove wso2is 5.1.0
+remove wso2mb 3.1.0
+echoSuccess "WSO2 docker images removed successfully!"
