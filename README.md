@@ -3,7 +3,7 @@ WSO2 Dockerfiles define the resources and instructions to build the Docker image
 
 ## Try it out
 
-To try the WSO2 products on Docker simply follow the instructions in the README in the relevant folder.
+To try the WSO2 products on Docker simply follow the instructions in the README in the relevant product folder. 
 
 ## Detailed Configuration
 
