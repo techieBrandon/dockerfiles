@@ -29,7 +29,7 @@ addgroup wso2
 adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user
 
 # WGET packs
-apt-get update && apt-get install -y unzip wget
+apt-get update && apt-get install -y unzip wget iproute2
 wget -nH -r -e robots=off --reject "index.html*" -A "jdk*.tar.gz" -nv ${HTTP_PACK_SERVER}/
 wget -nH -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip
 
