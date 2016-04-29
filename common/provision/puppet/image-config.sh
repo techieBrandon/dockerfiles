@@ -38,7 +38,7 @@ echo "vm_type=${FACTER_vm_type}"
 # Prep puppet
 mkdir -p /etc/puppet
 pushd /etc/puppet > /dev/null
-apt-get update && apt-get install -y wget puppet
+apt-get update && apt-get install -y wget puppet iproute2
 
 # Add wso2user
 getent group wso2 > /dev/null 2>&1 || addgroup wso2
