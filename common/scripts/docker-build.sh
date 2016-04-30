@@ -256,8 +256,12 @@ do
 
     image_exists=$(docker images $image_id | wc -l)
     if [ ${image_exists} == "2" ] && [ $overwrite_v != "y" ]; then
-        askBold "Docker image \"${image_id}\" already exists? Overwrite? (y/n): "
-        read -r overwrite_v
+        if [ $verbose == false ]; then
+            overwrite_v='y';
+        else
+            askBold "Docker image \"${image_id}\" already exists? Overwrite? (y/n): "
+            read -r overwrite_v
+        fi
     fi
 
     if [ ${image_exists} == "1" ] || [ $overwrite_v == "y" ]; then
