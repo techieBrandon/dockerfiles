@@ -173,7 +173,7 @@ if [ "${#profiles_array[@]}" -eq 1 ]; then
     if [ "$exec_v" == "y" ]; then
         docker exec -it "${container_id}" /bin/bash
     else
-        askBold "Tail conatiner logs? (y/n): "
+        askBold "Tail container logs? (y/n): "
         read -r exec_v
         if [ "$exec_v" == "y" ]; then
           docker logs -f "${container_id}"
