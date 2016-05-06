@@ -19,6 +19,11 @@
 set -e
 source /etc/profile.d/set_java_home.sh
 
+# if SLEEP is specified, go to sleep!
+if [ ! -z ${SLEEP} ];then
+    sleep ${SLEEP}
+fi
+
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
 
