@@ -48,4 +48,4 @@ WORKDIR /mnt
 # Expose transport ports
 EXPOSE 8000 9763 9443 10500
 
-ENTRYPOINT /usr/local/bin/init.sh
+ENTRYPOINT ["/usr/local/bin/init.sh"]
