@@ -37,18 +37,18 @@ else
 
     for running_container_id in "${running_container_ids[@]}"
     do
-        running_container_info=$(docker ps -f "id=${running_container_id}" | awk -F '[[:space:]][[:space:]]+' '{if (NR!=1) print $NF,$1,"Started", $4, "from image", $2}')
+        running_container_info=$(docker ps -f "id=${running_container_id}" | awk 'BEGIN{FS="   *"}{if (NR!=1) print $NF,$1,"Started", $4, "from image", $2}')
         running_container_name=$(echo $running_container_info | awk '{print $1}')
         running_container_meta=$(echo $running_container_info | awk '{$1=""; print $0}')
         askBold "${running_container_name}"
         echo -n " (${running_container_meta} )"
         askBold " - Terminate? (y/n): "
         read -r terminate_v
-        if [ "$terminate_v" == "y" ]; then
+        if [[ "$terminate_v" == "y" || "$terminate_v" == "Y" ]]; then
             {
-                docker kill $running_container_id > /dev/null 2>&1 && echoSuccess "$(echo $running_container_info | awk '{print $1,"(",$2,")"}') was terminated."
+                docker kill $running_container_id > /dev/null 2>&1 && echoSuccess "${running_container_name} was terminated."
             } || {
-                echoError "Couldn't terminate container $(echo $running_container_info | awk '{print $1,"(",$2,")"}')."
+                echoError "Couldn't terminate container ${running_container_name}."
             }
         fi
     done
@@ -59,7 +59,7 @@ if [ ! -z "$exited_container_ids" ]; then
     echo
     askBold "Clean already exited containers? (y/n): "
     read -r clean_exited_v
-    if [ "$clean_exited_v" == "y" ]; then
+    if [[ "$clean_exited_v" == "y" || "$clean_exited_v" == "Y" ]]; then
         {
             echo "Cleaning..." && docker rm $exited_container_ids > /dev/null 2>&1 && echoSuccess "Cleaned all exited containers."
         } || {

@@ -142,7 +142,7 @@ do
         echoError "A Docker container with the name ${name} already exists."
         askBold "Terminate existing ${name} container (y/n): "
         read -r terminate
-        if [[ $terminate = "y" ]]; then
+        if [[ $terminate == "y" || $terminate == "Y" ]]; then
             docker rm -f "${name}" > /dev/null 2>&1 || { echoError "Couldn't terminate container ${name}."; exit 1; }
         else
             exit 1
@@ -170,12 +170,12 @@ if [ "${#profiles_array[@]}" -eq 1 ]; then
     echo
     askBold "Connect to the spawned container? (y/n): "
     read -r exec_v
-    if [ "$exec_v" == "y" ]; then
+    if [[ "$exec_v" == "y" || "$exec_v" == "Y" ]]; then
         docker exec -it "${container_id}" /bin/bash
     else
         askBold "Tail container logs? (y/n): "
         read -r exec_v
-        if [ "$exec_v" == "y" ]; then
+        if [[ "$exec_v" == "y" || "$exec_v" == "Y" ]]; then
           docker logs -f "${container_id}"
         fi
     fi
