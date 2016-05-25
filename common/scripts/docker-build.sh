@@ -188,7 +188,8 @@ popd > /dev/null 2>&1
 
 # validate docker version against minimum required docker version
 # docker_version=$(docker version --format '{{.Server.Version}}')
-docker_version=$(docker version | grep 'Version:' | awk '{print $2}')
+docker_version=$(docker version)
+docker_version=$(echo "$docker_version" | grep 'Version:' | awk '{print $2}')
 min_required_docker_version=1.9.0
 validateDockerVersion "${docker_version}" "${min_required_docker_version}"
 
