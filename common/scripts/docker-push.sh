@@ -124,5 +124,4 @@ do
 
     product_name_in_uppercase=`echo ${product_name} | tr '[:lower:]' '[:upper:]'`
     echoSuccess "${product_name_in_uppercase} ${profile} pushed image: [image] ${image_name_and_version} to [registry] ${registry_url}"
-    sleep 1
 done
