@@ -1,3 +1,4 @@
+#!/bin/bash
 # ------------------------------------------------------------------------
 #
 # Copyright 2016 WSO2, Inc. (http://wso2.com)
@@ -15,37 +16,22 @@
 # limitations under the License
 
 # ------------------------------------------------------------------------
+set -e
 
-FROM ubuntu:latest
-MAINTAINER dev@wso2.org
+provision_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source "${provision_path}/../../scripts/base.sh"
 
-ENV DEBIAN_FRONTEND noninteractive
+jdk_archive=jdk-7u80-linux-x64.tar.gz
 
-# Build time arguments
-ARG WSO2_SERVER
-ARG WSO2_SERVER_VERSION
-ARG WSO2_SERVER_PROFILE
-ARG WSO2_ENVIRONMENT
-ARG HTTP_PACK_SERVER
-ARG PLATFORM
+# Validate if files exist in the files folder
+if [ ! -e "${provision_path}/files/${jdk_archive}" ]; then
+    echoError "A valid JDK distribution was not found at ${provision_path}/files folder. Expected: ${jdk_archive}"
+    exit 1
+fi
 
-# Carbon server information
-ENV WSO2_SERVER=${WSO2_SERVER:-wso2am} \
-    WSO2_SERVER_VERSION=${WSO2_SERVER_VERSION:-1.9.1} \
-    WSO2_SERVER_PROFILE=${WSO2_SERVER_PROFILE:-default} \
-    WSO2_ENVIRONMENT=${WSO2_ENVIRONMENT:-dev} \
-    HTTP_PACK_SERVER=${HTTP_PACK_SERVER} \
-    PLATFORM=${PLATFORM}
+if [ ! -e "${provision_path}/files/${product_name}-${product_version}.zip" ]; then
+    echoError "$(echo $product_name | awk '{print toupper($0)}') ${product_version} pack was not found at ${provision_path}/files folder. Expected: ${product_name}-${product_version}.zip"
+    exit 1
+fi
 
-COPY scripts/*.sh /usr/local/bin/
-
-# Execute configuration script
-RUN bash /usr/local/bin/image-config.sh
-
-USER wso2user
-WORKDIR /mnt
-
-# Expose transport ports
-EXPOSE 22 10397 8280 8243 9763 9443
-
-CMD ["/usr/bin/supervisord"]
+export file_location=$provision_path/files
