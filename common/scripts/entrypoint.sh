@@ -24,6 +24,7 @@ if [ ! -z ${SLEEP} ];then
     sleep ${SLEEP}
 fi
 
+
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
 
@@ -91,5 +92,15 @@ if [[ -f "${script_path}/${product_init_script_name}" ]]; then
     bash "${script_path}/${product_init_script_name}" || exit $?
 fi
 
-echo "Starting ${WSO2_SERVER}..."
-${CARBON_HOME}/bin/wso2server.sh
+
+
+# if DEBUG is true, server is running on debug mode!
+if [ ! -z ${DEBUG} ] && [ ${DEBUG} == true ] ;then
+    echo "Starting ${WSO2_SERVER} in debug mode..."
+    ${CARBON_HOME}/bin/wso2server.sh -debug 5005
+else
+    echo "Starting ${WSO2_SERVER}..."
+    ${CARBON_HOME}/bin/wso2server.sh
+fi
+
+
