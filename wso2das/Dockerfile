@@ -45,7 +45,7 @@ RUN bash /usr/local/bin/image-config.sh
 USER wso2user
 WORKDIR /mnt
 
-# Expose transport ports and debug port
-EXPOSE 7611 7711 9763 9443 9611 9711 5005
+# Expose transport ports
+EXPOSE 7611 7711 9763 9443 9611 9711
 
 ENTRYPOINT ["/usr/local/bin/init.sh"]
