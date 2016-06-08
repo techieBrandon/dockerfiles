@@ -94,7 +94,7 @@ fi
 
 
 
-# if DEBUG is true, server is running on debug mode!
+# if DEBUG is specified, server is running on debug mode!
 if [ ! -z ${DEBUG} ] ;then
     echo "Starting ${WSO2_SERVER} in debug mode..."
     ${CARBON_HOME}/bin/wso2server.sh -debug ${DEBUG}
