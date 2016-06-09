@@ -91,5 +91,15 @@ if [[ -f "${script_path}/${product_init_script_name}" ]]; then
     bash "${script_path}/${product_init_script_name}" || exit $?
 fi
 
-echo "Starting ${WSO2_SERVER}..."
-${CARBON_HOME}/bin/wso2server.sh
+
+
+# if DEBUG is specified, server is running on debug mode!
+if [ ! -z ${DEBUG} ] ;then
+    echo "Starting ${WSO2_SERVER} in debug mode..."
+    ${CARBON_HOME}/bin/wso2server.sh -debug ${DEBUG}
+else
+    echo "Starting ${WSO2_SERVER}..."
+    ${CARBON_HOME}/bin/wso2server.sh
+fi
+
+
