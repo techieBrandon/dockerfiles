@@ -24,7 +24,6 @@ if [ ! -z ${SLEEP} ];then
     sleep ${SLEEP}
 fi
 
-
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
 
