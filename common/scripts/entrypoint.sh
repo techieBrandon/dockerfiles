@@ -34,7 +34,7 @@ mkdir -p "${server_path}"
 
 server_name=${WSO2_SERVER}-${WSO2_SERVER_VERSION}
 echo "Moving carbon server from /mnt/${server_name} to ${server_path}..."
-mv "/mnt/${server_name}" "${server_path}/"
+ln -s "/mnt/${server_name}" "${server_path}/${server_name}"
 
 axis2_xml_file_path=${server_path}/${server_name}/repository/conf/axis2/axis2.xml
 secret_conf_properties_file=${server_path}/${server_name}/repository/conf/security/secret-conf.properties
