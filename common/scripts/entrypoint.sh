@@ -14,92 +14,104 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License
-
 # ------------------------------------------------------------------------
-set -e
-source /etc/profile.d/set_java_home.sh
 
-# if SLEEP is specified, go to sleep!
-if [ ! -z ${SLEEP} ];then
-    sleep ${SLEEP}
-fi
-
-prgdir=$(dirname "$0")
-script_path=$(cd "$prgdir"; pwd)
-
-local_ip=$(ip route get 1 | awk '{print $NF;exit}')
-server_path=/mnt/${local_ip}
-echo "Creating directory $server_path..."
-mkdir -p "${server_path}"
-
-server_name=${WSO2_SERVER}-${WSO2_SERVER_VERSION}
-echo "Moving carbon server from /mnt/${server_name} to ${server_path}..."
-ln -s "/mnt/${server_name}" "${server_path}/${server_name}"
-
-axis2_xml_file_path=${server_path}/${server_name}/repository/conf/axis2/axis2.xml
-secret_conf_properties_file=${server_path}/${server_name}/repository/conf/security/secret-conf.properties
-password_tmp_file=${server_path}/${server_name}/password-tmp
-
-# replace localMemberHost with local ip
-function replace_local_member_host_with_ip {
-    sed -i "s/\(<parameter\ name=\"localMemberHost\">\).*\(<\/parameter*\)/\1$local_ip\2/" "${axis2_xml_file_path}"
-    if [[ $? == 0 ]];
-        then
-        echo "successfully updated localMemberHost with local ip address $local_ip"
-    else
-        echo "error occurred in updating localMemberHost with local ip address $local_ip"
-    fi
+# Define error handling function
+function error_handler() {
+  MYSELF="$0"       # equals to script name
+  LASTLINE="$1"     # argument 1: last line of error occurence
+  LASTERR="$2"      # argument 2: error code of last command
+  echo "ERROR in ${MYSELF}: line ${LASTLINE}: exit status of last command: ${LASTERR}"
+	exit 1
 }
 
-# updating conf file path with server_path
-function update_path {
-    if [ -f "$secret_conf_properties_file" ]
-        then
-        sed -i "s|mnt|mnt/${local_ip}|g" "$secret_conf_properties_file"
-        if [[ "$?" == 0 ]];
-            then
-            echo "Successfully updated keyStore identity location"
-        else
-            echo "Error occurred in updating keyStore identity location"
-        fi
-    fi
+# Execute error_handler function on script error
+trap 'error_handler ${LINENO} $?' ERR
+
+# Replaces localMemberHost element value in axis2.xml file with $1
+# $1 - hostname
+# $2 - axis2.xml file path
+function replace_local_member_host() {
+  sed -i "s/\(<parameter\ name=\"localMemberHost\">\).*\(<\/parameter*\)/\1${1}\2/" "${2}"
+  if [[ $? == 0 ]]; then
+    echo "Successfully updated localMemberHost with ${1}"
+  else
+    echo "Error occurred while updating localMemberHost with ${1}"
+  fi
 }
 
-replace_local_member_host_with_ip
+# Replaces localMemberPort element value in axis2.xml file with $1
+# $1 - port
+# $2 - axis2.xml file path
+function replace_local_member_port() {
+  sed -i "s/\(<parameter\ name=\"localMemberPort\">\).*\(<\/parameter*\)/\1${1}\2/" "${2}"
+  if [[ $? == 0 ]]; then
+    echo "Successfully updated localMemberPort with ${1}"
+  else
+    echo "Error occurred while updating localMemberPort with ${1}"
+  fi
+}
 
-update_path
+function main() {
+  echo "Starting ${WSO2_SERVER}-${WSO2_SERVER_VERSION} in ${WSO2_SERVER_PROFILE} profile on ${PLATFORM} platform..."
+  # Helps to handle dependencies among containers when running on bare metal mode
+  if [ ! -z $SLEEP ];then
+    echo "Going to sleep for ${SLEEP}s..."
+    sleep $SLEEP
+  fi
 
-if [ ! -z "$KEY_STORE_PASSWORD" ]
-    then
+  PRGDIR=$(dirname "$0")
+  SCRIPT_PATH=$(cd "$PRGDIR"; pwd)
+  LOCAL_DOCKER_IP=$(ip route get 1 | awk '{print $NF;exit}')
+  SERVER_NAME="${WSO2_SERVER}-${WSO2_SERVER_VERSION}"
+  WSO2_ARTIFACTS_DIR='/mnt/wso2-artifacts'
+  INSTALL_PATH="/mnt/${SERVER_NAME}"
+  AXIS2_XML_FILE="${INSTALL_PATH}/repository/conf/axis2/axis2.xml"
+  SECRET_CONF_PROPERTIES_FILE="${INSTALL_PATH}/repository/conf/security/secret-conf.properties"
+  PASSWORD_TMP_FILE="${INSTALL_PATH}/password-tmp"
+
+  if [[ $PLATFORM == "mesos" ]]; then
+    # Each product instance in a cluster should have a unique installation dir due to an issue in Carbon registry core
+    # In Mesos, local Docker IP is not unique across the cluster hence host IP is prefixed
+    UNIQUE_PATH="/mnt/${HOST}-${LOCAL_DOCKER_IP}"
+    # Replace localMemberHost with host IP so that it is reachable via containers in other hosts
+    # This is needed for Hazelcast based clustering to work when bridge mode Docker networking is used (eg: Mesos with Marathon)
+    replace_local_member_host $HOST $AXIS2_XML_FILE
+    # Replace localMemberPort with dynamically generated port by Marathon which will be used for Hazelcast communication
+    replace_local_member_port $PORT0 $AXIS2_XML_FILE
+  else
+    UNIQUE_PATH="/mnt/${LOCAL_DOCKER_IP}"
+    # Replace localMemberHost with local Docker IP address
+    # This is needed for Hazelcast based clustering to work when HOST mode Docker networking is used with an overlay network (eg: Kubernetes with flanneld)
+    replace_local_member_host $LOCAL_DOCKER_IP $AXIS2_XML_FILE
+  fi
+
+  echo "Creating directory ${UNIQUE_PATH}"
+  mkdir -p $UNIQUE_PATH
+  echo "Creating symlink [target] ${INSTALL_PATH}, [link] ${UNIQUE_PATH}/${SERVER_NAME}"
+  ln -s $INSTALL_PATH "${UNIQUE_PATH}/${SERVER_NAME}"
+  export CARBON_HOME="${UNIQUE_PATH}/${SERVER_NAME}"
+  source /etc/profile.d/set_java_home.sh
+
+  if [[ ! -z $KEY_STORE_PASSWORD ]]; then
     # adding key-store-password to password-tmp file
-    touch $password_tmp_file
-    echo "$KEY_STORE_PASSWORD" >> $password_tmp_file
-fi
+    touch $PASSWORD_TMP_FILE
+    echo "$KEY_STORE_PASSWORD" >> $PASSWORD_TMP_FILE
+  fi
 
-artifact_dir='/mnt/wso2/carbon-home'
-if [[ -d ${artifact_dir} ]]; then
-    echo "copying artifacts at ${artifact_dir} to ${server_path}/${server_name}"
-    cp -r ${artifact_dir}/* ${server_path}/${server_name}
-fi
+  if [[ -d $WSO2_ARTIFACTS_DIR ]]; then
+    echo "Copying artifacts in ${WSO2_ARTIFACTS_DIR} to ${CARBON_HOME}"
+    cp -r ${WSO2_ARTIFACTS_DIR}/* $CARBON_HOME
+  fi
 
-export CARBON_HOME="${server_path}/${server_name}"
+  # if there is an existing docker-<product_name>-<profile_name>-init.sh script, run that first
+  PRODUCT_INIT_SCRIPT_FILE="${SCRIPT_PATH}/${SERVER_NAME}-${WSO2_SERVER_PROFILE}-init.sh"
+  if [[ -f $PRODUCT_INIT_SCRIPT_FILE ]]; then
+    echo "Running init script found in ${PRODUCT_INIT_SCRIPT_FILE}"
+    bash $PRODUCT_INIT_SCRIPT_FILE || exit $?
+  fi
 
-# if there is an existing docker-<product_name>-<profile_name>-init.sh script, run that first
-product_init_script_name="${WSO2_SERVER}-${WSO2_SERVER_PROFILE}-init.sh"
-if [[ -f "${script_path}/${product_init_script_name}" ]]; then
-    echo "found a init script specific to ${WSO2_SERVER_PROFILE} profile of ${WSO2_SERVER}"
-    bash "${script_path}/${product_init_script_name}" || exit $?
-fi
-
-
-
-# if DEBUG is specified, server is running on debug mode!
-if [ ! -z ${DEBUG} ] ;then
-    echo "Starting ${WSO2_SERVER} in debug mode..."
-    ${CARBON_HOME}/bin/wso2server.sh -debug ${DEBUG}
-else
-    echo "Starting ${WSO2_SERVER}..."
-    ${CARBON_HOME}/bin/wso2server.sh
-fi
-
-
+  echo "Starting ${SERVER_NAME} with [startup args] ${STARTUP_ARGS}, [CARBON_HOME] ${CARBON_HOME}"
+  ${CARBON_HOME}/bin/wso2server.sh $STARTUP_ARGS
+}
+main
