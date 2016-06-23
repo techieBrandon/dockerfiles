@@ -45,6 +45,7 @@
         <module>wso2greg</module>
         <module>wso2is</module>
         <module>wso2mb</module>
+        <module>wso2greg-pubstore</module>
     </modules>
 
     <build>
