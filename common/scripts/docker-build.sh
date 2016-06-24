@@ -253,6 +253,10 @@ do
         image_name_section="${organization_name}${tag_name}-${profile}"
     fi
 
+    if [[ "${platform}" != "default" ]]; then
+        image_name_section="${image_name_section}-${platform}"
+    fi
+
     image_id="${image_name_section}:${image_version_section}"
 
     image_exists=$(docker images $image_id | wc -l)
