@@ -16,7 +16,7 @@
 
 # ------------------------------------------------------------------------
 
-FROM ubuntu:latest
+FROM wso2/wso2base:latest
 MAINTAINER dev@wso2.org
 
 ENV DEBIAN_FRONTEND noninteractive

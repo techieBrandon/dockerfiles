@@ -16,36 +16,11 @@
 
 # ------------------------------------------------------------------------
 
-FROM wso2/wso2base:latest
+FROM ubuntu:latest
 MAINTAINER dev@wso2.org
 
 ENV DEBIAN_FRONTEND noninteractive
 
-# Build time arguments
-ARG WSO2_SERVER
-ARG WSO2_SERVER_VERSION
-ARG WSO2_SERVER_PROFILE
-ARG WSO2_ENVIRONMENT
-ARG HTTP_PACK_SERVER
-ARG PLATFORM
-
-# Carbon server information
-ENV WSO2_SERVER=${WSO2_SERVER:-wso2greg} \
-    WSO2_SERVER_VERSION=${WSO2_SERVER_VERSION:-5.1.0} \
-    WSO2_SERVER_PROFILE=${WSO2_SERVER_PROFILE:-default} \
-    WSO2_ENVIRONMENT=${WSO2_ENVIRONMENT:-dev} \
-    HTTP_PACK_SERVER=${HTTP_PACK_SERVER} \
-    PLATFORM=${PLATFORM}
-
-COPY scripts/*.sh /usr/local/bin/
-
-# Execute configuration script
-RUN bash /usr/local/bin/image-config.sh
-
-USER wso2user
-WORKDIR /mnt
-
-# Expose transport ports
-EXPOSE 9763 9443
-
-ENTRYPOINT ["/usr/local/bin/init.sh"]
+RUN apt-get update && apt-get install -y --no-install-recommends wget puppet iproute2 zip unzip && \
+    puppet module install puppetlabs/stdlib && \
+    puppet module install 7terminals-java

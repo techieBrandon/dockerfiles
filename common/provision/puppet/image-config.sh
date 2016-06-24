@@ -35,31 +35,31 @@ echo "environment=${FACTER_environment}"
 echo "platform=${FACTER_platform}"
 echo "vm_type=${FACTER_vm_type}"
 
-# Prep puppet
+# Prepare Puppet
 mkdir -p /etc/puppet
 pushd /etc/puppet > /dev/null
-apt-get update && apt-get install -y wget puppet iproute2
 
 # Add wso2user
 getent group wso2 > /dev/null 2>&1 || addgroup wso2
 id -u wso2user > /dev/null 2>&1 || adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user
 
-# WGET and install puppet modules
-wget -nH -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/hiera.yaml
-wget -rnH --level=0 -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/hieradata/
-wget -rnH --level=0 -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/manifests/
-wget -rnH --level=0 -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/modules/wso2base/
-wget -rnH --level=0 -e robots=off --reject "index.html*" -nv ${HTTP_PACK_SERVER}/modules/${WSO2_SERVER}/
-puppet module install puppetlabs/stdlib
-puppet module install 7terminals-java
+# Download Puppet modules and Hiera files via local Python HTTP server
+echo "Downloading Puppet modules and Hiera data..."
+wget -q -nv -rnH -e robots=off --reject "index.html*" ${HTTP_PACK_SERVER}/hiera.yaml
+wget -q -nv -rnH --level=0 -e robots=off --reject "index.html*" ${HTTP_PACK_SERVER}/hieradata/
+wget -q -nv -rnH --level=0 -e robots=off --reject "index.html*" ${HTTP_PACK_SERVER}/manifests/
+wget -q -nv -rnH --level=0 -e robots=off --reject "index.html*" ${HTTP_PACK_SERVER}/modules/wso2base/
+wget -q -nv -rnH --level=0 -e robots=off --reject "index.html*" ${HTTP_PACK_SERVER}/modules/${WSO2_SERVER}/
 
-# puppet apply
+# Run Puppet agent in stand-alone mode
+echo "Running Puppet agent..."
 puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.yaml
 
 # Cleanup
-apt-get purge -y --auto-remove puppet wget
-rm -rfv /etc/puppet/*
-rm -rfv /var/lib/apt/lists/*
+echo "Cleaning up packages and files no longer required..."
+apt-get purge -y --auto-remove puppet wget zip unzip
+rm -rf /etc/puppet/*
+rm -rf /var/lib/apt/lists/*
 chown wso2user:wso2 /usr/local/bin/*
 chown -R wso2user:wso2 /mnt
 popd > /dev/null
