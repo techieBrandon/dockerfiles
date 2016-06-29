@@ -32,7 +32,7 @@
     <description>${wso2.product.fullname} Dockerfile</description>
 
     <properties>
-        <wso2.product.name>wso2is-km</wso2.product.name>
+        <wso2.product.name>wso2is_km</wso2.product.name>
         <wso2.product.fullname>WSO2 Identity Server as Key Manager</wso2.product.fullname>
     </properties>
 </project>

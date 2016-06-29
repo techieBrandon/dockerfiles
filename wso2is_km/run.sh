@@ -18,10 +18,10 @@
 # ------------------------------------------------------------------------
 set -e
 
-product_name=wso2is-km
+product_name=wso2is_km
 
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
 common_folder=$(cd "${script_path}/../common/scripts/"; pwd)
 
-bash ${common_folder}/docker-stop.sh -n ${product_name}
+bash ${common_folder}/docker-run.sh -n ${product_name} -p 9763:9763 -p 9443:9443 $*

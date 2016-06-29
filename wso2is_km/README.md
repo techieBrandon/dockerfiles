@@ -11,12 +11,12 @@ The cloned local copy of WSO2 Dockerfiles will be referred as `DOCKERFILES_HOME`
     - Download the WSO2 Identity Server as Key Manager zip file (http://wso2.com/products/identity-server/) and copy it to `<DOCKERFILES_HOME>/common/provision/default/files`.
 
 * Build the docker image
-    - Navigate to `<DOCKERFILES_HOME>/wso2is-km`.
+    - Navigate to `<DOCKERFILES_HOME>/wso2is_km`.
     - Execute `build.sh` script and provide the product version.
         + `./build.sh -v 5.1.0`
 
 * Docker run
-    - Navigate to `<DOCKERFILES_HOME>/wso2is-km`.
+    - Navigate to `<DOCKERFILES_HOME>/wso2is_km`.
     - Execute `run.sh` script and provide the product version.
         + `./run.sh -v 5.1.0`
 
