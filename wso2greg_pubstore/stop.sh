@@ -18,10 +18,10 @@
 # ------------------------------------------------------------------------
 set -e
 
-product_name=wso2greg-pubstore
+product_name=wso2greg_pubstore
 
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
 common_folder=$(cd "${script_path}/../common/scripts/"; pwd)
 
-bash ${common_folder}/docker-push.sh -n ${product_name} $*
+bash ${common_folder}/docker-stop.sh -n ${product_name}

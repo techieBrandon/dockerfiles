@@ -32,7 +32,7 @@
     <description>${wso2.product.fullname} Dockerfile</description>
 
     <properties>
-        <wso2.product.name>wso2greg-pubstore</wso2.product.name>
+        <wso2.product.name>wso2greg_pubstore</wso2.product.name>
         <wso2.product.fullname>WSO2 Governance Registry Publisher Store</wso2.product.fullname>
     </properties>
 </project>

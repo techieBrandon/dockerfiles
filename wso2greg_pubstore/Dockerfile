@@ -16,7 +16,7 @@
 
 # ------------------------------------------------------------------------
 
-FROM ubuntu:latest
+FROM wso2/wso2base:latest
 MAINTAINER dev@wso2.org
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -30,7 +30,7 @@ ARG HTTP_PACK_SERVER
 ARG PLATFORM
 
 # Carbon server information
-ENV WSO2_SERVER=${WSO2_SERVER:-wso2greg-pubstore} \
+ENV WSO2_SERVER=${WSO2_SERVER:-wso2greg_pubstore} \
     WSO2_SERVER_VERSION=${WSO2_SERVER_VERSION:-5.1.0} \
     WSO2_SERVER_PROFILE=${WSO2_SERVER_PROFILE:-default} \
     WSO2_ENVIRONMENT=${WSO2_ENVIRONMENT:-dev} \

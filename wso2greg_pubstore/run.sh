@@ -16,13 +16,12 @@
 # limitations under the License
 
 # ------------------------------------------------------------------------
-
 set -e
 
-product_name=wso2greg-pubstore
+product_name=wso2greg_pubstore
 
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
 common_folder=$(cd "${script_path}/../common/scripts/"; pwd)
 
-bash ${common_folder}/docker-build.sh -n ${product_name} -d ${script_path} $*
+bash ${common_folder}/docker-run.sh -n ${product_name} -p 9763:9763 -p 9443:9443 $*
