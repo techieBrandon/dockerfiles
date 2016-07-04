@@ -53,7 +53,7 @@ function replace_local_member_port() {
 }
 
 function main() {
-  echo "Starting ${WSO2_SERVER}-${WSO2_SERVER_VERSION} in ${WSO2_SERVER_PROFILE} profile on ${PLATFORM} platform..."
+  echo "Initializing ${WSO2_SERVER}-${WSO2_SERVER_VERSION} in ${WSO2_SERVER_PROFILE} profile on ${PLATFORM} platform..."
   # Helps to handle dependencies among containers when running on bare metal mode
   if [ ! -z $SLEEP ];then
     echo "Going to sleep for ${SLEEP}s..."
@@ -62,7 +62,7 @@ function main() {
 
   PRGDIR=$(dirname "$0")
   SCRIPT_PATH=$(cd "$PRGDIR"; pwd)
-  LOCAL_DOCKER_IP=$(ip route get 1 | awk '{print $NF;exit}')
+  export LOCAL_DOCKER_IP=$(ip route get 1 | awk '{print $NF;exit}')
   SERVER_NAME="${WSO2_SERVER}-${WSO2_SERVER_VERSION}"
   WSO2_ARTIFACTS_DIR='/mnt/wso2-artifacts'
   INSTALL_PATH="/mnt/${SERVER_NAME}"
@@ -88,7 +88,7 @@ function main() {
 
   echo "Creating directory ${UNIQUE_PATH}"
   mkdir -p $UNIQUE_PATH
-  echo "Creating symlink [target] ${INSTALL_PATH}, [link] ${UNIQUE_PATH}/${SERVER_NAME}"
+  echo "Creating symlink [Target] ${INSTALL_PATH}, [Link] ${UNIQUE_PATH}/${SERVER_NAME}"
   ln -s $INSTALL_PATH "${UNIQUE_PATH}/${SERVER_NAME}"
   export CARBON_HOME="${UNIQUE_PATH}/${SERVER_NAME}"
   source /etc/profile.d/set_java_home.sh
@@ -104,14 +104,18 @@ function main() {
     cp -r ${WSO2_ARTIFACTS_DIR}/* $CARBON_HOME
   fi
 
-  # if there is an existing docker-<product_name>-<profile_name>-init.sh script, run that first
-  PRODUCT_INIT_SCRIPT_FILE="${SCRIPT_PATH}/${SERVER_NAME}-${WSO2_SERVER_PROFILE}-init.sh"
+  # Search for a bash script file in format: <product_name>-<profile_name>-init.sh
+  # Execute that before starting the server. This is a pluggable extension point
+  PRODUCT_INIT_SCRIPT_FILE="${SCRIPT_PATH}/${WSO2_SERVER}-${WSO2_SERVER_PROFILE}-init.sh"
   if [[ -f $PRODUCT_INIT_SCRIPT_FILE ]]; then
-    echo "Running init script found in ${PRODUCT_INIT_SCRIPT_FILE}"
-    bash $PRODUCT_INIT_SCRIPT_FILE || exit $?
+    echo "Running init extension script found in ${PRODUCT_INIT_SCRIPT_FILE}"
+    bash $PRODUCT_INIT_SCRIPT_FILE || {
+      echo "Non-zero exit code returned from init extension script. Failed to start server."
+      exit $?
+    }
   fi
 
-  echo "Starting ${SERVER_NAME} with [startup args] ${STARTUP_ARGS}, [CARBON_HOME] ${CARBON_HOME}"
+  echo "Starting ${SERVER_NAME} with [Startup Args] ${STARTUP_ARGS}, [CARBON_HOME] ${CARBON_HOME}"
   ${CARBON_HOME}/bin/wso2server.sh $STARTUP_ARGS
 }
 main
