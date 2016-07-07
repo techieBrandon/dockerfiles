@@ -56,12 +56,13 @@ function validateProductVersion() {
 # $2 product version = 4.9.0
 # $3 product profile list = 'default|worker|manager'
 # $4 product environment = dev
+# $5 platform = default
 function validateProfile() {
     invalidFound=false
     IFS='|' read -r -a array <<< "${3}"
     for profile in "${array[@]}"
     do
-        profile_yaml="${PUPPET_HOME}/hieradata/${4}/wso2/${1}/${2}/${profile}.yaml"
+        profile_yaml="${PUPPET_HOME}/hieradata/${4}/wso2/${1}/${2}/${5}/${profile}.yaml"
         echo "profile yaml:${profile_yaml}"
         if [ ! -e "${profile_yaml}" ] || [ ! -s "${profile_yaml}" ]
         then
@@ -72,9 +73,23 @@ function validateProfile() {
     if [ "${invalidFound}" == true ]
     then
         echoError "One or more provided product profiles ${1}:${2}-[${3}] do not exist in PUPPET_HOME: ${PUPPET_HOME}. Available profiles are,"
-        listFiles "${PUPPET_HOME}/hieradata/${4}/wso2/${1}/${2}/"
+        listFiles "${PUPPET_HOME}/hieradata/${4}/wso2/${1}/${2}/${5}"
         echo
          exit 1
+    fi
+}
+
+# $1 product name = esb
+# $2 product version = 4.9.0
+# $3 product environment = dev
+# $4 platform = default
+function validatePlatform() {
+    platform_dir="${PUPPET_HOME}/hieradata/${3}/wso2/${1}/${2}/${4}"
+    if [ ! -d "$platform_dir" ]; then
+        echoError "Provided platform ${1}:${2}:${4} doesn't exist in PUPPET_HOME: ${PUPPET_HOME}. Available platforms are,"
+        listDirectories "${PUPPET_HOME}/hieradata/${3}/wso2/${1}/${2}"
+        echo
+        exit 1
     fi
 }
 
@@ -99,8 +114,11 @@ validateProductEnvironment "${product_env}"
 # check if provided product version exists in PUPPET_HOME
 validateProductVersion "${product_name}" "${product_version}" "${product_env}"
 
+# check if provided platform exists in PUPPET_HOME
+validatePlatform "${product_name}" "${product_version}" "${product_env}" "${platform}"
+
 # check if provided profile exists in PUPPET_HOME
-validateProfile "${product_name}" "${product_version}"
+validateProfile "${product_name}" "${product_version}" "${product_profiles}" "${product_env}" "${platform}"
 
 # check if packs are copied to PUPPET_HOME
 validateNeededPacks "${product_name}" "${product_version}" "${product_profiles}" "${product_env}"

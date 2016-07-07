@@ -45,7 +45,7 @@ function askBold () {
 }
 
 function listFiles () {
-    find "${1}" -maxdepth 1 -mindepth 1 \( ! -iname ".*" \)| rev | cut -d '/' -f1 | rev | awk NF
+    find "${1}" -maxdepth 1 -mindepth 1 \( ! -iname ".*" ! -iname "*.md" \)| rev | cut -d '/' -f1 | rev | awk NF
 }
 
 function listDirectories () {
