@@ -18,14 +18,18 @@
 # ------------------------------------------------------------------------
 EVENT_PROCESSOR_XML_FILE_PATH=${CARBON_HOME}/repository/conf/event-processor.xml
 
-# replace eventSync/hostName
-sed -i "/<eventSync>/,/<\/eventSync>/ s|<hostName>[0-9a-z.]\{1,\}</hostName>|<hostName>${LOCAL_DOCKER_IP}</hostName>|g" ${EVENT_PROCESSOR_XML_FILE_PATH}
-echo "Replaced eventSync/hostName with ${LOCAL_DOCKER_IP}"
+if [[ ${PLATFORM} -eq 'mesos' ]]; then
+  echo "platform=${PLATFORM}, not replacing hostnames of eventSync, management and presentation"
+else
+  # replace eventSync/hostName
+  sed -i "/<eventSync>/,/<\/eventSync>/ s|<hostName>[0-9a-z.]\{1,\}</hostName>|<hostName>${LOCAL_DOCKER_IP}</hostName>|g" ${EVENT_PROCESSOR_XML_FILE_PATH}
+  echo "Replaced eventSync/hostName with ${LOCAL_DOCKER_IP}"
 
-# replace management/hostName
-sed -i "/<management>/,/<\/management>/ s|<hostName>[0-9a-z.]\{1,\}</hostName>|<hostName>${LOCAL_DOCKER_IP}</hostName>|g" ${EVENT_PROCESSOR_XML_FILE_PATH}
-echo "Replaced management/hostName with ${LOCAL_DOCKER_IP}"
+  # replace management/hostName
+  sed -i "/<management>/,/<\/management>/ s|<hostName>[0-9a-z.]\{1,\}</hostName>|<hostName>${LOCAL_DOCKER_IP}</hostName>|g" ${EVENT_PROCESSOR_XML_FILE_PATH}
+  echo "Replaced management/hostName with ${LOCAL_DOCKER_IP}"
 
-# replace presentation/hostName
-sed -i "/<presentation>/,/<\/presentation>/ s|<hostName>[0-9a-z.]\{1,\}</hostName>|<hostName>${LOCAL_DOCKER_IP}</hostName>|g" ${EVENT_PROCESSOR_XML_FILE_PATH}
-echo "Replaced presentation/hostName with ${LOCAL_DOCKER_IP}"
+  # replace presentation/hostName
+  sed -i "/<presentation>/,/<\/presentation>/ s|<hostName>[0-9a-z.]\{1,\}</hostName>|<hostName>${LOCAL_DOCKER_IP}</hostName>|g" ${EVENT_PROCESSOR_XML_FILE_PATH}
+  echo "Replaced presentation/hostName with ${LOCAL_DOCKER_IP}"
+fi
