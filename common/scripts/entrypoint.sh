@@ -32,7 +32,7 @@ trap 'error_handler ${LINENO} $?' ERR
 # $1 - hostname
 # $2 - axis2.xml file path
 function replace_local_member_host() {
-  sed -i "s/\(<parameter\ name=\"localMemberHost\">\).*\(<\/parameter*\)/\1${1}\2/" "${2}"
+  sed -i "s#<parameter\ name=\"localMemberHost\".*#<parameter\ name=\"localMemberHost\">${1}<\/parameter>#" "${2}"
   if [[ $? == 0 ]]; then
     echo "Successfully updated localMemberHost with ${1}"
   else
@@ -44,7 +44,7 @@ function replace_local_member_host() {
 # $1 - port
 # $2 - axis2.xml file path
 function replace_local_member_port() {
-  sed -i "s/\(<parameter\ name=\"localMemberPort\">\).*\(<\/parameter*\)/\1${1}\2/" "${2}"
+  sed -i "s#<parameter\ name=\"localMemberPort\".*#<parameter\ name=\"localMemberPort\">${1}<\/parameter>#" "${2}"
   if [[ $? == 0 ]]; then
     echo "Successfully updated localMemberPort with ${1}"
   else
@@ -110,7 +110,7 @@ function main() {
   if [[ -f $PRODUCT_INIT_SCRIPT_FILE ]]; then
     echo "Running init extension script found in ${PRODUCT_INIT_SCRIPT_FILE}"
     bash $PRODUCT_INIT_SCRIPT_FILE || {
-      echo "Non-zero exit code returned from init extension script. Failed to start server."
+      echo "Non-zero exit code returned from init extension script. Failed to start server. Aborting..."
       exit $?
     }
   fi
