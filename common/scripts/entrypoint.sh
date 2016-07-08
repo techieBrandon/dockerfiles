@@ -104,6 +104,13 @@ function main() {
     cp -r ${WSO2_ARTIFACTS_DIR}/* $CARBON_HOME
   fi
 
+# this is deprecated, use /mnt/wso2-artifacts instead.
+  artifact_dir='/mnt/wso2/carbon-home'
+  if [[ -d ${artifact_dir} ]]; then
+    echo "Copying artifacts in ${artifact_dir} to ${CARBON_HOME}"
+    cp -r ${artifact_dir}/* ${CARBON_HOME}
+  fi
+
   # Search for a bash script file in format: <product_name>-<profile_name>-init.sh
   # Execute that before starting the server. This is a pluggable extension point
   PRODUCT_INIT_SCRIPT_FILE="${SCRIPT_PATH}/${WSO2_SERVER}-${WSO2_SERVER_PROFILE}-init.sh"
