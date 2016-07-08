@@ -17,10 +17,16 @@
 # ------------------------------------------------------------------------
 
 FROM ubuntu:latest
-MAINTAINER dev@wso2.org
-
+MAINTAINER WSO2 Docker Maintainers "dev@wso2.org"
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && apt-get install -y --no-install-recommends wget puppet iproute2 zip unzip && \
-    puppet module install puppetlabs/stdlib && \
-    puppet module install 7terminals-java
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends --no-install-suggests \
+                       wget \
+                       puppet \
+                       iproute2 \
+                       zip \
+                       unzip \
+                       net-tools \
+    && puppet module install puppetlabs/stdlib \
+    && puppet module install 7terminals-java
