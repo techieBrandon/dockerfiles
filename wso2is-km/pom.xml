@@ -25,13 +25,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>wso2is_km-dockerfile</artifactId>
+    <artifactId>wso2is-km-dockerfile</artifactId>
     <packaging>pom</packaging>
     <version>1.2.0-SNAPSHOT</version>
-    <name>${wso2.product.fullname} Dockerfile</name>
-    <description>${wso2.product.fullname} Dockerfile</description>
-
-    <properties>
-        <wso2.product.fullname>WSO2 Identity Server as Key Manager</wso2.product.fullname>
-    </properties>
+    <name>WSO2 Identity Server as Key Manager Dockerfile</name>
 </project>

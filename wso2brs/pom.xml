@@ -28,10 +28,5 @@
     <artifactId>wso2brs-dockerfile</artifactId>
     <packaging>pom</packaging>
     <version>1.2.0-SNAPSHOT</version>
-    <name>${wso2.product.fullname} Dockerfile</name>
-    <description>${wso2.product.fullname} Dockerfile</description>
-
-    <properties>
-        <wso2.product.fullname>WSO2 Business Rules Server</wso2.product.fullname>
-    </properties>
+    <name>WSO2 Business Rules Server Dockerfile</name>
 </project>
