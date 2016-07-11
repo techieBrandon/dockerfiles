@@ -122,6 +122,12 @@ function main() {
     }
   fi
 
+  # if DEBUG is specified, run server in debug mode
+  if [ ! -z ${DEBUG} ] ;then
+    echo "Debug mode is enabled on port: ${DEBUG}"
+    STARTUP_ARGS+=" -debug ${DEBUG}"
+  fi
+
   echo "Starting ${SERVER_NAME} with [Startup Args] ${STARTUP_ARGS}, [CARBON_HOME] ${CARBON_HOME}"
   ${CARBON_HOME}/bin/wso2server.sh $STARTUP_ARGS
 }
