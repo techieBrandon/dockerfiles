@@ -96,7 +96,7 @@ function main() {
   if [[ ! -z $KEY_STORE_PASSWORD ]]; then
     # adding key-store-password to password-tmp file
     touch $PASSWORD_TMP_FILE
-    echo "$KEY_STORE_PASSWORD" >> $PASSWORD_TMP_FILE
+    echo "$KEY_STORE_PASSWORD" > $PASSWORD_TMP_FILE
   fi
 
   if [[ -d $WSO2_ARTIFACTS_DIR ]]; then
