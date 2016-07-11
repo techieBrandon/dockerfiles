@@ -17,18 +17,8 @@
 
 # ------------------------------------------------------------------------
 set -e
+BROKER_XML_FILE_PATH=${CARBON_HOME}/repository/conf/broker.xml
 
-local_ip=$(ip route get 1 | awk '{print $NF;exit}')
-server_path=/mnt/${local_ip}
-server_name=${WSO2_SERVER}-${WSO2_SERVER_VERSION}
-broker_xml_file_path=${server_path}/${server_name}/repository/conf/broker.xml
-
-# replace thriftServerHost with local ip
-sed -i "s/\(<thriftServerHost>\).*\(<\/thriftServerHost*\)/\1$local_ip\2/" "${broker_xml_file_path}"
-if [[ $? == 0 ]];
-    then
-    echo "successfully updated thriftServerHost with local ip address $local_ip"
-else
-    echo "error occurred in updating thriftServerHost with local ip address $local_ip"
-fi
-
+# Update thriftServerHost to Docker runtime IP address
+sed -i "s|<thriftServerHost>[0-9a-z.]\{1,\}</thriftServerHost>|<thriftServerHost>${LOCAL_DOCKER_IP}</thriftServerHost>|g" "${BROKER_XML_FILE_PATH}" \
+&& echo "Updated thriftServerHost with local ip address ${LOCAL_DOCKER_IP}"
