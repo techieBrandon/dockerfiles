@@ -22,7 +22,7 @@ function error_handler() {
   LASTLINE="$1"     # argument 1: last line of error occurence
   LASTERR="$2"      # argument 2: error code of last command
   echo "ERROR in ${MYSELF}: line ${LASTLINE}: exit status of last command: ${LASTERR}"
-	exit 1
+  exit 1
 }
 
 # Execute error_handler function on script error
