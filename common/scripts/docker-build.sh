@@ -199,28 +199,6 @@ mkdir -p "${dockerfile_path}/scripts"
 cp "${self_path}/entrypoint.sh" "${dockerfile_path}/scripts/init.sh"
 cp "${self_path}/../provision/${provision_method}/image-config.sh" "${dockerfile_path}/scripts/image-config.sh"
 
-# starting http server
-echoBold "Starting HTTP server in ${file_location}/..."
-
-# Select a port between 8000 - 8010 for the http server
-http_server_port=8000
-while [ $(lsof -i:${http_server_port} | wc -l) -gt 1 ]; do
-   echoDim "Port ${http_server_port} seems to be already in use, trying port $((http_server_port + 1))..."
-   http_server_port=$((http_server_port + 1))
-   if [ ${http_server_port} = 8011 ]; then
-     echoError "Could not find a free port between 8000 - 8010"
-     exit 1
-   fi
-done
-echoDim "Port ${http_server_port} was selected for the http server"
-
-# start the server in background
-pushd ${file_location} > /dev/null 2>&1
-python -m SimpleHTTPServer ${http_server_port} & > /dev/null 2>&1
-httpserver_pid=$!
-sleep 5
-popd > /dev/null 2>&1
-
 # get host machine ip
 host_ip=$(findHostIP)
 if [ -z "$host_ip" ]; then
@@ -228,8 +206,36 @@ if [ -z "$host_ip" ]; then
     exit 1
 fi
 
+# Select a port between 8000 - 8100 for the http server
+http_server_port=8000
+while timeout 1 bash -c "cat < /dev/null > /dev/tcp/${host_ip}/${http_server_port}"; do
+   echoDim "Port ${http_server_port} seems to be already in use, trying port $((http_server_port + 1))..."
+   http_server_port=$((http_server_port + 1))
+   if [ ${http_server_port} = 8100 ]; then
+     echoError "Could not find a free port between 8000 - 8100. Exiting..."
+     exit 1
+   fi
+done
+echoDim "Port ${http_server_port} was selected for the http server"
+
+# start the server in background
 http_server_address="http://${host_ip}:${http_server_port}"
-echoBold "HTTP server started at ${http_server_address}"
+pushd ${file_location} > /dev/null 2>&1
+echoBold "Starting HTTP server [Doc Root] ${file_location}, [URL] ${http_server_address}"
+python2.7 -m SimpleHTTPServer $http_server_port & > /dev/null 2>&1
+httpserver_pid=$!
+RETRY_COUNT=${RETRY_COUNT:-10}
+count=0
+while ([$(curl --silent --output /dev/null --write-out "%{http_code}" $http_server_address) -ne 200] && [ "$count" -lt "$RETRY_COUNT" ]); do
+  count=$((count + 1))
+  sleep 0.5s
+done
+if [ "$count" -lt "$RETRY_COUNT" ]; then
+  echoBold "HTTP server started successfully on ${http_server_address}"
+else
+  echoError "HTTP server failed to start within timeout count of ${RETRY_COUNT}"
+fi
+popd > /dev/null 2>&1
 
 # Build image for each profile provided
 IFS='|' read -r -a profiles_array <<< "${product_profiles}"
