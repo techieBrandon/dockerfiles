@@ -12,7 +12,7 @@ The cloned local copy of WSO2 Dockerfiles will be referred as `DOCKERFILES_HOME`
 
 * Add product packs and dependencies
     - Download and copy JDK 1.7 ([jdk-7u80-linux-x64.tar.gz](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)) pack to `<DOCKERFILES_HOME>/common/provision/default/files`.
-    - Download the WSO2 Governance Registry zip file (http://wso2.com/products/governance-registry/).  
+    - Download the WSO2 Governance Registry zip file (http://wso2.com/products/governance-registry/).
     - Install API Manager Publisher and Store features in Greg. ([Documentation](https://docs.wso2.com/display/Governance510/Installing+WSO2+API+Manager+Features+in+WSO2+G-Reg))
     - Change the wso2greg-5.1.0 folder name to wso2greg-pubstore-5.1.0.
     - Create a zip file as wso2greg_pubstore-5.1.0.zip and copy it to `<DOCKERFILES_HOME>/common/provision/default/files`.
