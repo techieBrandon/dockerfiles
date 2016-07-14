@@ -145,6 +145,14 @@ if [[ -z ${product_version} ]] || [[ -z ${product_name} ]] || [[ -z ${dockerfile
   showUsageAndExit
 fi
 
+if [[ -z "$tag_name" ]]; then
+  tag_name=$product_name
+fi
+
+# If  product_name has '_', then string before the '_' will be taken as product name
+IFS='_' read -ra TEMP <<< "${product_name}"
+product_name="${TEMP[0]}"
+
 if [[ -z "$product_env" ]]; then
   product_env="dev"
 fi
@@ -244,10 +252,6 @@ for profile in "${profiles_array[@]}"; do
     image_version_section="${product_version}"
   else
     image_version_section="${product_version}-${image_version}"
-  fi
-
-  if [[ -z "$tag_name" ]]; then
-    tag_name=$product_name
   fi
 
   # set image name according to the profile list

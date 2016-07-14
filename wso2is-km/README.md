@@ -8,7 +8,7 @@ The cloned local copy of WSO2 Dockerfiles will be referred as `DOCKERFILES_HOME`
 
 * Add product packs and dependencies
     - Download and copy JDK 1.7 ([jdk-7u80-linux-x64.tar.gz](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)) pack to `<DOCKERFILES_HOME>/common/provision/default/files`.
-    - Download the WSO2 Identity Server as Key Manager zip file (http://product-dist.wso2.com/downloads/api-manager/1.10.0/identity-server/wso2is-5.1.0.zip), rename it as `wso2is_km-5.1.0.zip` and copy it to `<DOCKERFILES_HOME>/common/provision/default/files`.
+    - Download the WSO2 Identity Server as Key Manager zip file (http://product-dist.wso2.com/downloads/api-manager/1.10.0/identity-server/wso2is-5.1.0.zip), and copy it to `<DOCKERFILES_HOME>/common/provision/default/files`.
 
 * Build the docker image
     - Navigate to `<DOCKERFILES_HOME>/wso2is-km`.
