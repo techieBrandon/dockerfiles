@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # ------------------------------------------------------------------------
 # Copyright 2016 WSO2, Inc. (http://wso2.com)
 #
@@ -16,38 +17,62 @@
 # ------------------------------------------------------------------------
 
 set -e
-source common/scripts/base.sh
+self_path=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+source ${self_path}/common/scripts/base.sh
 
-function build() {
+# Build image for given product and version
+# $1 - product name
+# $2 - product version
+# $3 - product profiles
+function build_image() {
   product_name=$1
   product_version=$2
+  product_profiles=$3
   image_tag=${product_name}:${product_version}
-  image_exists=$(docker images $image_tag | wc -l)
-  if [ ${image_exists} == "2" ]; then
-    # docker image already built
-    echoBold "Docker image ${image_tag} already exist, skipping..."
-  else
-    # docker image not found
-    echoBold "==> Building ${image_tag}"
-    pushd ${product_name}/
-    ./build.sh -v ${product_version} -y
-    popd
-    echoSuccess "==> ${product_name} ${product_version} build completed!"
-  fi
+  echoBold "Building ${image_tag}"
+  pushd ${self_path}/${product_name}/
+  ./build.sh -n ${product_name} -v ${product_version} -l ${product_profiles}
+  popd
+  echoSuccess "${image_tag} build completed!"
 }
 
-# Update the below product list and versions as required
-echoBold "Building WSO2 docker images..."
-build wso2am 1.10.0
-build wso2as 5.3.0
-build wso2bps 3.5.0
-build wso2brs 2.2.0
-build wso2cep 4.1.0
-build wso2das 3.0.1
-build wso2dss 3.5.0
-build wso2es 2.0.0
-build wso2esb 4.9.0
-build wso2greg 5.1.0
-build wso2is 5.1.0
-build wso2mb 3.1.0
-echoSuccess "WSO2 docker images built successfully!"
+while getopts :n:v:l: FLAG; do
+  case ${FLAG} in
+    n)
+      product_name=$OPTARG
+      ;;
+    v)
+      product_version=$OPTARG
+      ;;
+    l)
+      product_profiles=$OPTARG
+      ;;
+  esac
+done
+
+if [ -z ${product_name} ] || [ -z ${product_version} ] || [ -z ${product_profiles} ]; then
+  echo "Building all images..."
+  build_image wso2am 1.10.0 "default api-key-manager api-publisher api-store gateway-manager gateway-worker"
+  build_image wso2as 5.3.0 "default worker manager"
+  build_image wso2bps 3.5.0 "default worker manager"
+  build_image wso2brs 2.2.0 "default worker manager"
+  build_image wso2cep 4.1.0 "default worker presenter"
+  build_image wso2das 3.0.1 default
+  build_image wso2dss 3.5.0 "default worker manager"
+  build_image wso2es 2.0.0 "default store publisher"
+  build_image wso2esb 4.9.0 "default worker manager"
+  build_image wso2greg 5.1.0 default
+  build_image wso2greg_pubstore 5.1.0 default
+  build_image wso2is 5.1.0 default
+  build_image wso2is_km 5.1.0 default
+  build_image wso2mb 3.1.0 default
+else
+  image_tag=${product_name}:${product_version}
+  echoBold "Building ${image_tag}"
+  pushd ${self_path}/${product_name}/
+  ./build.sh "$@"
+  popd
+  echoSuccess "${image_tag} build completed!"
+fi
+
+echoBold "Done"
