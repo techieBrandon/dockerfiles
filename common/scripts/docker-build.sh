@@ -162,8 +162,8 @@ if [[ -z "$product_profiles" ]]; then
   product_profiles="default"
 fi
 
-if [[ -z module_name ]] ; then
-  module_name=$product_name
+if [[ -z "$module_name" ]] ; then
+  module_name="${product_name}"
 fi
 
 provisioning_dir="${self_path}/../provision"
@@ -255,7 +255,7 @@ for profile in "${profiles_array[@]}"; do
   fi
 
   if [[ -z "$tag_name" ]] ; then
-    tag_name=$module_name
+    tag_name="${module_name}"
   fi
 
   # set image name according to the profile list
