@@ -233,7 +233,8 @@ python2.7 -m SimpleHTTPServer $http_server_port & > /dev/null 2>&1
 httpserver_pid=$!
 RETRY_COUNT=${RETRY_COUNT:-10}
 count=0
-while ([$(curl --silent --output /dev/null --write-out "%{http_code}" $http_server_address) -ne 200] && [ "$count" -lt "$RETRY_COUNT" ]); do
+while ([[ $(curl --silent --output /dev/null --write-out "%{http_code}" $http_server_address) -ne 200 ]] \
+       && [[ "$count" -lt "$RETRY_COUNT" ]]); do
   count=$((count + 1))
   sleep 0.5s
 done
