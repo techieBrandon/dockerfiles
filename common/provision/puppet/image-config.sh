@@ -19,8 +19,13 @@
 
 set -e
 
+# If MODULE_NAME is not set in Dockerfile, set it to WSO2_SERVER
+if [[ -z "$MODULE_NAME" ]]; then
+  MODULE_NAME=$WSO2_SERVER
+fi
+
 # Export facter variables
-export FACTER_product_name=${WSO2_SERVER}
+export FACTER_product_name=${MODULE_NAME}
 export FACTER_product_version=${WSO2_SERVER_VERSION}
 export FACTER_product_profile=${WSO2_SERVER_PROFILE}
 export FACTER_environment=${WSO2_ENVIRONMENT}
@@ -49,11 +54,11 @@ wget -q -nv -rnH -e robots=off --reject "index.html*" ${HTTP_PACK_SERVER}/hiera.
 wget -q -nv -rnH --level=0 -e robots=off --reject "index.html*" ${HTTP_PACK_SERVER}/hieradata/
 wget -q -nv -rnH --level=0 -e robots=off --reject "index.html*" ${HTTP_PACK_SERVER}/manifests/
 wget -q -nv -rnH --level=0 -e robots=off --reject "index.html*" ${HTTP_PACK_SERVER}/modules/wso2base/
-wget -q -nv -rnH --level=0 -e robots=off --reject "index.html*" ${HTTP_PACK_SERVER}/modules/${WSO2_SERVER}/
+wget -q -nv -rnH --level=0 -e robots=off --reject "index.html*" ${HTTP_PACK_SERVER}/modules/${MODULE_NAME}/
 
 # Run Puppet agent in stand-alone mode
 echo "Running Puppet agent..."
-puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.yaml
+puppet apply -e "include ${MODULE_NAME}" --hiera_config=/etc/puppet/hiera.yaml
 
 # Cleanup
 echo "Cleaning up packages and files no longer required..."
