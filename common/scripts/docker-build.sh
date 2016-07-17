@@ -141,26 +141,26 @@ while getopts :r:n:v:d:l:i:o:e:t:s:qy FLAG; do
   esac
 done
 
-if [[ -z ${product_version} ]] || [[ -z ${product_name} ]] || [[ -z ${dockerfile_path} ]]; then
+if [[ -z $product_version ]] || [[ -z $product_name ]] || [[ -z $dockerfile_path ]]; then
   showUsageAndExit
 fi
 
-if [[ -z "$product_env" ]]; then
+if [[ -z $product_env ]]; then
   product_env="dev"
 fi
 
 # org name adjustment
-if [[ ! -z "$organization_name" ]]; then
+if [[ ! -z $organization_name ]]; then
   organization_name="${organization_name}/"
 fi
 
 # Default values for optional args
-if [[ -z "$product_profiles" ]]; then
+if [[ -z $product_profiles ]]; then
   product_profiles="default"
 fi
 
 provisioning_dir="${self_path}/../provision"
-if [[ ! -d ${provisioning_dir}/${provision_method} ]]; then
+if [[ ! -d "${provisioning_dir}/${provision_method}" ]]; then
   echoError "Unable to find the provisioning method '${provision_method}'"
   echo "Available provisioning methods:"
   echo "$(listFiles ${self_path}/../provision)"
@@ -169,14 +169,14 @@ fi
 
 echo "Provisioning Method: ${provision_method}"
 
-image_config_file=${provisioning_dir}/${provision_method}/image-config.sh
-image_prep_file=${provisioning_dir}/${provision_method}/image-prep.sh
-if [[ ! -f  ${image_config_file} ]]; then
+image_config_file="${provisioning_dir}/${provision_method}/image-config.sh"
+image_prep_file="${provisioning_dir}/${provision_method}/image-prep.sh"
+if [[ ! -f  $image_config_file ]]; then
   echoError "Unable to find image-config.sh script for provisioning method ${provision_method}"
   exit 1
 fi
 
-if [[ ! -f  ${image_prep_file} ]]; then
+if [[ ! -f $image_prep_file ]]; then
   echoError "Unable to find image-prep.sh script for provisioning method ${provision_method}"
   exit 1
 fi
@@ -200,7 +200,7 @@ cp "${self_path}/../provision/${provision_method}/image-config.sh" "${dockerfile
 
 # get host machine ip
 host_ip=$(findHostIP)
-if [ -z "$host_ip" ]; then
+if [[ -z $host_ip ]]; then
   echoError "Could not find host ip address. Exiting..."
   exit 1
 fi
@@ -210,7 +210,7 @@ http_server_port=8000
 while timeout 1 bash -c "cat < /dev/null > /dev/tcp/${host_ip}/${http_server_port}"; do
   echoDim "Port ${http_server_port} seems to be already in use, trying port $((http_server_port + 1))..."
   http_server_port=$((http_server_port + 1))
-  if [ ${http_server_port} = 8100 ]; then
+  if [[ $http_server_port = 8100 ]]; then
     echoError "Could not find a free port between 8000 - 8100. Exiting..."
     exit 1
   fi
@@ -241,13 +241,13 @@ popd > /dev/null 2>&1
 IFS='|' read -r -a profiles_array <<< "${product_profiles}"
 for profile in "${profiles_array[@]}"; do
   #add image version to tag if specified
-  if [[ -z "$image_version" ]]; then
-    image_version_section="${product_version}"
+  if [[ -z $image_version ]]; then
+    image_version_section=$product_version
   else
     image_version_section="${product_version}-${image_version}"
   fi
 
-  if [[ -z "$tag_name" ]]; then
+  if [[ -z $tag_name ]]; then
     tag_name=$product_name
   fi
 
