@@ -97,7 +97,7 @@ provision_method="default"
 overwrite_v='n'
 platform='default'
 
-while getopts :r:n:v:d:l:i:o:e:t:s:m:qy FLAG; do
+while getopts :r:n:v:d:l:i:o:e:t:s:qy FLAG; do
   case $FLAG in
     r)
       provision_method=$OPTARG
@@ -135,9 +135,6 @@ while getopts :r:n:v:d:l:i:o:e:t:s:m:qy FLAG; do
     s)
       platform=$OPTARG
       ;;
-    m)
-      module_name=$OPTARG
-      ;;
     \?)
       showUsageAndExit
       ;;
@@ -160,10 +157,6 @@ fi
 # Default values for optional args
 if [[ -z "$product_profiles" ]]; then
   product_profiles="default"
-fi
-
-if [[ -z "$module_name" ]] ; then
-  module_name="${product_name}"
 fi
 
 provisioning_dir="${self_path}/../provision"
@@ -254,8 +247,8 @@ for profile in "${profiles_array[@]}"; do
     image_version_section="${product_version}-${image_version}"
   fi
 
-  if [[ -z "$tag_name" ]] ; then
-    tag_name="${module_name}"
+  if [[ -z "$tag_name" ]]; then
+    tag_name=$product_name
   fi
 
   # set image name according to the profile list
@@ -300,7 +293,6 @@ for profile in "${profiles_array[@]}"; do
                 --build-arg WSO2_ENVIRONMENT=\"${product_env}\" \
                 --build-arg HTTP_PACK_SERVER=\"${http_server_address}\" \
                 --build-arg PLATFORM=\"${platform}\" \
-                --build-arg MODULE_NAME=\"${module_name}\" \
                 -t \"${image_id}\" \"${dockerfile_path}\""
     {
       if [[ $verbose == true ]]; then

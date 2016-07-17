@@ -20,10 +20,10 @@
 set -e
 
 product_name=wso2greg
-module_name=wso2greg_pubstore
+image_name=wso2greg_pubstore
 
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
 common_folder=$(cd "${script_path}/../common/scripts/"; pwd)
 
-bash ${common_folder}/docker-build.sh -n ${product_name} -d ${script_path} -m ${module_name} $*
+bash ${common_folder}/docker-build.sh -n ${product_name} -d ${script_path} -t ${image_name"$*
