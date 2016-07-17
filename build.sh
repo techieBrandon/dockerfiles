@@ -28,8 +28,7 @@ function build_image() {
   product_name=$1
   product_version=$2
   product_profiles=$3
-  image_tag=${product_name}:${product_version}
-  echoBold "Building ${image_tag}"
+  echoBold "Building ${product_name}-${product_version}, profiles: ${product_profiles}"
   pushd ${self_path}/${product_name}/
   ./build.sh -n ${product_name} -v ${product_version} -l ${product_profiles}
   popd
@@ -52,23 +51,22 @@ done
 
 if [ -z ${product_name} ] || [ -z ${product_version} ] || [ -z ${product_profiles} ]; then
   echo "Building all images..."
-  build_image wso2am 1.10.0 "default api-key-manager api-publisher api-store gateway-manager gateway-worker"
-  build_image wso2as 5.3.0 "default worker manager"
-  build_image wso2bps 3.5.0 "default worker manager"
-  build_image wso2brs 2.2.0 "default worker manager"
-  build_image wso2cep 4.1.0 "default worker presenter"
+  build_image wso2am 1.10.0 "default|api-key-manager|api-publisher|api-store|gateway-manager|gateway-worker"
+  build_image wso2as 5.3.0 "default|worker|manager"
+  build_image wso2bps 3.5.0 "default|worker|manager"
+  build_image wso2brs 2.2.0 "default|worker|manager"
+  build_image wso2cep 4.1.0 "default|worker|presenter"
   build_image wso2das 3.0.1 default
-  build_image wso2dss 3.5.0 "default worker manager"
-  build_image wso2es 2.0.0 "default store publisher"
-  build_image wso2esb 4.9.0 "default worker manager"
+  build_image wso2dss 3.5.0 "default|worker|manager"
+  build_image wso2es 2.0.0 "default|store|publisher"
+  build_image wso2esb 4.9.0 "default|worker|manager"
   build_image wso2greg 5.1.0 default
   build_image wso2greg_pubstore 5.1.0 default
   build_image wso2is 5.1.0 default
   build_image wso2is_km 5.1.0 default
   build_image wso2mb 3.1.0 default
 else
-  image_tag=${product_name}:${product_version}
-  echoBold "Building ${image_tag}"
+  echoBold "Building ${product_name}:${product_version}, profiles: ${product_profiles}"
   pushd ${self_path}/${product_name}/
   ./build.sh "$@"
   popd
