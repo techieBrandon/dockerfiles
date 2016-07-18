@@ -20,7 +20,7 @@
 set -e
 
 product_name=wso2is
-image_name=wso2is_km
+image_name=wso2is-km
 
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)

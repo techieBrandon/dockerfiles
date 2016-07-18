@@ -20,7 +20,7 @@
 set -e
 
 product_name=wso2greg
-image_name=wso2greg_pubstore
+image_name=wso2greg-pubstore
 
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
