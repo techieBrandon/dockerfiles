@@ -18,7 +18,7 @@
 # ------------------------------------------------------------------------
 set -e
 
-product_name=wso2is_km
+product_name=wso2is-km
 
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
