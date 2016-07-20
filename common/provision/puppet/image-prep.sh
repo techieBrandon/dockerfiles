@@ -39,7 +39,7 @@ function validateProductEnvironment() {
     fi
 }
 
-# $1 product name = esb
+# $1 module name = wso2esb
 # $2 product version = 4.9.0
 # $3 product environment = dev
 function validateProductVersion() {
@@ -52,7 +52,7 @@ function validateProductVersion() {
     fi
 }
 
-# $1 product name = esb
+# $1 module name = wso2esb
 # $2 product version = 4.9.0
 # $3 product profile list = 'default|worker|manager'
 # $4 product environment = dev
@@ -79,7 +79,7 @@ function validateProfile() {
     fi
 }
 
-# $1 product name = esb
+# $1 module name = wso2esb
 # $2 product version = 4.9.0
 # $3 product environment = dev
 # $4 platform = default
@@ -93,10 +93,13 @@ function validatePlatform() {
     fi
 }
 
+# $1 module name = wso2esb
+# $2 product name = wso2esb
+# $3 product version = 4.9.0
 function validateNeededPacks() {
     base_files_folder="${PUPPET_HOME}/modules/wso2base/files"
     jdks_found=$(find $base_files_folder -name "jdk*.tar.gz")
-    pack_path="${PUPPET_HOME}/modules/${1}/files/${1}-${2}.zip"
+    pack_path="${PUPPET_HOME}/modules/${1}/files/${2}-${3}.zip"
     if [ -z $jdks_found ]; then
         echoError "A JDK was not found. Copy the JDK in to ${base_files_folder}."
         exit 1
@@ -112,15 +115,15 @@ function validateNeededPacks() {
 validateProductEnvironment "${product_env}"
 
 # check if provided product version exists in PUPPET_HOME
-validateProductVersion "${product_name}" "${product_version}" "${product_env}"
+validateProductVersion "${module_name}" "${product_version}" "${product_env}"
 
 # check if provided platform exists in PUPPET_HOME
-validatePlatform "${product_name}" "${product_version}" "${product_env}" "${platform}"
+validatePlatform "${module_name}" "${product_version}" "${product_env}" "${platform}"
 
 # check if provided profile exists in PUPPET_HOME
-validateProfile "${product_name}" "${product_version}" "${product_profiles}" "${product_env}" "${platform}"
+validateProfile "${module_name}" "${product_version}" "${product_profiles}" "${product_env}" "${platform}"
 
 # check if packs are copied to PUPPET_HOME
-validateNeededPacks "${product_name}" "${product_version}" "${product_profiles}" "${product_env}"
+validateNeededPacks "${module_name}" "${product_name}" "${product_version}"
 
 export file_location=${PUPPET_HOME}

@@ -97,7 +97,7 @@ provision_method="default"
 overwrite_v='n'
 platform='default'
 
-while getopts :r:n:v:d:l:i:o:e:t:s:qy FLAG; do
+while getopts :r:n:v:d:l:i:o:e:t:s:m:qy FLAG; do
   case $FLAG in
     r)
       provision_method=$OPTARG
@@ -135,6 +135,9 @@ while getopts :r:n:v:d:l:i:o:e:t:s:qy FLAG; do
     s)
       platform=$OPTARG
       ;;
+    m)
+      module_name=$OPTARG
+      ;;
     \?)
       showUsageAndExit
       ;;
@@ -157,6 +160,10 @@ fi
 # Default values for optional args
 if [[ -z $product_profiles ]]; then
   product_profiles="default"
+fi
+
+if [[ -z $module_name ]]; then
+  module_name="${product_name}"
 fi
 
 provisioning_dir="${self_path}/../provision"
