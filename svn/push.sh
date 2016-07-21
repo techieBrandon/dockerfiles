@@ -18,7 +18,7 @@
 # ------------------------------------------------------------------------
 set -e
 
-product_name=svn
+product_name=wso2/svn
 
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)

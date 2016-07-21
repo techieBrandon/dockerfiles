@@ -19,7 +19,7 @@
 
 set -e
 
-product_name=svn
+product_name=wso2/svn
 
 self_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${self_path}/../common/scripts/base.sh"

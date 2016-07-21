@@ -16,10 +16,11 @@
 
 # ------------------------------------------------------------------------
 
-FROM wso2/wso2base:latest
+FROM ubuntu:latest
 MAINTAINER dev@wso2.org
 
-RUN apt-get install subversion apache2 libapache2-svn apache2-utils -y
+RUN apt-get update \
+    && apt-get install subversion apache2 libapache2-svn apache2-utils -y
 RUN mkdir -p /svn/repos
 COPY repo_template.conf /etc/apache2/sites-available/
 COPY run_apache.sh /var/www/

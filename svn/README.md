@@ -1,4 +1,7 @@
 # Dockerfile for Apache Subversion#
+
+### Note: This Dockerfile is added to WSO2 Dockerfiles repository as there is no official docker image for SVN.
+
 The Dockerfile defines the resources and instructions to build the Docker image for Apache SVN.
 
 ## Try it out

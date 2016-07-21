@@ -19,7 +19,7 @@
 
 set -e
 
-product_name=svn
+product_name=wso2/svn
 
 self_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${self_path}/../common/scripts/base.sh"
@@ -79,7 +79,7 @@ fi
 
 echoBold "Running SVN docker container..."
 
-container_id=$(docker run ${env_values} -d -p 8080:80 --name ${product_name} ${product_name}:${product_version})
+container_id=$(docker run ${env_values} -d -p 8080:80 ${product_name}:${product_version})
 
 member_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${container_id}")
 if [ -z "${member_ip}" ]; then
