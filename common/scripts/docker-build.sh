@@ -285,7 +285,7 @@ for profile in "${profiles_array[@]}"; do
     fi
   fi
 
-  if [[ ${image_exists} == "1" ]] || [[ $overwrite_v == "y" ]]; then
+  if [[ ${image_exists} -eq "1" ]] || [[ $overwrite_v == "y" ]]; then
     # if there is a custom init.sh script supplied specific for the profile of this product, pack
     # it to ${dockerfile_path}/scripts/
     product_init_script_name="${product_name}-${profile}-init.sh"
