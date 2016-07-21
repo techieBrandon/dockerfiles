@@ -70,6 +70,10 @@ function showUsageAndExit() {
   exit 1
 }
 
+function timeout() {
+    perl -e 'alarm shift; exec @ARGV' "$@";
+}
+
 function validateDockerVersion(){
   IFS='.' read -r -a version_1 <<< "$1"
   IFS='.' read -r -a version_2 <<< "$2"
@@ -272,7 +276,7 @@ for profile in "${profiles_array[@]}"; do
   image_id="${image_name_section}:${image_version_section}"
 
   image_exists=$(docker images $image_id | wc -l)
-  if [[ ${image_exists} == "2" ]] && [[ $overwrite_v != "y" ]]; then
+  if [[ ${image_exists} -eq 2 ]] && [[ $overwrite_v != "y" ]]; then
     if [ $verbose == false ]; then
       overwrite_v='y';
     else
