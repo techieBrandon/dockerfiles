@@ -20,6 +20,7 @@ set -e
 EVENT_PROCESSOR_XML_FILE_PATH=${CARBON_HOME}/repository/conf/event-processor.xml
 SPARK_DEFAULTS_CONF_FILE_PATH=${CARBON_HOME}/repository/conf/analytics/spark/spark-defaults.conf
 SPARK_ENV_SCRIPT_FILE_PATH=${CARBON_HOME}/bin/load-spark-env-vars.sh
+PORTAL_DESIGNER_FILE_PATH=${CARBON_HOME}/repository/deployment/server/jaggeryapps/portal/configs/designer.json
 
 # Update Spark driver bind address to Docker runtime IP address
 #sed -i "s/spark\.driver\.host.*/spark.driver.host ${LOCAL_DOCKER_IP}/g" ${SPARK_DEFAULTS_CONF_FILE_PATH} \
@@ -75,6 +76,10 @@ if [[ $PLATFORM == "mesos" ]]; then
 
   sed -i "s/spark\.executor\.port.*/spark.executor.port ${PORT14}/g" ${SPARK_DEFAULTS_CONF_FILE_PATH} \
   && echo "Replaced spark.executor.port with ${PORT14}"
+
+  # replace hostname in designer.json (https://wso2.org/jira/browse/UES-689)
+#  sed -i "s#\"hostname\"[^,]*,#\"hostname\": ${HOST},#" ${PORTAL_DESIGNER_FILE_PATH} \
+#  && echo "Replaced hostname in designer.json with ${HOST}"
 #
 #  sed -i "s/spark\.history\.ui\.port.*/spark.history.ui.port ${PORT6}/g" ${SPARK_DEFAULTS_CONF_FILE_PATH} \
 #  && echo "Replaced spark.history.ui.port with ${PORT6}"
