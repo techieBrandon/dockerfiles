@@ -47,6 +47,8 @@
         <module>wso2mb</module>
         <module>wso2greg-pubstore</module>
         <module>wso2is-km</module>
+        <module>wso2base</module>
+        <module>svn</module>
     </modules>
 
     <build>
