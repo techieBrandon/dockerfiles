@@ -25,8 +25,8 @@ The cloned local copy of WSO2 Dockerfiles will be referred as `DOCKERFILES_HOME`
 
 ## Detailed Configuration
 
-* [Introduction] (https://docs.wso2.com/display/DF110/Introduction)
+* [Introduction] (https://docs.wso2.com/display/DF120/Introduction)
 
-* [Building docker images] (https://docs.wso2.com/display/DF110/Building+Docker+Images)
+* [Building docker images] (https://docs.wso2.com/display/DF120/Building+Docker+Images)
 
-* [Running docker images] (https://docs.wso2.com/display/DF110/Running+WSO2+Docker+Images)
+* [Running docker images] (https://docs.wso2.com/display/DF120/Running+WSO2+Docker+Images)

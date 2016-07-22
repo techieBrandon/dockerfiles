@@ -7,8 +7,8 @@ To try the WSO2 products on Docker simply follow the instructions in the README 
 
 ## Detailed Configuration
 
-* [Introduction] (https://docs.wso2.com/display/DF110/Introduction)
+* [Introduction] (https://docs.wso2.com/display/DF120/Introduction)
 
-* [Build docker images] (https://docs.wso2.com/display/DF110/Building+Docker+Images)
+* [Build docker images] (https://docs.wso2.com/display/DF120/Building+Docker+Images)
 
-* [Run docker images] (https://docs.wso2.com/display/DF110/Running+WSO2+Docker+Images)
+* [Run docker images] (https://docs.wso2.com/display/DF120/Running+WSO2+Docker+Images)
