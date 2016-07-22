@@ -31,6 +31,6 @@
     <name>Apache Subversion Dockerfile</name>
 
     <properties>
-        <product.name>wso2base</product.name>
+        <product.name>svn</product.name>
     </properties>
 </project>
