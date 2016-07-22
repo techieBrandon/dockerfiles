@@ -28,10 +28,10 @@
             <directory>${project.basedir}/../</directory>
             <outputDirectory>./</outputDirectory>
             <includes>
-                <include>${product.name}/**</include>
+                <include>${wso2.product.name}/**</include>
             </includes>
             <excludes>
-                <exclude>${product.name}/target/**</exclude>
+                <exclude>${wso2.product.name}/target/**</exclude>
                 <exclude>**/package.xml</exclude>
                 <exclude>**/pom.xml</exclude>
                 <exclude>**/*.zip</exclude>
