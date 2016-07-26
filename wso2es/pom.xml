@@ -21,13 +21,13 @@
     <parent>
         <groupId>org.wso2.dockerfiles</groupId>
         <artifactId>wso2-dockerfiles</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.2.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>wso2es-dockerfile</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.1-SNAPSHOT</version>
     <name>WSO2 Enterprise Store Dockerfile</name>
 
     <properties>
