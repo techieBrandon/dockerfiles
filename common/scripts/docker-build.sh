@@ -201,7 +201,7 @@ popd > /dev/null 2>&1
 docker_version=$(docker version)
 docker_version=$(echo "$docker_version" | grep 'Version:' | awk '{print $2}')
 min_required_docker_version=1.10.0
-validateDockerVersion "${docker_version}" "${min_required_docker_version}"
+# validateDockerVersion "${docker_version}" "${min_required_docker_version}"
 
 # Copy common files to Dockerfile context
 echoBold "Creating Dockerfile context..."

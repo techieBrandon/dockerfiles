@@ -21,7 +21,7 @@ set -e
 provision_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${provision_path}/../../scripts/base.sh"
 
-jdk_archive=jdk-7u80-linux-x64.tar.gz
+jdk_archive=jdk-8u121-linux-x64.tar.gz
 
 # Validate if files exist in the files folder
 if [ ! -e "${provision_path}/files/${jdk_archive}" ]; then
